@@ -6,10 +6,10 @@
 
 @layer base {
   :root {
-    --theme-accent: 204, 255, 0; /* Volt Green RGB */
-    --theme-bg: 2, 2, 4; /* Obsidian RGB */
-    --theme-panel: 24, 24, 27; /* Zinc Panel RGB */
-    --theme-glow: 217, 70, 239; /* Fuchsia Glow RGB */
+    --theme-accent: 255, 93, 71; /* Solar Tangerine RGB */
+    --theme-bg: 5, 6, 15; /* Midnight Ink RGB */
+    --theme-panel: 10, 12, 30; /* Deep Blue-Zinc RGB */
+    --theme-glow: 0, 240, 255; /* Cyan Glow RGB */
   }
 
   /* Cyber-Quantum Obsidian (Volt Green & Obsidian Dark) */
