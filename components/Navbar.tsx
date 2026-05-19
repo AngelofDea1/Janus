@@ -13,14 +13,14 @@ export default function Navbar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
 
-  const [activeTheme, setActiveTheme] = useState("synthwave");
+  const [activeTheme, setActiveTheme] = useState("cyberpunk");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Ensure hydration matches server & init custom theme class
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("janus-theme") || "synthwave";
+      const savedTheme = localStorage.getItem("janus-theme") || "cyberpunk";
       setActiveTheme(savedTheme);
       document.documentElement.classList.remove('theme-cyberpunk', 'theme-synthwave', 'theme-swiss', 'theme-solarpunk', 'theme-sovereign');
       document.documentElement.classList.add(`theme-${savedTheme}`);
