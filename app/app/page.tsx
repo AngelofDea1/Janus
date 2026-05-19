@@ -427,10 +427,6 @@ export default function ArbitrageApp() {
   return (
     <div className="relative overflow-hidden min-h-screen bg-transparent text-slate-100 transition-colors py-16 sm:py-24">
       
-      {/* Background Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#ccff00]/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-fuchsia-950/5 blur-[120px] pointer-events-none" />
-
       {/* Success Notification */}
       {transactionSuccess && (
         <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl bg-emerald-500 text-white font-semibold flex items-center gap-2 shadow-lg animate-in slide-in-from-bottom-5">

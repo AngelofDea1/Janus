@@ -48,12 +48,12 @@ export default function Navbar() {
         
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ccff00] via-zinc-900 to-black border border-zinc-800 flex items-center justify-center shadow-lg shadow-[#ccff00]/5 group-hover:scale-105 transition-all duration-300">
+          <div className="relative w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-lg shadow-[#ccff00]/5 group-hover:scale-105 transition-all duration-300">
             <Shield className="w-5.5 h-5.5 text-[#ccff00]" />
             <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
           <div>
-            <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:via-slate-100 dark:to-slate-300">
+            <span className="font-bold text-xl tracking-tight text-white">
               JANUS
             </span>
             <span className="text-[10px] block text-[#ccff00] font-bold tracking-widest uppercase">

@@ -41,21 +41,17 @@ export default function Home() {
   return (
     <div className="relative overflow-hidden bg-transparent text-slate-100 min-h-screen">
 
-      {/* Background Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#ccff00]/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-fuchsia-900/5 blur-[120px] pointer-events-none" />
-
       {/* Spacious Hero Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-20 lg:pt-36 lg:pb-32 flex flex-col items-center text-center">
 
-        {/* Glow Tagline */}
+        {/* Tagline */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#ccff00]/10 border border-[#ccff00]/20 text-xs font-bold text-[#ccff00] mb-8 animate-fade-in">
           <Sparkles className="w-3.5 h-3.5" />
           <span>Automated Delta-Neutral Yields</span>
         </div>
 
         {/* Hero Title */}
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight max-w-4xl leading-[1.1] mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-100 to-zinc-400">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight max-w-4xl leading-[1.1] mb-8 text-white">
           Institutional-grade
           <span className="block text-[#ccff00] mt-2">
             funding rate arbitrage
