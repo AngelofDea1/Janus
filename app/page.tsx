@@ -39,7 +39,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#020204] text-slate-100 min-h-screen">
+    <div className="relative overflow-hidden bg-transparent text-slate-100 min-h-screen">
 
       {/* Background Gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#ccff00]/5 blur-[120px] pointer-events-none" />

@@ -425,7 +425,7 @@ export default function ArbitrageApp() {
   };
 
   return (
-    <div className="relative overflow-hidden min-h-screen bg-[#020204] text-slate-100 transition-colors py-16 sm:py-24">
+    <div className="relative overflow-hidden min-h-screen bg-transparent text-slate-100 transition-colors py-16 sm:py-24">
       
       {/* Background Gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#ccff00]/5 blur-[120px] pointer-events-none" />
