@@ -124,9 +124,6 @@ export default function Home() {
 
         <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
           <div className="p-8 rounded-3xl bg-white dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/40 hover:border-indigo-500/10 transition-all duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mb-6">
-              <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-            </div>
             <h3 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Consistent Delta-Neutral Yield</h3>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               Positions are mathematically balanced. Janus hedges spot assets against perpetual shorts, letting you safely harvest interest spreads in all bull, bear, or sideways trends.
@@ -134,9 +131,6 @@ export default function Home() {
           </div>
 
           <div className="p-8 rounded-3xl bg-white dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/40 hover:border-indigo-500/10 transition-all duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mb-6">
-              <Shield className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-            </div>
             <h3 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Institutional Custody Safety</h3>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               Complete decentralized architecture. Assets reside in standard audited ERC-4626 multi-sig vaults, ensuring absolute withdrawal transparency and governance.
@@ -144,9 +138,6 @@ export default function Home() {
           </div>
 
           <div className="p-8 rounded-3xl bg-white dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/40 hover:border-indigo-500/10 transition-all duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mb-6">
-              <Zap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-            </div>
             <h3 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">24/7 Automated Rebalancing</h3>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               No manual migrations needed. Distributed keeper loops evaluate rates across exchanges around the clock, deploying trades at optimal intervals.
