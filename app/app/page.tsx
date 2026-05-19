@@ -425,7 +425,7 @@ export default function ArbitrageApp() {
   };
 
   return (
-    <div className="relative overflow-hidden min-h-screen bg-transparent text-slate-100 transition-colors py-16 sm:py-24">
+    <div className="relative overflow-hidden min-h-screen bg-slate-50 dark:bg-[#060814] text-slate-900 dark:text-slate-100 transition-colors py-16 sm:py-24">
       
       {/* Success Notification */}
       {transactionSuccess && (
@@ -576,7 +576,7 @@ export default function ArbitrageApp() {
                   <button
                     onClick={handleDeposit}
                     disabled={!depositAmount || activePendingState}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-rose-500 hover:from-violet-500 hover:to-rose-400 text-white font-bold tracking-wide transition-all shadow-lg shadow-violet-600/10 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                    className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold tracking-wide transition-all shadow-lg shadow-indigo-600/10 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     <ArrowUpRight className="w-5 h-5" />
                     <span>
@@ -864,7 +864,7 @@ export default function ArbitrageApp() {
           {/* ERC-8004 On-Chain AI Agent Identity Banner */}
           <div className="mb-8 p-6 rounded-2xl bg-indigo-950/20 border border-indigo-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 to-rose-500 flex items-center justify-center shadow-lg shadow-violet-500/10">
+              <div className="relative w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/10">
                 <Shield className="w-6 h-6 text-white" />
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-[#060814] flex items-center justify-center text-[8px] font-bold text-white">✓</div>
               </div>

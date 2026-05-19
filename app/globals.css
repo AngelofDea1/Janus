@@ -6,50 +6,17 @@
 
 @layer base {
   :root {
-    --theme-accent: 204, 255, 0; /* Volt Green RGB */
-    --theme-bg: 2, 2, 4; /* Obsidian RGB */
-    --theme-panel: 24, 24, 27; /* Zinc Panel RGB */
-    --theme-glow: 217, 70, 239; /* Fuchsia Glow RGB */
+    --theme-bg: 248, 250, 252; /* Slate-50: rgb(248, 250, 252) */
+    --theme-foreground: 15, 23, 42; /* Slate-900: rgb(15, 23, 42) */
+    --theme-panel: 255, 255, 255; /* White Panel */
+    --theme-accent: 79, 70, 229; /* Indigo-600 RGB */
   }
 
-  /* Cyber-Quantum Obsidian (Volt Green & Obsidian Dark) */
-  .theme-cyberpunk {
-    --theme-accent: 204, 255, 0;
-    --theme-bg: 2, 2, 4;
-    --theme-panel: 24, 24, 27;
-    --theme-glow: 217, 70, 239;
-  }
-
-  /* Neo-Tokyo Sunset (Solar Tangerine & Midnight Ink) */
-  .theme-synthwave {
-    --theme-accent: 255, 93, 71;
-    --theme-bg: 5, 6, 15;
-    --theme-panel: 10, 12, 30;
-    --theme-glow: 0, 240, 255;
-  }
-
-  /* Swiss Minimalist Charcoal (Stark Amber & Pitch Black) */
-  .theme-swiss {
-    --theme-accent: 245, 158, 11;
-    --theme-bg: 0, 0, 0;
-    --theme-panel: 11, 11, 12;
-    --theme-glow: 113, 113, 122;
-  }
-
-  /* Emerald Zenith (Mint Jade & Botanical Dark) */
-  .theme-solarpunk {
-    --theme-accent: 16, 185, 129;
-    --theme-bg: 1, 28, 22;
-    --theme-panel: 2, 44, 34;
-    --theme-glow: 251, 191, 36;
-  }
-
-  /* Aether Gold (Antique Gold & Caviar Black) */
-  .theme-sovereign {
-    --theme-accent: 223, 177, 91;
-    --theme-bg: 6, 6, 8;
-    --theme-panel: 10, 10, 14;
-    --theme-glow: 120, 53, 15;
+  .dark {
+    --theme-bg: 6, 8, 20; /* Clinical dark blue-slate [#060814]: rgb(6, 8, 20) */
+    --theme-foreground: 241, 245, 249; /* Slate-100: rgb(241, 245, 249) */
+    --theme-panel: 11, 15, 30; /* Dark slate panel */
+    --theme-accent: 99, 102, 241; /* Indigo-500 RGB */
   }
 }
 
@@ -58,7 +25,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(var(--theme-bg));
-  color: rgb(244 244 245);
+  color: rgb(var(--theme-foreground));
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
