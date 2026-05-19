@@ -41,6 +41,12 @@ export default function Home() {
   return (
     <div className="relative overflow-hidden bg-slate-50 dark:bg-[#060814] text-slate-900 dark:text-slate-100 min-h-screen">
 
+      {/* Dynamic Ambient Background Motion */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-[120px] animate-float-slow" />
+        <div className="absolute top-[40%] right-[-10%] w-[700px] h-[700px] rounded-full bg-violet-500/8 dark:bg-violet-500/3 blur-[150px] animate-float-reverse" />
+      </div>
+
       {/* Spacious Hero Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-20 lg:pt-36 lg:pb-32 flex flex-col items-center text-center">
 

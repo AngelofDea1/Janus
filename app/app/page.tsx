@@ -427,6 +427,12 @@ export default function ArbitrageApp() {
   return (
     <div className="relative overflow-hidden min-h-screen bg-slate-50 dark:bg-[#060814] text-slate-900 dark:text-slate-100 transition-colors py-16 sm:py-24">
       
+      {/* Dynamic Ambient Background Motion */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-[120px] animate-float-slow" />
+        <div className="absolute top-[40%] right-[-10%] w-[700px] h-[700px] rounded-full bg-violet-500/8 dark:bg-violet-500/3 blur-[150px] animate-float-reverse" />
+      </div>
+      
       {/* Success Notification */}
       {transactionSuccess && (
         <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl bg-emerald-500 text-white font-semibold flex items-center gap-2 shadow-lg animate-in slide-in-from-bottom-5">
