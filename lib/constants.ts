@@ -1,9 +1,9 @@
 // Contract addresses (update after deployment)
-export const VAULT_ADDRESS = '0x9c65f85425c619A6cB6D29fF8d57ef696323d188' as const;
+export const VAULT_ADDRESS = '0x70E5370b8981Abc6e14C91F4AcE823954EFC8eA3' as const;
 export const USDC_ADDRESS = '0x3600000000000000000000000000000000000000' as const;
-export const MULTISIG_ADDRESS = '0x4000F8820522AC96C4221b299876e3e53bCc8525' as const;
+export const MULTISIG_ADDRESS = '0xc8d77a0bf435ec92a4e21dae6c2789bd0bcf00e1' as const;
 export const TIMELOCK_ADDRESS = '0x892a0bcf87baee1e390c9b88a8d11cfa98b0f22d' as const;
-export const INSURANCE_FUND_ADDRESS = '0x9338CA7d556248055f5751d85cDA7aD6eF254433' as const;
+export const INSURANCE_FUND_ADDRESS = '0x2500c4e08de98a87f930abefeafdd5d253a753f8' as const;
 
 // Vault ABI
 export const VAULT_ABI = [
