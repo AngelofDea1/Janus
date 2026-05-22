@@ -14,6 +14,7 @@ export default function Navbar() {
 
   // Sync with document class
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (document.documentElement.classList.contains("dark")) {
       setTheme("dark");
     } else {
