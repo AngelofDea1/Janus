@@ -24,6 +24,25 @@ const volumeData = [
   { name: "Sun", volume: 3800000 },
 ];
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const value = payload[0].value;
+    const formattedValue = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(value);
+
+    return (
+      <div className="bg-panel border border-borderLine rounded-2xl p-4 shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
+        <p className="text-slate-500 font-medium text-xs uppercase tracking-widest mb-1">{label} Volume</p>
+        <p className="text-accent font-heading font-bold text-2xl">{formattedValue}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function AnalyticsDashboard() {
   const [mounted, setMounted] = React.useState(false);
 
@@ -105,16 +124,7 @@ export default function AnalyticsDashboard() {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "var(--theme-panel)", 
-                    border: "1px solid var(--theme-borderLine)", 
-                    borderRadius: "16px", 
-                    color: "var(--theme-foreground)",
-                    boxShadow: "0 10px 40px -10px rgba(0,0,0,0.1)"
-                  }}
-                  itemStyle={{ color: "#818cf8" }}
-                />
+                <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#64748b', strokeWidth: 1, strokeDasharray: '4 4' }} />
                 <Area type="monotone" dataKey="volume" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
               </AreaChart>
             </ResponsiveContainer>
