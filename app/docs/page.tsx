@@ -26,11 +26,7 @@ export default function DocumentationPage() {
       description: "5-of-9 Multisig, timelocks, and path to full DAO decentralization.",
       link: "/docs/governance-documentation"
     },
-    {
-      title: "Operational Manual",
-      description: "Day-to-day operations, emergency procedures, and incident response.",
-      link: "/docs/operational-manual"
-    },
+
     {
       title: "FAQ & Support",
       description: "Common questions, wallet issues, and support contact information.",

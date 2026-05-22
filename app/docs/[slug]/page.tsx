@@ -22,7 +22,7 @@ const SLUG_TO_FILE: Record<string, string> = {
   "user-guide": "USER_GUIDE.md",
   "technical-whitepaper": "TECHNICAL_WHITEPAPER.md",
   "governance-documentation": "GOVERNANCE_DOCUMENTATION.md",
-  "operational-manual": "OPERATIONAL_MANUAL.md",
+
   "faq-and-troubleshooting": "FAQ_AND_TROUBLESHOOTING.md"
 };
 
@@ -51,12 +51,7 @@ const DOC_METADATA: Record<string, { title: string; category: string; readTime: 
     readTime: "10 min read",
     icon: <Users className="w-4 h-4" />
   },
-  "operational-manual": {
-    title: "Operational Manual",
-    category: "Operations",
-    readTime: "9 min read",
-    icon: <Settings className="w-4 h-4" />
-  },
+
   "faq-and-troubleshooting": {
     title: "FAQ & Support",
     category: "Support",
