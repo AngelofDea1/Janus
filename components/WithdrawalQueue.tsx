@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useReadContract, useWriteContract } from "wagmi";
 import { formatUnits } from "viem";
-import { Clock, CheckCircle, ArrowDownCircle, Info } from "lucide-react";
+import { Clock, CheckCircle } from "lucide-react";
 import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 
 interface WithdrawalRequest {
@@ -62,30 +62,28 @@ export default function WithdrawalQueue() {
  };
 
  return (
- <div className="bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl relative animate-in fade-in slide-in-from-bottom-2 duration-300">
+ <div className="space-y-16">
  
- <div className="flex justify-between items-start mb-6">
+ <div className="flex flex-col sm:flex-row justify-between sm:items-baseline gap-4 mb-8">
  <div>
- <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">
- <span>Withdrawal Queue & Timelock</span>
+ <h3 className="font-heading font-medium text-xl text-foreground mb-1">
+ Withdrawal Queue & Timelock
  </h3>
- <p className="text-xs text-slate-500 mt-1">
+ <p className="text-sm text-slate-500">
  Large-scale deposits are protected by a 48-hour withdrawal cooldown to protect pools against exploit arbitrage.
  </p>
  </div>
  </div>
 
  {/* Info Warning */}
- <div className="mb-6 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 text-xs text-blue-600 dark:text-blue-400 font-semibold flex items-start gap-2.5">
- <div>
- <span className="block font-extrabold text-blue-700 dark:text-blue-300 mb-0.5">2-Day Capital Cooldown Active</span>
+ <div className="mb-12 border-b border-borderLine pb-4 text-xs font-medium text-slate-500">
+ <span className="block text-foreground mb-1">2-Day Capital Cooldown Active</span>
  <span>
  Settlement Cooldown Limit: {withdrawalDelay ? `${Number(withdrawalDelay) / 86400} Days` : "48 Hours (2 Days)"}. This prevents flash-loan sandwich manipulation of compounding vault shares.
  </span>
  </div>
- </div>
 
- <div className="space-y-4">
+ <div className="space-y-6">
  {requests.map(request => {
  const isReady = request.timeRemaining === BigInt(0);
  const progressPercent = isReady 
@@ -95,50 +93,38 @@ export default function WithdrawalQueue() {
  return (
  <div 
  key={request.requestId} 
- className="p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/10 flex flex-col gap-4 transition-all"
+ className="border-b border-borderLine pb-6"
  >
- <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+ <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
  <div>
- <div className="flex items-center gap-2">
- <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
- Queue #{request.requestId}
- </span>
- <span className="text-xs text-slate-400 font-bold">
- Requested {new Date(Number(request.requestTime) * 1000).toLocaleDateString()}
- </span>
+ <div className="flex items-center gap-3 text-xs uppercase tracking-widest font-medium text-slate-500 mb-2">
+ <span>Queue #{request.requestId}</span>
+ <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full" />
+ <span>Requested {new Date(Number(request.requestTime) * 1000).toLocaleDateString()}</span>
  </div>
- <h4 className="text-lg font-black text-slate-900 dark:text-white mt-2">
- {formatUnits(request.shares, 18)} <span className="text-xs font-bold text-slate-400">JANUS Shares</span>
+ <h4 className="text-xl font-heading font-medium text-foreground">
+ {formatUnits(request.shares, 18)} <span className="text-sm text-slate-500">JANUS Shares</span>
  </h4>
  </div>
 
- <div className="flex items-center gap-3 self-end sm:self-auto">
- <div className="text-right hidden sm:block">
- <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+ <div className="flex items-center gap-6">
+ <div className="md:text-right">
+ <span className={`flex items-center gap-2 text-xs uppercase tracking-widest font-medium block mb-2 ${
  request.completed
- ? "bg-slate-100 dark:bg-slate-800 text-slate-400"
+ ? "text-slate-500"
  : isReady
- ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500"
- : "bg-amber-500/10 border border-amber-500/20 text-amber-500"
+ ? "text-foreground"
+ : "text-slate-500"
  }`}>
  {request.completed ? (
- <>
- <CheckCircle className="w-3 h-3" />
- Claimed
- </>
+ <>Claimed</>
  ) : isReady ? (
- <>
- <CheckCircle className="w-3 h-3" />
- Ready
- </>
+ <>Ready</>
  ) : (
- <>
- <Clock className="w-3 h-3 animate-pulse" />
- Pending Delay
- </>
+ <>Pending Delay</>
  )}
  </span>
- <p className="text-[10px] text-slate-500 mt-1">
+ <p className="text-sm text-slate-500">
  {request.completed 
  ? "Capital released" 
  : isReady 
@@ -151,18 +137,13 @@ export default function WithdrawalQueue() {
  {!request.completed ? (
  <button
  disabled={!isReady || isPending || claimProgress !== null}
+ className="shrink-0 px-4 py-2 text-sm text-foreground hover:text-slate-500 disabled:opacity-50 disabled:hover:text-foreground transition-colors font-medium border border-foreground/10 dark:border-foreground/20 rounded-lg"
  onClick={() => completeWithdrawal(request.requestId)}
- className="px-5 py-3 rounded-xl font-bold text-xs transition-all shadow-md active:scale-95 disabled:opacity-50 cursor-pointer flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/10"
  >
- {claimProgress === request.requestId ? (
- <span>Releasing Capital...</span>
- ) : (
- <span>Release Capital</span>
- )}
+ {claimProgress === request.requestId ? "Releasing Capital..." : "Release Capital"}
  </button>
  ) : (
- <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-extrabold text-emerald-500 uppercase tracking-wider flex items-center gap-1">
- <CheckCircle className="w-3.5 h-3.5" />
+ <div className="text-sm text-slate-500 font-medium">
  Success
  </div>
  )}
@@ -171,14 +152,14 @@ export default function WithdrawalQueue() {
 
  {/* Progress Slider */}
  {!request.completed && (
- <div className="border-t border-slate-100 dark:border-slate-900 pt-4">
- <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-1.5">
+ <div className="mt-6">
+ <div className="flex justify-between text-xs text-slate-500 mb-2">
  <span>Settlement Window Progress</span>
  <span>{Math.round(progressPercent)}%</span>
  </div>
- <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+ <div className="h-[2px] w-full bg-borderLine overflow-hidden">
  <div 
- className="h-full bg-indigo-500 transition-all duration-500" 
+ className="h-full bg-foreground transition-all duration-500" 
  style={{ width: `${progressPercent}%` }}
  />
  </div>

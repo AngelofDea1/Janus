@@ -3,7 +3,7 @@
 import React from "react";
 import { useReadContract } from "wagmi";
 import { formatUnits } from "viem";
-import { ShieldCheck, Coins, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { INSURANCE_FUND_ADDRESS, INSURANCE_FUND_ABI } from "@/lib/constants";
 
 export default function InsuranceFundDisplay() {
@@ -42,80 +42,85 @@ export default function InsuranceFundDisplay() {
  : "100.0";
 
  return (
- <div className="bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl relative animate-in fade-in slide-in-from-bottom-2 duration-300">
+ <div className="space-y-16">
  
- {/* Background radial highlight */}
- <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-
- <div className="flex items-start justify-between mb-6">
+ <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
  <div>
- <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">
- <span>Sovereign Exploit Insurance Reserve</span>
+ <h3 className="font-heading font-medium text-xl text-foreground mb-1">
+ Sovereign Exploit Insurance Reserve
  </h3>
- <p className="text-xs text-slate-500 mt-0.5">
+ <p className="text-sm text-slate-500">
  5% of all performance fees are automatically deposited here to secure funds against systemic DeFi risks.
  </p>
  </div>
  </div>
 
- <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
- <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/80">
- <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block mb-1">
+ <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+ <div>
+ <span className="text-xs font-medium uppercase tracking-widest text-slate-500 block mb-2">
  Total Fund Reserve
  </span>
- <span className="text-xl font-black text-slate-900 dark:text-white">
+ <div className="flex items-baseline gap-2">
+ <span className="text-3xl font-heading font-medium text-foreground">
  {insuredAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
  </span>
- <span className="text-[10px] font-bold text-slate-400 block mt-0.5">USDC</span>
+ <span className="text-sm text-slate-500">USDC</span>
+ </div>
  </div>
 
- <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/80">
- <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block mb-1">
+ <div>
+ <span className="text-xs font-medium uppercase tracking-widest text-slate-500 block mb-2">
  Yield Coverage Ratio
  </span>
- <span className={`text-xl font-black ${Number(coverageRatio) > 80 ? 'text-emerald-500' : 'text-amber-500'}`}>
+ <div className="flex items-baseline gap-2">
+ <span className="text-3xl font-heading font-medium text-foreground">
  {coverageRatio}%
  </span>
- <span className="text-[10px] font-bold text-slate-400 block mt-0.5">
+ <span className="text-sm text-slate-500">
  {Number(coverageRatio) > 80 ? 'Solvent' : 'Warning'}
  </span>
  </div>
+ </div>
 
- <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/80">
- <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block mb-1">
+ <div>
+ <span className="text-xs font-medium uppercase tracking-widest text-slate-500 block mb-2">
  Historical Claims
  </span>
- <span className="text-xl font-black text-slate-700 dark:text-slate-300">
+ <div className="flex items-baseline gap-2">
+ <span className="text-3xl font-heading font-medium text-foreground">
  {claimedAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
  </span>
- <span className="text-[10px] font-bold text-slate-400 block mt-0.5">USDC Disbursed</span>
+ <span className="text-sm text-slate-500">USDC</span>
+ </div>
  </div>
 
- <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/80">
- <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block mb-1">
+ <div>
+ <span className="text-xs font-medium uppercase tracking-widest text-slate-500 block mb-2">
  Available Capital
  </span>
- <span className="text-xl font-black text-indigo-500">
+ <div className="flex items-baseline gap-2">
+ <span className="text-3xl font-heading font-medium text-foreground">
  {availableAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
  </span>
- <span className="text-[10px] font-bold text-slate-400 block mt-0.5">USDC Liquid</span>
+ <span className="text-sm text-slate-500">USDC</span>
+ </div>
  </div>
  </div>
 
- <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center justify-between gap-4">
- <div className="flex items-center gap-2">
- <span>Capital Shield Fully Collateralized: Protecting deposits up to the $10,000,000 Beta cap limit. Users can submit claims to be reimbursed from this pool.</span>
- </div>
+ <div className="pt-8 border-t border-borderLine flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+ <p className="text-sm text-slate-500 max-w-2xl">
+ Capital Shield Fully Collateralized: Protecting deposits up to the $10,000,000 Beta cap limit. Users can submit claims to be reimbursed from this pool.
+ </p>
  <a 
  href={`https://testnet.arcscan.app/address/${INSURANCE_FUND_ADDRESS}`}
  target="_blank"
  rel="noreferrer"
- className="flex-shrink-0 flex items-center gap-0.5 text-xs text-emerald-600 hover:text-emerald-500 font-bold uppercase tracking-wider"
+ className="flex-shrink-0 inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-slate-500 transition-colors"
  >
- <span>Verify Reserve</span>
- <ArrowUpRight className="w-3.5 h-3.5" />
+ Verify Reserve <ArrowUpRight className="w-4 h-4" />
  </a>
  </div>
+ 
  </div>
  );
 }

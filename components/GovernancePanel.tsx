@@ -79,77 +79,68 @@ export default function GovernancePanel() {
  };
 
  return (
- <div className="space-y-6">
+ <div className="space-y-16">
  {/* Main Governance UI */}
- <div className="bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl relative animate-in fade-in slide-in-from-bottom-2 duration-300">
- <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
  <div>
- <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">
+ <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-4 mb-8">
+ <div>
+ <h3 className="font-heading font-medium text-xl text-foreground mb-1">
  Timelocked Multi-Sig Governance
  </h3>
- <p className="text-xs text-slate-500 mt-1">
+ <p className="text-sm text-slate-500">
  Enforcing 5-of-9 validator thresholds & 24h execution delay guards for all vault parameter updates.
  </p>
  </div>
- <div className="flex flex-wrap items-center gap-2">
- <div className={`px-3 py-1.5 rounded-full border text-[10px] font-extrabold uppercase tracking-wider ${
- vaultPaused 
- ? 'bg-red-500/10 border-red-500/20 text-red-500' 
- : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
- }`}>
+ <div className="flex items-center gap-3 text-xs uppercase tracking-widest font-medium">
+ <span className={vaultPaused ? 'text-red-500' : 'text-slate-500'}>
  {vaultPaused ? 'Vault Paused' : 'Vault Active'}
- </div>
- <div className="px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-extrabold text-indigo-500 uppercase tracking-wider">
+ </span>
+ <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full" />
+ <span className="text-slate-500">
  {proposalCount ? `Total Proposals: ${proposalCount.toString()}` : 'Active Multi-Sig: 5/9'}
- </div>
+ </span>
  </div>
  </div>
 
- <div className="space-y-4">
+ <div className="space-y-6">
  {proposals.map(proposal => (
  <div 
  key={proposal.id} 
- className="p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/10 hover:border-slate-200 dark:hover:border-slate-800 transition-all"
+ className="border-b border-borderLine pb-6"
  >
- <div className="flex justify-between items-start">
+ <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
  <div>
- <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+ <span className="text-xs uppercase tracking-widest text-slate-500 font-medium block mb-2">
  Proposal #{proposal.id}
  </span>
- <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-2">
+ <h4 className="text-base font-medium text-foreground mb-1">
  {proposal.type}
  </h4>
- <p className="text-xs text-slate-500 mt-1 font-mono break-all">
+ <p className="text-sm text-slate-500 font-mono break-all">
  Target: {proposal.target} | Payload: {proposal.payload}
  </p>
  </div>
 
- <div className="text-right">
- <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider ${
- proposal.status === "executed"
- ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500"
- : proposal.status === "queued"
- ? "bg-amber-500/10 border border-amber-500/20 text-amber-500"
- : "bg-indigo-500/10 border border-indigo-500/20 text-indigo-500"
- }`}>
+ <div className="md:text-right">
+ <span className="text-xs uppercase tracking-widest font-medium text-slate-500 block mb-2">
  {proposal.status}
  </span>
- <p className="text-[10px] text-slate-500 mt-1.5">
+ <p className="text-sm text-slate-500">
  ETA: {proposal.eta}
  </p>
  </div>
  </div>
 
  {/* Confirmation Progress */}
- <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-900 flex justify-between items-center gap-4">
- <div className="flex-grow">
- <div className="flex justify-between text-[10px] font-semibold text-slate-500 mb-1">
+ <div className="mt-6 flex flex-col md:flex-row justify-between items-center gap-6">
+ <div className="w-full md:flex-grow">
+ <div className="flex justify-between text-xs text-slate-500 mb-2">
  <span>Signer Confirmations</span>
  <span>{proposal.confirmations} / {proposal.required} Approved</span>
  </div>
- <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+ <div className="h-[2px] w-full bg-borderLine overflow-hidden">
  <div 
- className="h-full bg-indigo-500 transition-all duration-500" 
+ className="h-full bg-foreground transition-all duration-500" 
  style={{ width: `${(proposal.confirmations / proposal.required) * 100}%` }}
  />
  </div>
@@ -158,10 +149,10 @@ export default function GovernancePanel() {
  {proposal.status === "pending-approvals" && (
  <button
  onClick={() => handleConfirm(proposal.id)}
- className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/10 active:scale-95 cursor-pointer flex items-center gap-1"
+ className="shrink-0 px-4 py-2 text-sm text-foreground hover:text-slate-500 transition-colors flex items-center gap-2 font-medium"
  >
- <span>Approve Proposal</span>
- <ArrowRight className="w-3.5 h-3.5" />
+ <span>Approve</span>
+ <ArrowRight className="w-4 h-4" />
  </button>
  )}
  </div>
@@ -171,12 +162,12 @@ export default function GovernancePanel() {
  </div>
 
  {/* Security Features Breakdown */}
- <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-3xl p-8 shadow-xl relative animate-in fade-in slide-in-from-bottom-2 duration-300">
- <h3 className="text-lg font-extrabold mb-6 text-slate-900 dark:text-white">
+ <div>
+ <h3 className="text-xl font-heading font-medium text-foreground mb-6">
  Institutional Security Architecture
  </h3>
  
- <div className="grid sm:grid-cols-2 gap-6">
+ <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
  {[
  { title: '5-of-9 Multi-Sig', desc: 'Critical decisions and emergency pauses require majority approval across distributed keys.' },
  { title: '24h Timelock', desc: 'All parameter changes enforce a rigid 24-hour execution delay.' },
@@ -185,9 +176,9 @@ export default function GovernancePanel() {
  { title: 'Vault TVL Caps', desc: 'Maximum 10M USDC TVL cap explicitly limits concentration risk during the testnet beta.' },
  { title: 'Compliance Audit Trail', desc: 'Every administrative transaction and harvest is logged cryptographically on-chain.' },
  ].map((feature) => (
- <div key={feature.title} className="p-4 rounded-2xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100 dark:border-slate-800/50">
- <div className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-1">{feature.title}</div>
- <div className="text-xs text-slate-500 leading-relaxed">{feature.desc}</div>
+ <div key={feature.title}>
+ <div className="font-medium text-sm text-foreground mb-2">{feature.title}</div>
+ <div className="text-sm text-slate-500 leading-relaxed">{feature.desc}</div>
  </div>
  ))}
  </div>
