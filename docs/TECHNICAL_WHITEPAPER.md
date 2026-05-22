@@ -14,7 +14,7 @@ Janus is a non-custodial, ERC-4626 standard yield vault implementing automated c
 
 ### 1.1 Background
 
-Perpetual futures markets have grown to $61.8 trillion in annual trading volume (2025). These derivatives use funding rates—periodic payments between long and short traders—to anchor perpetual prices to spot markets.
+Perpetual futures markets have grown to $61.8 trillion in annual trading volume (2025). These derivatives use funding ratesperiodic payments between long and short tradersto anchor perpetual prices to spot markets.
 
 When funding rates diverge across protocols, arbitrage opportunities emerge. Traditional finance has exploited basis trading for decades; Janus brings this strategy to DeFi with full automation.
 
@@ -51,7 +51,7 @@ Janus automates funding rate arbitrage through:
 ```solidity
 contract JanusVault is ERC4626, Ownable {
  // ERC-20 USDC asset
- // User deposits → receive JANUS shares
+ // User deposits  receive JANUS shares
  // Shares represent proportional vault ownership
  // Yield compounds automatically
 }
@@ -110,64 +110,64 @@ contract JanusInsuranceFund {
 ### 2.2 Keeper Bot Architecture
 
 ```
-┌─────────────────────────┐
-│ Keeper Bot (Node.js) │
-├─────────────────────────┤
-│ 1. Monitor Layer │
-│ - Fetch funding │
-│ rates │
-│ - Cache in Redis │
-│ - 30s polling │
-├─────────────────────────┤
-│ 2. Decision Engine │
-│ - Find spreads │
-│ - Score │
-│ opportunities │
-│ - Calculate size │
-├─────────────────────────┤
-│ 3. Execution Layer │
-│ - Open positions │
-│ - Close positions │
-│ - Rebalance │
-├─────────────────────────┤
-│ 4. Risk Management │
-│ - Monitor leverage │
-│ - Check liquidity │
-│ - Alert on issues │
-└─────────────────────────┘
- ↓
- ┌──────────┐
- │ Arc L1 │
- └──────────┘
+
+ Keeper Bot (Node.js) 
+
+ 1. Monitor Layer 
+ - Fetch funding 
+ rates 
+ - Cache in Redis 
+ - 30s polling 
+
+ 2. Decision Engine 
+ - Find spreads 
+ - Score 
+ opportunities 
+ - Calculate size 
+
+ 3. Execution Layer 
+ - Open positions 
+ - Close positions 
+ - Rebalance 
+
+ 4. Risk Management 
+ - Monitor leverage 
+ - Check liquidity 
+ - Alert on issues 
+
+ 
+ 
+  Arc L1 
+ 
 ```
 
 ### 2.3 Data Flow
 
 ```
 User Deposit (USDC)
- ↓
+ 
 JanusVault.deposit() 
- ↓
+ 
 Mint JANUS shares 
- ↓
+ 
 Keeper Bot monitors funding rates
- ↓
+ 
 Spread detected (e.g., 0.03%)
- ↓
+ 
 Open market-neutral position:
  - SHORT on high-rate protocol
  - LONG on low-rate protocol
- ↓
+ 
 Collect funding payments (every 8h)
- ↓
+ 
 Close position when spread disappears
- ↓
+ 
 Harvest yield via harvestYield()
- ↓
+ 
 Yield compounds in vault
- ↓
+ 
 User can withdraw (2-day settlement)
- ↓
+ 
 Shares burn, USDC transferred back
 ```
 
@@ -272,10 +272,10 @@ If funding rate = +0.05% per 8 hours:
 
 ### 5.2 Economic Security
 
-- **Insurance Fund**: 5% of fees → exploit protection
-- **Vault Caps**: Max $10M TVL → reduces concentration risk
-- **Withdrawal Delays**: 2-day settlement → prevents bank runs
-- **Audit Trail**: All actions logged on-chain → verifiable
+- **Insurance Fund**: 5% of fees  exploit protection
+- **Vault Caps**: Max $10M TVL  reduces concentration risk
+- **Withdrawal Delays**: 2-day settlement  prevents bank runs
+- **Audit Trail**: All actions logged on-chain  verifiable
 
 ### 5.3 Process Security
 

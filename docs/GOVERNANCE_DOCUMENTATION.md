@@ -99,15 +99,15 @@ Mandate a waiting period before critical parameter changes take effect.
 
 ```
 Day 1: Multisig approves proposal (5-of-9 vote)
- ↓
+ 
  Timelock starts (24-hour counter)
- ↓
+ 
  Users see proposal + can withdraw
  
 Day 2: 24 hours elapsed
- ↓
+ 
  Proposal can now be executed
- ↓
+ 
  Parameters change in vault
 ```
 
@@ -286,13 +286,13 @@ Monday: Timelock expires
 - Distributed governance
 
 ```
-Month 0: Founder proposes → Multisig approves → Execute
+Month 0: Founder proposes  Multisig approves  Execute
  (centralized but transparent)
 
-Month 7: Founder proposes → Multisig approves → Token holders vote → Execute
+Month 7: Founder proposes  Multisig approves  Token holders vote  Execute
  (hybrid governance)
 
-Month 13: Token holders propose → Token holders vote → Execute
+Month 13: Token holders propose  Token holders vote  Execute
  (full decentralization)
 ```
 
@@ -403,7 +403,7 @@ Janus governance is designed to be:
 
 1. **Safe**: Multiple signers, timelock delays, insurance fund
 2. **Transparent**: Everything visible on-chain
-3. **Decentralizing**: Path from founder → multisig → community DAO
+3. **Decentralizing**: Path from founder  multisig  community DAO
 4. **User-Friendly**: Users understand what's happening and can always exit
 5. **Trustworthy**: Actions are verifiable, reversible, and accountable
 

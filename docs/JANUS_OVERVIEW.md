@@ -42,17 +42,17 @@ Perpetual futures have "funding rates" - payments between long and short traders
 
 ```
 User deposits USDC
- ↓
+ 
 Receives JANUS shares (ERC-4626)
- ↓
+ 
 Keeper bot finds funding rate spreads
- ↓
+ 
 Opens market-neutral positions
- ↓
+ 
 Collects funding payments every 8 hours
- ↓
+ 
 Yield automatically compounds
- ↓
+ 
 User can withdraw anytime (2-day settlement)
 ```
 

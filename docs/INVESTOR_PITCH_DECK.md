@@ -13,7 +13,7 @@
 ```
 Traditional Staking: 4% APY (boring, low risk)
 Funding Rate Arbitrage: 30% APY (complex, institutional only)
- ↑
+ 
  JANUS FILLS THIS GAP
 ```
 
@@ -56,19 +56,19 @@ Net 6-month: $1,280
 
 ### Three Converging Forces
 
-#### 1⃣ Arc L1 Launching (Q2 2026)
+#### 1 Arc L1 Launching (Q2 2026)
 - **Institutional backing**: BlackRock, Goldman Sachs testing
 - **Sub-cent gas**: $0.01 vs $200 on Ethereum
 - **USDC-native**: No wrapped tokens
 - **Clean slate**: Early ecosystem advantage
 
-#### 2⃣ MiCA Compliance Deadline (July 2026)
+#### 2 MiCA Compliance Deadline (July 2026)
 - **EU regulation**: Crypto-asset service providers must comply
 - **Institutional demand**: Funds need compliant yield products
 - **First-mover advantage**: We're built compliant from Day 1
 - **Regulatory moat**: Our governance structure prevents future problems
 
-#### 3⃣ Stablecoin Expansion
+#### 3 Stablecoin Expansion
 - **$75B USDC** circulating (up from $30B in 2023)
 - **$295B+ stablecoins** total market cap
 - **Institutions allocating**: BlackRock, PayPal, Enterprise clients
@@ -86,7 +86,7 @@ Arc + Regulatory Clarity + Capital Searching for Yield = **Winner takes all the 
 #### 1. Institutional-Grade Governance
 - **5-of-9 Multisig**: Can't be rugged by one person
 - **24-hour Timelock**: Users have time to exit on changes
-- **Insurance Fund**: 5% of fees → exploit protection
+- **Insurance Fund**: 5% of fees  exploit protection
 - **On-Chain Audit Trail**: Every action verifiable
 
 #### 2. Technical Moat
@@ -157,7 +157,7 @@ Arc + Regulatory Clarity + Capital Searching for Yield = **Winner takes all the 
 **Fee Structure:**
 - **15% Performance Fee** on profits (industry standard)
 - **1% Management Fee** annually (covers operations)
-- **Example**: $10M TVL × 30% APY = $3M yield → $450K revenue to protocol
+- **Example**: $10M TVL × 30% APY = $3M yield  $450K revenue to protocol
 
 ### Growth Trajectory
 
@@ -311,11 +311,11 @@ Month 10-12: Series A at $20-50M valuation
 #### Upside
 ```
 $5M valuation (today)
-↓
+
 $50M valuation (Series A, 12 months) = 10x
-↓
+
 $500M valuation (Series B, 24 months) = 100x
-↓
+
 $5B valuation (IPO/acquisition, 36 months) = 1000x
 ```
 

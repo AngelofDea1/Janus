@@ -59,10 +59,10 @@
 
 ```
 User reports: "Deposit failed"
-→ Community moderator investigates
-→ Checks RPC, network, gas prices
-→ Responds with troubleshooting steps
-→ Escalates to multisig if necessary
+ Community moderator investigates
+ Checks RPC, network, gas prices
+ Responds with troubleshooting steps
+ Escalates to multisig if necessary
 ```
 
 ### Level 2: Potential Exploit
@@ -73,12 +73,12 @@ User reports: "Deposit failed"
 
 ```
 Security researcher: "Found vulnerability in JanusVault"
-→ Verify vulnerability is real
-→ Multisig votes on emergency pause
-→ Pause executes immediately (no timelock)
-→ Keeper bot stops opening new positions
-→ Users can still withdraw
-→ Investigate, patch, relaunch
+ Verify vulnerability is real
+ Multisig votes on emergency pause
+ Pause executes immediately (no timelock)
+ Keeper bot stops opening new positions
+ Users can still withdraw
+ Investigate, patch, relaunch
 ```
 
 ### Level 3: System Failure
@@ -89,11 +89,11 @@ Security researcher: "Found vulnerability in JanusVault"
 
 ```
 Keeper bot enters infinite loop
-→ Ops team stops bot
-→ Notify multisig of situation
-→ Multisig decides: fix or pause vault
-→ Users notified via Discord
-→ Recovery plan communicated
+ Ops team stops bot
+ Notify multisig of situation
+ Multisig decides: fix or pause vault
+ Users notified via Discord
+ Recovery plan communicated
 ```
 
 ### Emergency Hotline
@@ -217,13 +217,13 @@ A: In normal conditions: No (market-neutral). Extreme conditions: Possibly (1 in
 
 ```
 User question in Discord
- ↓
+ 
 Community moderator responds (if straightforward)
- ↓
+ 
 If technical issue: escalate to ops team
- ↓
+ 
 If governance issue: escalate to multisig
- ↓
+ 
 If emergency: trigger emergency hotline
 ```
 
@@ -282,13 +282,13 @@ If emergency: trigger emergency hotline
 
 ```
 Daily yield collected: $AMOUNT
-↓
+
 Subtracted insurance fund (5%): $AMOUNT_INSURANCE
-↓
+
 Subtracted management fee (1%): $AMOUNT_MGMT
-↓
+
 Split to treasury (remaining): $AMOUNT_TREASURY
-↓
+
 Monthly reconciliation against on-chain records
 ```
 

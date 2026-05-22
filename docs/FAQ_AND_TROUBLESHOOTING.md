@@ -8,7 +8,7 @@
 **A:** Janus is an automated funding rate arbitrage vault on Arc L1. You deposit USDC, and our keeper bot earns 24-50% APY by opening market-neutral positions across perpetual exchanges. You own shares (ERC-4626 standard) and can withdraw anytime after a 2-day settlement period.
 
 ### Q: How much can I make?
-**A:** Depends on market conditions. Historical average: 24-32% APY. We keep 15% as performance fee. You net: ~20-27% APY after fees. Example: $10K deposit → $2-2.7K annual earnings.
+**A:** Depends on market conditions. Historical average: 24-32% APY. We keep 15% as performance fee. You net: ~20-27% APY after fees. Example: $10K deposit  $2-2.7K annual earnings.
 
 ### Q: Is this a scam?
 **A:** No. Janus is fully transparent: (1) Smart contracts are audited, (2) all code is open-source, (3) governance is decentralized with 5-of-9 multisig, (4) insurance fund backs user deposits, (5) keeper bot is registered as ERC-8004 AI agent. Do your own research, but this is legit.
@@ -30,7 +30,7 @@
 3. Collect the spread (risk-free)
 4. Close when spread disappears
 
-Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 8 hours = 32% APY.
+Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 hours = 32% APY.
 
 ### Q: Why is it market-neutral?
 **A:** Your positions offset each other. If BTC goes up 10%, your long makes +$1K and your short loses -$1K (net $0). If BTC goes down 10%, reverse (net still $0). You only make money from the funding rate spread, not from price direction.
@@ -85,7 +85,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ## Fees & Returns
 
 ### Q: What fees does Janus take?
-**A:** Two fees: (1) **15% performance fee** on profits (only if you earn), (2) **1% management fee** annually (covers operations). Example: earn $1,000 → you keep $850 (after 15% performance fee).
+**A:** Two fees: (1) **15% performance fee** on profits (only if you earn), (2) **1% management fee** annually (covers operations). Example: earn $1,000  you keep $850 (after 15% performance fee).
 
 ### Q: Why the 15% performance fee?
 **A:** Industry standard for yield optimization. Aligns incentives: we only make money if you make money. If APY drops to 0%, you pay 0% fee.
