@@ -11,6 +11,8 @@ interface Opportunity {
   projectedAPY: string;
   longExchange: string;
   shortExchange: string;
+  exA: string;
+  exB: string;
 }
 
 export default function MarketMonitor() {
@@ -58,7 +60,7 @@ export default function MarketMonitor() {
             </span>
           </div>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Real-time funding rate arbitrage spreads across Hyperliquid & KuCoin
+            Real-time funding arbitrage across Binance, Bybit, KuCoin, MEXC & Hyperliquid
           </p>
         </div>
         
@@ -86,10 +88,9 @@ export default function MarketMonitor() {
           <thead>
             <tr className="border-b border-borderLine text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
               <th className="py-4 font-semibold">Asset</th>
-              <th className="py-4 font-semibold text-right">Hyperliquid Rate</th>
-              <th className="py-4 font-semibold text-right">KuCoin Rate</th>
+              <th className="py-4 font-semibold text-right">Highest Rate (Short)</th>
+              <th className="py-4 font-semibold text-right">Lowest Rate (Long)</th>
               <th className="py-4 font-semibold text-right">Spread</th>
-              <th className="py-4 font-semibold text-right">Direction</th>
               <th className="py-4 font-semibold text-right text-accent">Proj. APY</th>
             </tr>
           </thead>
@@ -98,16 +99,15 @@ export default function MarketMonitor() {
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="animate-pulse">
                   <td className="py-4"><div className="h-4 w-12 bg-slate-200 dark:bg-slate-800 rounded"></div></td>
-                  <td className="py-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-800 rounded ml-auto"></div></td>
-                  <td className="py-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-800 rounded ml-auto"></div></td>
-                  <td className="py-4"><div className="h-4 w-12 bg-slate-200 dark:bg-slate-800 rounded ml-auto"></div></td>
                   <td className="py-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded ml-auto"></div></td>
+                  <td className="py-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded ml-auto"></div></td>
+                  <td className="py-4"><div className="h-4 w-12 bg-slate-200 dark:bg-slate-800 rounded ml-auto"></div></td>
                   <td className="py-4"><div className="h-4 w-16 bg-accent/20 rounded ml-auto"></div></td>
                 </tr>
               ))
             ) : opportunities.length === 0 && !loading ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-slate-500">
+                <td colSpan={5} className="py-8 text-center text-slate-500">
                   No active spreads found meeting minimum threshold.
                 </td>
               </tr>
@@ -131,22 +131,19 @@ export default function MarketMonitor() {
                     </div>
                     {opp.asset}
                   </td>
-                  <td className="py-4 text-right font-mono text-slate-600 dark:text-slate-300">{opp.exchangeARate}%</td>
-                  <td className="py-4 text-right font-mono text-slate-600 dark:text-slate-300">{opp.exchangeBRate}%</td>
+                  <td className="py-4 text-right">
+                    <div className="font-mono text-slate-600 dark:text-slate-300">{opp.exchangeARate}%</div>
+                    <div className="text-[10px] text-slate-400 uppercase tracking-wide">{opp.exA}</div>
+                  </td>
+                  <td className="py-4 text-right">
+                    <div className="font-mono text-slate-600 dark:text-slate-300">{opp.exchangeBRate}%</div>
+                    <div className="text-[10px] text-slate-400 uppercase tracking-wide">{opp.exB}</div>
+                  </td>
                   <td className="py-4 text-right font-mono font-medium text-foreground">{opp.spread}%</td>
                   <td className="py-4 text-right">
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">
-                        L {opp.longExchange}
-                      </span>
-                      <span className="text-[10px] bg-rose-500/10 text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded border border-rose-500/20">
-                        S {opp.shortExchange}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-4 text-right font-heading font-bold text-accent flex items-center justify-end gap-1">
-                    <TrendingUp className="w-3 h-3" />
-                    {opp.projectedAPY}%
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-accent/10 text-accent font-bold font-mono text-sm border border-accent/20 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+                      {opp.projectedAPY}%
+                    </span>
                   </td>
                 </tr>
               ))
