@@ -115,17 +115,17 @@ export default function MarketMonitor() {
               opportunities.map((opp, idx) => (
                 <tr key={opp.asset} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
                   <td className="py-4 font-bold text-foreground flex items-center gap-2">
-                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-[10px] font-bold shrink-0">
-                      <span className="absolute text-slate-500 dark:text-slate-400 z-0">
-                        {opp.asset.charAt(0)}
-                      </span>
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden shrink-0 shadow-sm border border-borderLine/50 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src={`https://assets.coincap.io/assets/icons/${opp.asset.toLowerCase()}@2x.png`} 
                         alt={opp.asset}
-                        className="w-full h-full object-cover z-10 bg-white dark:bg-transparent"
+                        className="w-full h-full object-cover z-10"
                         onError={(e) => {
-                          e.currentTarget.style.display = 'none';
+                          // Prevent infinite loop if fallback also fails
+                          if (!e.currentTarget.src.includes('ui-avatars')) {
+                            e.currentTarget.src = `https://ui-avatars.com/api/?name=${opp.asset}&background=10b981&color=fff&rounded=true&bold=true&font-size=0.4`;
+                          }
                         }}
                       />
                     </div>
