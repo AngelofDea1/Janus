@@ -19,43 +19,43 @@ export default function DocumentationPage() {
       title: "Protocol Overview",
       description: "Master summary of the Janus architecture and value proposition.",
       icon: <FileText className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/JANUS_OVERVIEW.md"
+      link: "/docs/overview"
     },
     {
       title: "User Guide",
       description: "Step-by-step instructions for depositing, withdrawing, and earning.",
       icon: <BookOpen className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/USER_GUIDE.md"
+      link: "/docs/user-guide"
     },
     {
       title: "Technical Whitepaper",
       description: "Deep dive into the smart contracts, keeper bots, and arbitrage engine.",
       icon: <Shield className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/TECHNICAL_WHITEPAPER.md"
+      link: "/docs/technical-whitepaper"
     },
     {
       title: "Investor Pitch Deck",
       description: "Financial models, TAM, competitive moat, and fundraising details.",
       icon: <Briefcase className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/INVESTOR_PITCH_DECK.md"
+      link: "/docs/investor-pitch-deck"
     },
     {
       title: "Governance Docs",
       description: "5-of-9 Multisig, timelocks, and path to full DAO decentralization.",
       icon: <Users className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/GOVERNANCE_DOCUMENTATION.md"
+      link: "/docs/governance-documentation"
     },
     {
       title: "Operational Manual",
       description: "Day-to-day operations, emergency procedures, and incident response.",
       icon: <Settings className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/OPERATIONAL_MANUAL.md"
+      link: "/docs/operational-manual"
     },
     {
       title: "FAQ & Support",
       description: "Common questions, wallet issues, and support contact information.",
       icon: <HelpCircle className="w-6 h-6 text-indigo-500" />,
-      link: "https://github.com/AngelofDea1/Janus/blob/main/docs/FAQ_AND_TROUBLESHOOTING.md"
+      link: "/docs/faq-and-troubleshooting"
     }
   ];
 
@@ -82,12 +82,10 @@ export default function DocumentationPage() {
         {/* Grid of Docs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {docs.map((doc, idx) => (
-            <a 
+            <Link 
               key={idx} 
               href={doc.link} 
-              target="_blank" 
-              rel="noreferrer"
-              className="group p-6 rounded-3xl bg-white dark:bg-[#0b0e1e] border border-slate-200 dark:border-slate-800/60 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 transition-all hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col h-full"
+              className="group p-6 rounded-3xl bg-white dark:bg-[#0b0e1e] border border-slate-200 dark:border-slate-800/60 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 transition-all hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col h-full cursor-pointer"
             >
               <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {doc.icon}
@@ -101,7 +99,7 @@ export default function DocumentationPage() {
               <div className="mt-6 flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400">
                 Read Document <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 
