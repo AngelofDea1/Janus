@@ -15,6 +15,31 @@ interface Opportunity {
   exB: string;
 }
 
+const CryptoLogo = ({ asset }: { asset: string }) => {
+  const symbol = asset.toLowerCase();
+  const sources = [
+    `https://assets.coincap.io/assets/icons/${symbol}@2x.png`,
+    `https://www.gate.io/images/coin_icon/64/${symbol}.png`,
+    `https://assets.kucoin.com/www/coin/pc/${asset.toUpperCase()}.png`,
+    `https://ui-avatars.com/api/?name=${asset}&background=10b981&color=fff&rounded=true&bold=true&font-size=0.4`
+  ];
+  const [srcIndex, setSrcIndex] = useState(0);
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img 
+      src={sources[srcIndex]} 
+      alt={asset}
+      className="w-full h-full object-cover z-10"
+      onError={() => {
+        if (srcIndex < sources.length - 1) {
+          setSrcIndex(srcIndex + 1);
+        }
+      }}
+    />
+  );
+};
+
 export default function MarketMonitor() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -116,18 +141,7 @@ export default function MarketMonitor() {
                 <tr key={opp.asset} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
                   <td className="py-4 font-bold text-foreground flex items-center gap-2">
                     <div className="relative w-6 h-6 rounded-full overflow-hidden shrink-0 shadow-sm border border-borderLine/50 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src={`https://assets.coincap.io/assets/icons/${opp.asset.toLowerCase()}@2x.png`} 
-                        alt={opp.asset}
-                        className="w-full h-full object-cover z-10"
-                        onError={(e) => {
-                          // Prevent infinite loop if fallback also fails
-                          if (!e.currentTarget.src.includes('ui-avatars')) {
-                            e.currentTarget.src = `https://ui-avatars.com/api/?name=${opp.asset}&background=10b981&color=fff&rounded=true&bold=true&font-size=0.4`;
-                          }
-                        }}
-                      />
+                      <CryptoLogo asset={opp.asset} />
                     </div>
                     {opp.asset}
                   </td>
