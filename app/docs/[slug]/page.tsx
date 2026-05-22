@@ -182,7 +182,7 @@ export default async function DocPage({ params }: PageProps) {
           {/* Main Content Area */}
           <main className="lg:col-span-8 bg-panel border border-borderLine rounded-[32px] p-6 md:p-10 lg:p-12 shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
             <article 
-              className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-heading prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-accent prose-a:font-medium prose-a:underline-offset-4 hover:prose-a:text-accentHover prose-img:rounded-2xl prose-img:border prose-img:border-borderLine prose-img:shadow-sm"
+              className="markdown-content max-w-none"
               dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           </main>
