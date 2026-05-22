@@ -1,431 +1,16 @@
-"use client";
+const fs = require('fs');
+const path = require('path');
 
-import React, { useState, useEffect } from "react";
-import { useAccount, useReadContract, useWriteContract, useBalance, usePublicClient } from "wagmi";
-import { parseUnits, formatUnits, parseAbiItem } from "viem";
-import { 
- Shield, 
- Coins, 
- TrendingUp, 
- ArrowUpRight, 
- ArrowDownLeft,
- Lock, 
- Activity,
- Wallet,
- Check,
- Globe,
- Server,
- Zap,
- Clock
-} from "lucide-react";
-import { VAULT_ADDRESS, USDC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
+const filePath = path.join(__dirname, 'app/app/page.tsx');
+const content = fs.readFileSync(filePath, 'utf8');
+const lines = content.split('\n');
 
-export default function ArbitrageApp() {
- const [depositAmount, setDepositAmount] = useState("");
- const [withdrawShares, setWithdrawShares] = useState("");
- const [transactionSuccess, setTransactionSuccess] = useState(false);
- 
- const [activeTab, setActiveTab] = useState("deposit"); // "deposit" | "withdraw" | "bridge" | "oracle"
- 
- // Circle App Kit Cross-Chain Bridge state
- const [bridgeSourceChain, setBridgeSourceChain] = useState("Base_Sepolia");
- const [bridgeAmount, setBridgeAmount] = useState("");
- const [isBridging, setIsBridging] = useState(false);
- const [bridgeStep, setBridgeStep] = useState(0);
- const [bridgeTxHash, setBridgeTxHash] = useState("");
- 
- const { address: wagmiAddress, isConnected: wagmiIsConnected } = useAccount();
- const [localConnected, setLocalConnected] = useState(false);
- const [localAddress, setLocalAddress] = useState("");
+// Keep everything up to the return statement (line 427 is the start of return)
+// The return starts at line 427, so we keep lines 0 to 426 (which is 427 lines)
+const stateLogic = lines.slice(0, 427).join('\n');
 
- const [mounted, setMounted] = useState(false);
- useEffect(() => {
- setMounted(true);
- if (typeof window !== "undefined") {
- // Auto-initialize simulation connection by default to keep state connected across refreshes
- if (localStorage.getItem("janus_wallet_connected") === null) {
- localStorage.setItem("janus_wallet_connected", "true");
- localStorage.setItem("janus_wallet_address", "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57");
- }
- const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
- const savedAddress = localStorage.getItem("janus_wallet_address") || "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57";
- setLocalConnected(savedConnected);
- setLocalAddress(savedAddress);
- }
- }, []);
-
- const isConnected = wagmiIsConnected || localConnected;
- const address = (wagmiAddress || localAddress) as `0x${string}` | undefined;
-
- const { writeContract, data: hash, isPending } = useWriteContract();
- const publicClient = usePublicClient({ chainId: 5042002 });
-
- const [binanceFunding, setBinanceFunding] = useState<string>("Loading...");
- const [bybitFunding, setBybitFunding] = useState<string>("Loading...");
- const [hypFunding, setHypFunding] = useState<string>("Loading...");
- const [dydxFunding, setDydxFunding] = useState<string>("Loading...");
- const [okxFunding, setOkxFunding] = useState<string>("Loading...");
- const [recentHarvests, setRecentHarvests] = useState<{amount: string, time: string}[]>([]);
-
- useEffect(() => {
- const fetchRates = () => {
- // Binance
- fetch('https://fapi.binance.com/fapi/v1/premiumIndex?symbol=BTCUSDT')
- .then(res => res.json())
- .then(data => {
- if (data && data.lastFundingRate) {
- const percent = (parseFloat(data.lastFundingRate) * 100).toFixed(4);
- setBinanceFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setBinanceFunding("+0.0123% / 8h"));
-
- // Bybit
- fetch('https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT')
- .then(res => res.json())
- .then(data => {
- if (data && data.result && data.result.list && data.result.list[0]) {
- const percent = (parseFloat(data.result.list[0].fundingRate) * 100).toFixed(4);
- setBybitFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setBybitFunding("+0.0118% / 8h"));
- 
- // Hyperliquid
- fetch('https://api.hyperliquid.xyz/info', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ type: 'metaAndAssetCtxs' })
- })
- .then(res => res.json())
- .then(data => {
- if (data && data[1]) {
- const btcCtx = data[1][0];
- if (btcCtx && btcCtx.funding) {
- const percent = (parseFloat(btcCtx.funding) * 100).toFixed(4);
- setHypFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- }
- })
- .catch(() => setHypFunding("+0.0145% / 8h"));
-
- // dYdX
- fetch('https://api.dydx.exchange/v3/markets/BTC-USD')
- .then(res => res.json())
- .then(data => {
- if (data && data.market && data.market.nextFundingRate) {
- const percent = (parseFloat(data.market.nextFundingRate) * 100).toFixed(4);
- setDydxFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setDydxFunding("+0.0098% / 8h"));
-
- // OKX
- fetch('https://www.okx.com/api/v5/public/funding-rate?instId=BTC-USDT-SWAP')
- .then(res => res.json())
- .then(data => {
- if (data && data.data && data.data[0] && data.data[0].fundingRate) {
- const percent = (parseFloat(data.data[0].fundingRate) * 100).toFixed(4);
- setOkxFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setOkxFunding("+0.0105% / 8h"));
- };
-
- fetchRates();
- const interval = setInterval(fetchRates, 5000); // Poll real exchanges every 5 seconds for live monitor updates
- return () => clearInterval(interval);
- }, []);
-
- useEffect(() => {
- if (!publicClient) return;
-
- const fetchLogs = async () => {
- try {
- const blockNumber = await publicClient.getBlockNumber();
- const fromBlock = blockNumber > BigInt(9000) ? blockNumber - BigInt(9000) : BigInt(0);
- const logs = await publicClient.getLogs({
- address: VAULT_ADDRESS,
- event: parseAbiItem('event ArbitrageYieldHarvested(uint256 indexed amount, uint256 totalAssetsAfter)'),
- fromBlock: fromBlock,
- toBlock: 'latest'
- });
- 
- if (logs && logs.length > 0) {
- const recent = logs.reverse().slice(0, 3).map((log, index) => {
- const val = log.args.amount ? parseFloat(formatUnits(log.args.amount, 18)).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "0.00";
- return {
- amount: val,
- time: index === 0 ? "Just now" : index === 1 ? "2 hours ago" : "8 hours ago" 
- };
- });
- setRecentHarvests(recent);
- }
- } catch (e) {
- console.error("Failed to fetch logs", e);
- }
- };
- 
- fetchLogs();
- const interval = setInterval(fetchLogs, 2000);
- return () => clearInterval(interval);
- }, [publicClient]);
-
- // --- Simulation Fallback State (when contract addresses are placeholders) ---
- const isMockMode = (VAULT_ADDRESS as string) === "0x0000000000000000000000000000000000000000";
- const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(5000000000)); // $5,000 mock USDC default
- const [simulationUserBalance, setSimulationUserBalance] = useState(BigInt(0));
- const [simulationUserShares, setSimulationUserShares] = useState(BigInt(0));
- const [simulationTotalAssets, setSimulationTotalAssets] = useState(BigInt(148920000000000)); // $148.92M default pool size
- const [simulationAllowance, setSimulationAllowance] = useState(BigInt(0));
- const [simulationIsMinting, setSimulationIsMinting] = useState(false);
- const [simulationIsPending, setSimulationIsPending] = useState(false);
-
- // Live Yield Compounding Ticker in Simulation Mode to show active yield capture live
- useEffect(() => {
- if (!isMockMode) return;
- const interval = setInterval(() => {
- setSimulationUserBalance((prev) => {
- if (prev === BigInt(0)) return prev;
- // Live visual yield capture tick: compounding micro-USDC values
- return prev + BigInt(3);
- });
- setSimulationTotalAssets((prev) => {
- return prev + BigInt(30);
- });
- }, 1000);
-
- return () => clearInterval(interval);
- }, [isMockMode]);
-
- // --- Smart Contract Reads with Poll Intervals ---
- const { data: totalAssets } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "totalAssets",
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const { data: estimatedAPY } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "estimatedAPY",
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const { data: userBalance } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "userValue",
- args: address ? [address] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const { data: userShares } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "balanceOf",
- args: address ? [address] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const { data: usdcERC20Balance } = useReadContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "balanceOf",
- args: address ? [address] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const { data: usdcAllowance } = useReadContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "allowance",
- args: address ? [address, VAULT_ADDRESS] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- // Since Arc uses USDC natively, we also fetch the native gas balance and use whichever is higher
- const { data: nativeBalanceData } = useBalance({
- address: address,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const usdcBalance = usdcERC20Balance || BigInt(0);
-
- // --- Dynamic Mappings (Real vs. Mock fallback) ---
- const activeUsdcBalance = isMockMode ? simulationUsdcBalance : usdcBalance;
- const activeUserBalance = isMockMode ? simulationUserBalance : userBalance;
- const activeUserShares = isMockMode ? simulationUserShares : userShares;
- const activeTotalAssets = isMockMode ? simulationTotalAssets : totalAssets;
- const activeAllowance = isMockMode ? simulationAllowance : usdcAllowance;
- const activePendingState = isMockMode ? simulationIsPending : isPending;
-
- // --- Faucet Mint Handler ---
- const handleFaucetMint = async () => {
- if (isMockMode) {
- setSimulationIsMinting(true);
- setTimeout(() => {
- setSimulationUsdcBalance((prev) => prev + BigInt(10000000000)); // Add 10,000 mock USDC
- setSimulationIsMinting(false);
- triggerSuccessNotification();
- }, 1000);
- return;
- }
-
- // Real on-chain mint transaction
- writeContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "mint",
- args: [address!, parseUnits("10000", 18)],
- });
- };
-
- const handleBridge = () => {
- if (!bridgeAmount) return;
- setIsBridging(true);
- setBridgeStep(1);
- 
- // Step 1: Approving USDC spent on source chain
- setTimeout(() => {
- setBridgeStep(2);
- // Step 2: CCTP Burning USDC on Source Chain
- setTimeout(() => {
- setBridgeStep(3);
- setBridgeTxHash("0xc3a4f826" + Math.random().toString(16).substr(2, 8) + "da7e82e66b5fc55fa44a44c6f6b");
- // Step 3: Fetching CCTP Attestation & Minting on Arc Testnet
- setTimeout(() => {
- setBridgeStep(4);
- // Step 4: Depositing into Janus Yield Vault
- setTimeout(() => {
- if (isMockMode) {
- const amountBigInt = parseUnits(bridgeAmount, 18);
- setSimulationUsdcBalance(prev => prev + amountBigInt);
- }
- setIsBridging(false);
- setBridgeStep(0);
- setBridgeAmount("");
- setBridgeTxHash("");
- triggerSuccessNotification();
- }, 2000);
- }, 3000);
- }, 2500);
- }, 2000);
- };
-
- // --- Transaction Handlers ---
- const approveUSDC = () => {
- if (!depositAmount) return;
- // USDC uses 6 decimals on Arc Testnet
- const amount = parseUnits(depositAmount, 6);
- 
- if (isMockMode) {
- setSimulationIsPending(true);
- setTimeout(() => {
- setSimulationAllowance(amount);
- setSimulationIsPending(false);
- triggerSuccessNotification();
- }, 1000);
- return;
- }
-
- writeContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "approve",
- args: [VAULT_ADDRESS, amount],
- });
- };
-
- const handleDeposit = async () => {
- if (!depositAmount) return;
- // USDC uses 6 decimals on Arc Testnet
- const amount = parseUnits(depositAmount, 6);
- 
- // Check if approval is needed first
- if (!activeAllowance || activeAllowance < amount) {
- approveUSDC();
- return;
- }
- 
- if (isMockMode) {
- setSimulationIsPending(true);
- setTimeout(() => {
- if (simulationUsdcBalance >= amount) {
- setSimulationUsdcBalance((prev) => prev - amount);
- setSimulationUserBalance((prev) => prev + amount);
- setSimulationUserShares((prev) => prev + amount); // mock ERC-4626 exchange rate
- setSimulationTotalAssets((prev) => prev + amount);
- setDepositAmount("");
- }
- setSimulationIsPending(false);
- triggerSuccessNotification();
- }, 1200);
- return;
- }
-
- writeContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "deposit",
- args: [amount, address!],
- });
- };
-
- const handleWithdraw = async () => {
- if (!withdrawShares) return;
- const sharesAmount = parseUnits(withdrawShares, 6);
-
- if (isMockMode) {
- setSimulationIsPending(true);
- setTimeout(() => {
- const usdcEquivalent = sharesAmount;
- if (simulationUserShares >= sharesAmount) {
- setSimulationUserShares((prev) => prev - sharesAmount);
- setSimulationUserBalance((prev) => prev - usdcEquivalent);
- setSimulationUsdcBalance((prev) => prev + usdcEquivalent);
- setSimulationTotalAssets((prev) => prev - usdcEquivalent);
- setWithdrawShares("");
- }
- setSimulationIsPending(false);
- triggerSuccessNotification();
- }, 1200);
- return;
- }
-
- writeContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "withdraw",
- args: [sharesAmount, address!, address!],
- });
- };
-
- // Helper success toast triggers
- const triggerSuccessNotification = () => {
- setTransactionSuccess(true);
- setTimeout(() => setTransactionSuccess(false), 3000);
- };
-
- // --- Number Formatter ---
- const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
- if (!value) return "0.00";
- return parseFloat(formatUnits(value, decimals)).toLocaleString("en-US", {
- minimumFractionDigits: 2,
- maximumFractionDigits: 2,
- });
- };
-
- return (
-    <div className="min-h-screen bg-transparent text-black dark:text-white font-mono p-4 sm:p-8">
+const newJSX = `
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white font-mono p-4 sm:p-8">
       
       {/* Success Notification */}
       {transactionSuccess && (
@@ -453,7 +38,7 @@ export default function ArbitrageApp() {
             </p>
           </div>
           
-          <div className="mt-4 md:mt-0 px-4 py-2 border border-black dark:border-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 bg-black text-white dark:bg-white dark:text-black">
+          <div className="mt-4 md:mt-0 px-4 py-2 border border-black dark:border-white text-xs font-bold uppercase tracking-widest flex items-center gap-2">
             <span className="w-2 h-2 bg-emerald-500 animate-pulse" />
             <span>Connection Active</span>
           </div>
@@ -462,10 +47,10 @@ export default function ArbitrageApp() {
         {/* Real Live Stats Dashboard Ticker */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border border-black/10 dark:border-white/10">
           {[
-            { label: "Vault APY", val: `${estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(2) : "32.40"}%` },
-            { label: "Total Assets", val: `$${formatNumber(activeTotalAssets)}` },
-            { label: "Your Principal", val: `$${formatNumber(activeUserBalance)}` },
-            { label: "Vault Shares", val: `${formatNumber(activeUserShares, 6)} JANUS` }
+            { label: "Vault APY", val: \`\${estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(2) : "32.40"}%\` },
+            { label: "Total Assets", val: \`$\${formatNumber(activeTotalAssets)}\` },
+            { label: "Your Principal", val: \`$\${formatNumber(activeUserBalance)}\` },
+            { label: "Vault Shares", val: \`\${formatNumber(activeUserShares, 6)} JANUS\` }
           ].map((card, idx) => (
             <div key={idx} className="p-6 border-r border-b lg:border-b-0 border-black/10 dark:border-white/10 last:border-r-0 flex flex-col justify-center">
               <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">
@@ -482,7 +67,7 @@ export default function ArbitrageApp() {
         <div className="grid lg:grid-cols-12 gap-8">
           
           {/* Main Action Panel */}
-          <div className="lg:col-span-8 border border-black/10 dark:border-white/10 p-6 md:p-8 bg-zinc-50 dark:bg-zinc-950">
+          <div className="lg:col-span-8 border border-black/10 dark:border-white/10 p-6 md:p-8">
             {/* Minimalist Tabs */}
             <div className="flex border-b border-black/10 dark:border-white/10 mb-8 overflow-x-auto">
               {[
@@ -494,11 +79,11 @@ export default function ArbitrageApp() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors whitespace-nowrap ${
+                  className={\`px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors whitespace-nowrap \${
                     activeTab === tab.id 
                     ? "bg-black text-white dark:bg-white dark:text-black border-t-2 border-black dark:border-white" 
-                    : "text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 border-t-2 border-transparent"
-                  }`}
+                    : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 border-t-2 border-transparent"
+                  }\`}
                 >
                   {tab.label}
                 </button>
@@ -533,7 +118,7 @@ export default function ArbitrageApp() {
                             </button>
                           </div>
                         </div>
-                        <div className="relative border border-black/20 dark:border-white/20 focus-within:border-black dark:focus-within:border-white transition-colors bg-white dark:bg-black">
+                        <div className="relative border border-black/20 dark:border-white/20 focus-within:border-black dark:focus-within:border-white transition-colors">
                           <input
                             type="number"
                             value={depositAmount}
@@ -597,7 +182,7 @@ export default function ArbitrageApp() {
                           <span>Shares_</span>
                           <span>Available: {formatNumber(activeUserShares, 6)}</span>
                         </div>
-                        <div className="relative border border-black/20 dark:border-white/20 focus-within:border-black dark:focus-within:border-white transition-colors bg-white dark:bg-black">
+                        <div className="relative border border-black/20 dark:border-white/20 focus-within:border-black dark:focus-within:border-white transition-colors">
                           <input
                             type="number"
                             value={withdrawShares}
@@ -649,7 +234,7 @@ export default function ArbitrageApp() {
                         <select 
                           value={bridgeSourceChain} 
                           onChange={(e) => setBridgeSourceChain(e.target.value)}
-                          className="w-full px-4 py-3 bg-white dark:bg-black border border-black/20 dark:border-white/20 text-xs font-mono focus:outline-none focus:border-black dark:focus:border-white"
+                          className="w-full px-4 py-3 bg-transparent border border-black/20 dark:border-white/20 text-xs font-mono focus:outline-none focus:border-black dark:focus:border-white"
                         >
                           <option value="Base_Sepolia">BASE SEP</option>
                           <option value="Arbitrum_Sepolia">ARB SEP</option>
@@ -673,7 +258,7 @@ export default function ArbitrageApp() {
                         onChange={(e) => setBridgeAmount(e.target.value)}
                         placeholder="0.00"
                         disabled={isBridging}
-                        className="w-full px-4 py-4 bg-white dark:bg-black border border-black/20 dark:border-white/20 focus:outline-none text-xl font-mono disabled:opacity-50"
+                        className="w-full px-4 py-4 bg-transparent border border-black/20 dark:border-white/20 focus:outline-none text-xl font-mono disabled:opacity-50"
                       />
                     </div>
 
@@ -686,7 +271,7 @@ export default function ArbitrageApp() {
                     </button>
                     
                     {isBridging && (
-                      <div className="p-4 border border-black/20 dark:border-white/20 text-xs font-mono space-y-2 mt-4 bg-white dark:bg-black">
+                      <div className="p-4 border border-black/20 dark:border-white/20 text-xs font-mono space-y-2 mt-4">
                         <div className="flex justify-between text-[10px] text-zinc-500 mb-4 border-b border-black/10 dark:border-white/10 pb-2">
                           <span>STATUS</span><span>ACTIVE</span>
                         </div>
@@ -697,7 +282,7 @@ export default function ArbitrageApp() {
                           { step: 4, label: "Mint Dest" }
                         ].map((s) => (
                           <div key={s.step} className="flex items-center gap-3">
-                            <span className={`text-[10px] ${bridgeStep >= s.step ? "text-emerald-500" : "text-zinc-500"}`}>
+                            <span className={\`text-[10px] \${bridgeStep >= s.step ? "text-emerald-500" : "text-zinc-500"}\`}>
                               {bridgeStep > s.step ? "[DONE]" : bridgeStep === s.step ? "[BUSY]" : "[WAIT]"}
                             </span>
                             <span className={bridgeStep === s.step ? "animate-pulse" : ""}>{s.label}</span>
@@ -718,7 +303,7 @@ export default function ArbitrageApp() {
                       </div>
                     </div>
 
-                    <div className="border border-black/20 dark:border-white/20 bg-white dark:bg-black">
+                    <div className="border border-black/20 dark:border-white/20">
                       <div className="grid grid-cols-2 text-[10px] font-bold text-zinc-500 uppercase tracking-widest p-3 border-b border-black/20 dark:border-white/20 bg-black/5 dark:bg-white/5">
                         <span>Exchange</span>
                         <span className="text-right">Rate (8H)</span>
@@ -732,7 +317,7 @@ export default function ArbitrageApp() {
                       ].map((feed, idx) => (
                         <div key={idx} className="grid grid-cols-2 p-3 text-xs border-b border-black/10 dark:border-white/10 last:border-0 hover:bg-black/5 dark:hover:bg-white/5">
                           <span className="font-bold">{feed.name}</span>
-                          <span className={`text-right ${feed.val.includes('-') ? "text-red-500" : "text-emerald-500"}`}>
+                          <span className={\`text-right \${feed.val.includes('-') ? "text-red-500" : "text-emerald-500"}\`}>
                             {feed.val}
                           </span>
                         </div>
@@ -741,7 +326,7 @@ export default function ArbitrageApp() {
 
                     <div className="mt-8">
                        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Keeper Events</h3>
-                       <div className="border border-black/20 dark:border-white/20 text-xs bg-white dark:bg-black">
+                       <div className="border border-black/20 dark:border-white/20 text-xs">
                           {recentHarvests.length > 0 ? recentHarvests.map((harvest, idx) => (
                             <div key={idx} className="flex justify-between p-3 border-b border-black/10 dark:border-white/10 last:border-0">
                               <span>HARVEST_</span>
@@ -760,7 +345,7 @@ export default function ArbitrageApp() {
 
           {/* Sidebar Info Panel */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="border border-black/10 dark:border-white/10 p-6 bg-zinc-50 dark:bg-zinc-950">
+            <div className="border border-black/10 dark:border-white/10 p-6 bg-black/5 dark:bg-white/5">
               <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">Active Position</h4>
               <div className="space-y-4">
                 <div className="flex justify-between items-end border-b border-black/10 dark:border-white/10 pb-2">
@@ -793,3 +378,7 @@ export default function ArbitrageApp() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync(filePath, stateLogic + '\n' + newJSX);
+console.log('Successfully updated page.tsx with brutalist layout.');

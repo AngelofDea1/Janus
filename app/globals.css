@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
 @config "../tailwind.config.ts";
 
@@ -6,17 +6,17 @@
 
 @layer base {
  :root {
- --theme-bg: 248, 250, 252; /* Slate-50: rgb(248, 250, 252) */
- --theme-foreground: 15, 23, 42; /* Slate-900: rgb(15, 23, 42) */
- --theme-panel: 255, 255, 255; /* White Panel */
- --theme-accent: 79, 70, 229; /* Indigo-600 RGB */
+ --theme-bg: 255, 255, 255; /* Pure White */
+ --theme-foreground: 0, 0, 0; /* Pure Black */
+ --theme-panel: 250, 250, 250; /* Light Gray Panel */
+ --theme-accent: 15, 23, 42; /* Slate-900 */
  }
 
  .dark {
- --theme-bg: 6, 8, 20; /* Clinical dark blue-slate [#060814]: rgb(6, 8, 20) */
- --theme-foreground: 241, 245, 249; /* Slate-100: rgb(241, 245, 249) */
- --theme-panel: 11, 15, 30; /* Dark slate panel */
- --theme-accent: 99, 102, 241; /* Indigo-500 RGB */
+ --theme-bg: 0, 0, 0; /* Pure Black */
+ --theme-foreground: 255, 255, 255; /* Pure White */
+ --theme-panel: 9, 9, 11; /* Zinc-950 */
+ --theme-accent: 255, 255, 255; /* Pure White Accent */
  }
 }
 
@@ -26,11 +26,20 @@ body {
  -moz-osx-font-smoothing: grayscale;
  background-color: rgb(var(--theme-bg));
  color: rgb(var(--theme-foreground));
+ /* Grid pattern background for brutalist feel */
+ background-image: 
+   linear-gradient(to right, rgba(var(--theme-foreground), 0.05) 1px, transparent 1px),
+   linear-gradient(to bottom, rgba(var(--theme-foreground), 0.05) 1px, transparent 1px);
+ background-size: 40px 40px;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
  font-family: 'Space Grotesk', sans-serif;
  font-feature-settings: "ss01" on, "ss02" on;
+}
+
+.font-mono {
+ font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* Hide input number arrows/spinners */
@@ -43,30 +52,10 @@ input[type=number] {
  -moz-appearance: textfield;
 }
 
-@keyframes float-slow {
- 0%, 100% {
- transform: translateY(0px) scale(1);
- }
- 50% {
- transform: translateY(-30px) scale(1.05);
- }
-}
-
-@keyframes float-reverse {
- 0%, 100% {
- transform: translateY(0px) scale(1.05);
- }
- 50% {
- transform: translateY(30px) scale(1);
- }
-}
-
-.animate-float-slow {
- animation: float-slow 20s ease-in-out infinite;
-}
-
-.animate-float-reverse {
- animation: float-reverse 25s ease-in-out infinite;
+/* Brutalist sharp focus styles */
+*:focus-visible {
+ outline: 2px solid rgb(var(--theme-foreground));
+ outline-offset: 2px;
 }
 
 /* Markdown Content Styling */
@@ -106,10 +95,10 @@ input[type=number] {
 
 .markdown-content p {
  margin-bottom: 1.25rem;
- color: #475569; /* Slate-600 */
+ color: #52525b; /* Zinc-600 */
 }
 .dark .markdown-content p {
- color: #cbd5e1; /* Slate-300 */
+ color: #a1a1aa; /* Zinc-400 */
 }
 
 .markdown-content strong {
@@ -122,84 +111,71 @@ input[type=number] {
 }
 
 .markdown-content a {
- color: rgb(var(--theme-accent));
+ color: rgb(var(--theme-foreground));
  font-weight: 600;
- text-decoration: none;
+ text-decoration: underline;
+ text-decoration-thickness: 1px;
+ text-underline-offset: 4px;
  transition: opacity 0.2s;
 }
 .markdown-content a:hover {
- opacity: 0.8;
- text-decoration: underline;
+ opacity: 0.7;
 }
 
 .markdown-content ul {
- list-style-type: disc;
+ list-style-type: square; /* Brutalist square bullets */
  padding-left: 1.5rem;
  margin-bottom: 1.25rem;
 }
 
 .markdown-content ol {
- list-style-type: decimal;
+ list-style-type: decimal-leading-zero;
  padding-left: 1.5rem;
  margin-bottom: 1.25rem;
 }
 
 .markdown-content li {
  margin-bottom: 0.5rem;
- color: #475569;
+ color: #52525b;
 }
 .dark .markdown-content li {
- color: #cbd5e1;
+ color: #a1a1aa;
 }
 
 .markdown-content blockquote {
- border-left: 4px solid rgb(var(--theme-accent));
+ border-left: 4px solid rgb(var(--theme-foreground));
  padding: 1rem 1.5rem;
  margin: 1.5rem 0;
- border-radius: 0.75rem;
- background-color: rgba(var(--theme-accent), 0.04);
- color: #334155;
-}
-.dark .markdown-content blockquote {
- background-color: rgba(var(--theme-accent), 0.08);
- color: #e2e8f0;
+ background-color: rgba(var(--theme-foreground), 0.03);
+ color: inherit;
+ font-weight: 500;
 }
 
 .markdown-content blockquote p {
  margin-bottom: 0;
- font-style: italic;
 }
 
 .markdown-content code {
- font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+ font-family: 'JetBrains Mono', monospace;
  font-size: 0.85em;
  padding: 0.2rem 0.4rem;
- border-radius: 0.375rem;
- background-color: #f1f5f9;
- color: #6366f1;
-}
-.dark .markdown-content code {
- background-color: #1e1e2f;
- color: #818cf8;
+ background-color: rgba(var(--theme-foreground), 0.05);
+ border: 1px solid rgba(var(--theme-foreground), 0.1);
+ color: inherit;
 }
 
 .markdown-content pre {
  margin: 1.5rem 0;
  padding: 1.25rem;
- border-radius: 1rem;
- background-color: #f8fafc;
- border: 1px solid #e2e8f0;
+ background-color: rgba(var(--theme-foreground), 0.02);
+ border: 1px solid rgba(var(--theme-foreground), 0.1);
  overflow-x: auto;
-}
-.dark .markdown-content pre {
- background-color: #060814;
- border-color: #1e293b;
 }
 
 .markdown-content pre code {
  background-color: transparent;
  padding: 0;
- border-radius: 0;
+ border: none;
  color: inherit;
  font-size: 0.9em;
 }
@@ -207,8 +183,5 @@ input[type=number] {
 .markdown-content hr {
  margin: 2rem 0;
  border: 0;
- border-top: 1px solid #e2e8f0;
-}
-.dark .markdown-content hr {
- border-top-color: #1e293b;
+ border-top: 1px solid rgba(var(--theme-foreground), 0.1);
 }

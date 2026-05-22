@@ -4,144 +4,137 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Sun, Moon, Shield, Menu, X } from "lucide-react";
+import { Sun, Moon, Square, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 
 export default function Navbar() {
- const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
- const [mounted, setMounted] = useState(false);
- const pathname = usePathname();
- const { theme, setTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
 
- // Ensure hydration matches server
- useEffect(() => {
- setMounted(true);
- }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
- const navLinks = [
- { name: "Arbitrage Vault", path: "/app" },
- { name: "Governance & Risk", path: "/governance" },
- { name: "Analytics & Stats", path: "/analytics" },
- { name: "Documentation", path: "/docs" }
- ];
+  const navLinks = [
+    { name: "VAULT_TERMINAL", path: "/app" },
+    { name: "GOVERNANCE", path: "/governance" },
+    { name: "ANALYTICS", path: "/analytics" },
+    { name: "DOCS", path: "/docs" }
+  ];
 
- return (
- <nav className="sticky top-0 w-full bg-white/80 dark:bg-[#060814]/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/40 z-50 transition-colors">
- <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
- 
- {/* Brand Logo */}
- <Link href="/" className="flex items-center gap-3 group cursor-pointer">
- <div className="relative w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/10 group-hover:scale-105 transition-all duration-300">
- <Shield className="w-5.5 h-5.5 text-white" />
- <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
- </div>
- <div>
- <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">
- JANUS
- </span>
- <span className="text-[10px] block text-indigo-600 dark:text-indigo-400 font-bold tracking-widest uppercase">
- Arbitrage Protocol
- </span>
- </div>
- </Link>
+  return (
+    <nav className="sticky top-0 w-full bg-white dark:bg-black border-b border-black/10 dark:border-white/10 z-50">
+      <div className="max-w-[1400px] mx-auto flex items-center justify-between border-x border-black/10 dark:border-white/10 h-16">
+        
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center h-full px-6 border-r border-black/10 dark:border-white/10 group bg-black text-white dark:bg-white dark:text-black hover:invert transition-all duration-0">
+          <div className="flex flex-col justify-center">
+            <span className="font-heading font-bold text-xl tracking-tighter uppercase leading-none">
+              JANUS
+            </span>
+            <span className="font-mono text-[9px] uppercase tracking-widest mt-0.5">
+              Protocol
+            </span>
+          </div>
+        </Link>
 
- {/* Desktop Nav Links */}
- <div className="hidden md:flex items-center gap-1 bg-slate-100/60 dark:bg-slate-900/60 p-1.5 rounded-full border border-slate-200 dark:border-slate-800/60 transition-colors">
- {navLinks.map((link) => {
- const isActive = pathname === link.path;
- return (
- <Link
- key={link.path}
- href={link.path}
- className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
- isActive
- ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/10"
- : "text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-200"
- }`}
- >
- {link.name}
- </Link>
- );
- })}
- </div>
+        {/* Desktop Nav Links */}
+        <div className="hidden md:flex h-full">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.path;
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={`px-6 flex items-center border-r border-black/10 dark:border-white/10 text-xs font-mono tracking-widest uppercase transition-colors duration-0 ${
+                  isActive
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
+        </div>
 
- {/* Action Controls */}
- <div className="hidden md:flex items-center gap-4">
- {/* Faucet Link */}
- <a
- href="https://faucet.circle.com"
- target="_blank"
- rel="noreferrer"
- className="px-4 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-500/25 transition-all flex items-center gap-1.5"
- >
- <span className="relative flex h-2 w-2">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
- <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
- </span>
- <span>Arc Faucet</span>
- </a>
- 
- {/* Light/Dark Toggle Switch */}
- {mounted && (
- <button
- onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
- aria-label="Toggle Theme"
- className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 transition-all shadow-sm active:scale-95"
- >
- {theme === "dark" ? (
- <Sun className="w-4.5 h-4.5 text-indigo-400" />
- ) : (
- <Moon className="w-4.5 h-4.5 text-zinc-900" />
- )}
- </button>
- )}
- 
- {/* Sleek Connect Button */}
- <ConnectButton showBalance={false} chainStatus="none" accountStatus="address" />
- </div>
+        <div className="flex-grow hidden md:block"></div>
 
- {/* Mobile Menu Trigger */}
- <div className="flex md:hidden items-center gap-3">
- {mounted && (
- <button
- onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
- >
- {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
- </button>
- )}
- <button
- className="p-2 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-700 dark:text-slate-300"
- onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
- >
- {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
- </button>
- </div>
- </div>
+        {/* Action Controls */}
+        <div className="hidden md:flex items-center h-full">
+          <a
+            href="https://faucet.circle.com"
+            target="_blank"
+            rel="noreferrer"
+            className="h-full px-6 flex items-center gap-2 border-l border-black/10 dark:border-white/10 text-xs font-mono font-bold hover:bg-emerald-500 hover:text-white transition-colors duration-0 dark:hover:bg-emerald-400 dark:hover:text-black"
+          >
+            <span className="w-2 h-2 bg-emerald-500 rounded-none border border-black dark:border-white animate-pulse" />
+            FAUCET
+          </a>
+          
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="Toggle Theme"
+              className="h-full px-5 border-l border-black/10 dark:border-white/10 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-0 flex items-center justify-center"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4" strokeWidth={2} />
+              ) : (
+                <Moon className="w-4 h-4" strokeWidth={2} />
+              )}
+            </button>
+          )}
+          
+          <div className="h-full flex items-center px-4 border-l border-black/10 dark:border-white/10">
+            <ConnectButton showBalance={false} chainStatus="none" accountStatus="address" />
+          </div>
+        </div>
 
- {/* Mobile Menu Dropdown */}
- {mobileMenuOpen && (
- <div className="fixed inset-0 top-20 bg-white dark:bg-[#060814] z-40 md:hidden p-6 flex flex-col gap-6 animate-in fade-in slide-in-from-top-4 duration-300 border-t border-slate-200 dark:border-slate-800/40">
- {navLinks.map((link) => {
- const isActive = pathname === link.path;
- return (
- <Link
- key={link.path}
- href={link.path}
- onClick={() => setMobileMenuOpen(false)}
- className={`text-lg font-bold py-2 border-b border-slate-100 dark:border-slate-900 ${
- isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-600 dark:text-slate-400"
- }`}
- >
- {link.name}
- </Link>
- );
- })}
- <div className="pt-4 self-start w-full">
- <ConnectButton showBalance={false} chainStatus="none" accountStatus="address" />
- </div>
- </div>
- )}
- </nav>
- );
+        {/* Mobile Menu Trigger */}
+        <div className="flex md:hidden items-center h-full">
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="h-full px-4 border-l border-black/10 dark:border-white/10 flex items-center justify-center"
+            >
+              {theme === "dark" ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
+            </button>
+          )}
+          <button
+            className="h-full px-4 border-l border-black/10 dark:border-white/10 flex items-center justify-center"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-b border-black/10 dark:border-white/10 bg-white dark:bg-black border-x border-black/10 dark:border-white/10 max-w-[1400px] mx-auto">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.path;
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block px-6 py-4 border-b border-black/10 dark:border-white/10 font-mono text-sm uppercase tracking-widest ${
+                  isActive ? "bg-black text-white dark:bg-white dark:text-black" : "hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
+          <div className="p-6">
+            <ConnectButton showBalance={false} chainStatus="none" accountStatus="address" />
+          </div>
+        </div>
+      )}
+    </nav>
+  );
 }

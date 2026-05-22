@@ -9,9 +9,20 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      animation: {
-        'pulse': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      fontFamily: {
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+        sans: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['"Space Grotesk"', 'sans-serif'],
       },
+      animation: {
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      boxShadow: {
+        'brutal': '4px 4px 0px 0px rgba(0, 0, 0, 1)',
+        'brutal-sm': '2px 2px 0px 0px rgba(0, 0, 0, 1)',
+        'brutal-dark': '4px 4px 0px 0px rgba(255, 255, 255, 1)',
+        'brutal-dark-sm': '2px 2px 0px 0px rgba(255, 255, 255, 1)',
+      }
     },
   },
   plugins: [],
