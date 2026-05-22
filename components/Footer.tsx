@@ -32,17 +32,17 @@ export default function Footer() {
             <h4 className="font-semibold mb-4 text-slate-800 dark:text-slate-200">Developers</h4>
             <div className="flex flex-col gap-3 text-sm text-slate-500 dark:text-slate-400">
               <Link href="/docs" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Documentation</Link>
-              <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">GitHub Repository</a>
-              <Link href="/docs#api" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Keeper API Docs</Link>
+              <a href="https://github.com/AngelofDea1/Janus" target="_blank" rel="noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">GitHub Repository</a>
+              <Link href="/docs" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Keeper API Docs</Link>
             </div>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4 text-slate-800 dark:text-slate-200">Community</h4>
             <div className="flex flex-col gap-3 text-sm text-slate-500 dark:text-slate-400">
-              <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Twitter Feed</a>
-              <a href="https://discord.gg" target="_blank" rel="noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Discord Portal</a>
-              <Link href="/docs#blog" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Protocol Blog</Link>
+              <a href="https://twitter.com/JanusProtocol" target="_blank" rel="noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Twitter Feed</a>
+              <a href="https://discord.gg/janus" target="_blank" rel="noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Discord Portal</a>
+              <Link href="/docs" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Protocol Blog</Link>
             </div>
           </div>
 
@@ -51,12 +51,12 @@ export default function Footer() {
         <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
           <div>© 2026 Janus Protocol. All rights reserved.</div>
           <div className="flex gap-6">
-            <Link href="/docs#terms" className="hover:text-indigo-500 transition-colors">Terms of Service</Link>
-            <Link href="/docs#privacy" className="hover:text-indigo-500 transition-colors">Privacy Policy</Link>
-            <Link href="/docs#status" className="hover:text-indigo-500 transition-colors flex items-center gap-1.5">
+            <Link href="/docs" className="hover:text-indigo-500 transition-colors">Terms of Service</Link>
+            <Link href="/docs" className="hover:text-indigo-500 transition-colors">Privacy Policy</Link>
+            <div className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               All Systems Operational
-            </Link>
+            </div>
           </div>
         </div>
       </div>
