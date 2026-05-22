@@ -34,12 +34,6 @@ export default function DocumentationPage() {
  link: "/docs/technical-whitepaper"
  },
  {
- title: "Investor Pitch Deck",
- description: "Financial models, TAM, competitive moat, and fundraising details.",
- icon: <Briefcase className="w-6 h-6 text-indigo-500" />,
- link: "/docs/investor-pitch-deck"
- },
- {
  title: "Governance Docs",
  description: "5-of-9 Multisig, timelocks, and path to full DAO decentralization.",
  icon: <Users className="w-6 h-6 text-indigo-500" />,

@@ -22,7 +22,6 @@ const SLUG_TO_FILE: Record<string, string> = {
  "overview": "JANUS_OVERVIEW.md",
  "user-guide": "USER_GUIDE.md",
  "technical-whitepaper": "TECHNICAL_WHITEPAPER.md",
- "investor-pitch-deck": "INVESTOR_PITCH_DECK.md",
  "governance-documentation": "GOVERNANCE_DOCUMENTATION.md",
  "operational-manual": "OPERATIONAL_MANUAL.md",
  "faq-and-troubleshooting": "FAQ_AND_TROUBLESHOOTING.md"
@@ -46,12 +45,6 @@ const DOC_METADATA: Record<string, { title: string; category: string; readTime: 
  category: "Architecture",
  readTime: "12 min read",
  icon: <Shield className="w-4 h-4" />
- },
- "investor-pitch-deck": {
- title: "Investor Pitch Deck",
- category: "Business",
- readTime: "8 min read",
- icon: <Briefcase className="w-4 h-4" />
  },
  "governance-documentation": {
  title: "Governance Docs",
