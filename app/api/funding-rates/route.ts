@@ -25,7 +25,7 @@ export async function GET() {
       }
     });
 
-    const opportunities = [];
+    const opportunities: any[] = [];
 
     if (bybitData?.result?.list) {
       bybitData.result.list.forEach((item: any) => {
