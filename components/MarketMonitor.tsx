@@ -5,8 +5,8 @@ import { Activity, TrendingUp, RefreshCw, AlertCircle } from "lucide-react";
 
 interface Opportunity {
   asset: string;
-  binanceRate: string;
-  bybitRate: string;
+  exchangeARate: string;
+  exchangeBRate: string;
   spread: string;
   projectedAPY: string;
   longExchange: string;
@@ -58,7 +58,7 @@ export default function MarketMonitor() {
             </span>
           </div>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Real-time funding rate arbitrage spreads across Binance & Bybit
+            Real-time funding rate arbitrage spreads across Hyperliquid & KuCoin
           </p>
         </div>
         
@@ -86,8 +86,8 @@ export default function MarketMonitor() {
           <thead>
             <tr className="border-b border-borderLine text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
               <th className="py-4 font-semibold">Asset</th>
-              <th className="py-4 font-semibold text-right">Binance Rate</th>
-              <th className="py-4 font-semibold text-right">Bybit Rate</th>
+              <th className="py-4 font-semibold text-right">Hyperliquid Rate</th>
+              <th className="py-4 font-semibold text-right">KuCoin Rate</th>
               <th className="py-4 font-semibold text-right">Spread</th>
               <th className="py-4 font-semibold text-right">Direction</th>
               <th className="py-4 font-semibold text-right text-accent">Proj. APY</th>
@@ -120,8 +120,8 @@ export default function MarketMonitor() {
                     </div>
                     {opp.asset}
                   </td>
-                  <td className="py-4 text-right font-mono text-slate-600 dark:text-slate-300">{opp.binanceRate}%</td>
-                  <td className="py-4 text-right font-mono text-slate-600 dark:text-slate-300">{opp.bybitRate}%</td>
+                  <td className="py-4 text-right font-mono text-slate-600 dark:text-slate-300">{opp.exchangeARate}%</td>
+                  <td className="py-4 text-right font-mono text-slate-600 dark:text-slate-300">{opp.exchangeBRate}%</td>
                   <td className="py-4 text-right font-mono font-medium text-foreground">{opp.spread}%</td>
                   <td className="py-4 text-right">
                     <div className="flex flex-col items-end gap-1">
