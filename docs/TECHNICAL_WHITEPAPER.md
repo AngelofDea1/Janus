@@ -340,11 +340,11 @@ If funding rate = +0.05% per 8 hours:
 
 | Component | Address | Status |
 |-----------|---------|--------|
-| JanusVault | `0x70E5370b8981Abc6e14C91F4AcE823954EFC8eA3` | Live |
+| JanusVault | `0x4eaB29997D332A666c3C366217Ab177cF9A7C436` | Live |
 | USDC | `0x3600000000000000000000000000000000000000` | Live |
-| Multisig | `0xc8d77a0bf435ec92a4e21dae6c2789bd0bcf00e1` | Live |
+| Multisig | `0x8ac5eE52F70AE01dB914bE459D8B3d50126fd6aE` | Live |
 | Timelock | `0x892a0bcf87baee1e390c9b88a8d11cfa98b0f22d` | Live |
-| Insurance | `0x2500c4e08de98a87f930abefeafdd5d253a753f8` | Live |
+| Insurance | `0x325c8Df4CFb5B068675AFF8f62aA668D1dEc3C4B` | Live |
 
 ### 8.2 Network Specifications
 
