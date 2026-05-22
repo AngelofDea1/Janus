@@ -1,6 +1,7 @@
+import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-ethers";
 
-export default {
+const config = {
   solidity: "0.8.24",
   networks: {
     arcTestnet: {
@@ -10,3 +11,4 @@ export default {
     }
   }
 };
+export default config;

@@ -1,18 +1,32 @@
-const hre = require("hardhat");
-const ethers = hre.ethers;
-const fs = require("fs");
-const path = require("path");
+import { ethers } from "ethers";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
-  console.log("Starting full system deployment with account:", deployer.address);
+  const provider = new ethers.JsonRpcProvider("https://rpc.testnet.arc.network");
+  const wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
+
+  console.log("Starting full system deployment with account:", wallet.address);
+  
+  // check balance
+  const balance = await provider.getBalance(wallet.address);
+  console.log("Balance:", ethers.formatEther(balance), "ETH");
 
   const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
 
+  // Load artifacts
+  const loadArtifact = (name) => JSON.parse(fs.readFileSync(path.join(__dirname, `../artifacts/contracts/${name}.sol/${name}.json`), "utf8"));
+
   // 1. Deploy MultiSig (5-of-9)
   console.log("Deploying MultiSig...");
+  const multiSigJson = loadArtifact("JanusMultiSig");
+  const MultiSigFactory = new ethers.ContractFactory(multiSigJson.abi, multiSigJson.bytecode, wallet);
   const signers = [
-    deployer.address,
+    wallet.address,
     "0x0000000000000000000000000000000000000001",
     "0x0000000000000000000000000000000000000002",
     "0x0000000000000000000000000000000000000003",
@@ -22,26 +36,27 @@ async function main() {
     "0x0000000000000000000000000000000000000007",
     "0x0000000000000000000000000000000000000008",
   ];
-  const MultiSig = await ethers.getContractFactory("JanusMultiSig");
-  const multiSig = await MultiSig.deploy(signers);
+  const multiSig = await MultiSigFactory.deploy(signers);
   await multiSig.waitForDeployment();
   const multiSigAddress = await multiSig.getAddress();
   console.log(`MultiSig deployed to: ${multiSigAddress}`);
 
   // 2. Deploy Insurance Fund
   console.log("Deploying Insurance Fund...");
-  const InsuranceFund = await ethers.getContractFactory("JanusInsuranceFund");
-  const insuranceFund = await InsuranceFund.deploy(USDC_ADDRESS, deployer.address); // temp vault
+  const insuranceFundJson = loadArtifact("JanusInsuranceFund");
+  const InsuranceFundFactory = new ethers.ContractFactory(insuranceFundJson.abi, insuranceFundJson.bytecode, wallet);
+  const insuranceFund = await InsuranceFundFactory.deploy(USDC_ADDRESS, wallet.address); // temp vault
   await insuranceFund.waitForDeployment();
   const insuranceFundAddress = await insuranceFund.getAddress();
   console.log(`Insurance Fund deployed to: ${insuranceFundAddress}`);
 
   // 3. Deploy JanusVault
   console.log("Deploying JanusVault...");
-  const Vault = await ethers.getContractFactory("JanusVault");
-  const vault = await Vault.deploy(
+  const vaultJson = loadArtifact("JanusVault");
+  const VaultFactory = new ethers.ContractFactory(vaultJson.abi, vaultJson.bytecode, wallet);
+  const vault = await VaultFactory.deploy(
     USDC_ADDRESS,
-    deployer.address, // keeper
+    wallet.address, // keeper
     multiSigAddress,  // properly deployed multisig!
     insuranceFundAddress
   );
@@ -50,7 +65,7 @@ async function main() {
   console.log(`JanusVault deployed to: ${vaultAddress}`);
 
   // Update lib/constants.ts
-  const constantsPath = path.resolve("lib", "constants.ts");
+  const constantsPath = path.resolve(__dirname, "../lib", "constants.ts");
   let content = fs.readFileSync(constantsPath, "utf8");
 
   content = content.replace(
