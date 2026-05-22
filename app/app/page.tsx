@@ -5,34 +5,20 @@ import { useAccount, useReadContract, useWriteContract, useBalance, usePublicCli
 import { parseUnits, formatUnits, parseAbiItem } from "viem";
 import { 
  Shield, 
- Coins, 
- TrendingUp, 
- ArrowUpRight, 
- ArrowDownLeft,
- Lock, 
- Activity,
+ ArrowDownUp,
+ Settings,
+ Info,
  Wallet,
- Check,
- Globe,
- Server,
- Zap,
- Clock
+ ChevronDown,
+ Activity
 } from "lucide-react";
 import { VAULT_ADDRESS, USDC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
 
 export default function ArbitrageApp() {
  const [depositAmount, setDepositAmount] = useState("");
  const [withdrawShares, setWithdrawShares] = useState("");
- const [transactionSuccess, setTransactionSuccess] = useState(false);
  
- const [activeTab, setActiveTab] = useState("deposit"); // "deposit" | "withdraw" | "bridge" | "oracle"
- 
- // Circle App Kit Cross-Chain Bridge state
- const [bridgeSourceChain, setBridgeSourceChain] = useState("Base_Sepolia");
- const [bridgeAmount, setBridgeAmount] = useState("");
- const [isBridging, setIsBridging] = useState(false);
- const [bridgeStep, setBridgeStep] = useState(0);
- const [bridgeTxHash, setBridgeTxHash] = useState("");
+ const [activeMode, setActiveMode] = useState<"deposit" | "withdraw">("deposit");
  
  const { address: wagmiAddress, isConnected: wagmiIsConnected } = useAccount();
  const [localConnected, setLocalConnected] = useState(false);
@@ -40,18 +26,17 @@ export default function ArbitrageApp() {
 
  const [mounted, setMounted] = useState(false);
  useEffect(() => {
- setMounted(true);
- if (typeof window !== "undefined") {
- // Auto-initialize simulation connection by default to keep state connected across refreshes
- if (localStorage.getItem("janus_wallet_connected") === null) {
- localStorage.setItem("janus_wallet_connected", "true");
- localStorage.setItem("janus_wallet_address", "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57");
- }
- const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
- const savedAddress = localStorage.getItem("janus_wallet_address") || "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57";
- setLocalConnected(savedConnected);
- setLocalAddress(savedAddress);
- }
+   setMounted(true);
+   if (typeof window !== "undefined") {
+     if (localStorage.getItem("janus_wallet_connected") === null) {
+       localStorage.setItem("janus_wallet_connected", "true");
+       localStorage.setItem("janus_wallet_address", "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57");
+     }
+     const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
+     const savedAddress = localStorage.getItem("janus_wallet_address") || "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57";
+     setLocalConnected(savedConnected);
+     setLocalAddress(savedAddress);
+   }
  }, []);
 
  const isConnected = wagmiIsConnected || localConnected;
@@ -60,735 +45,357 @@ export default function ArbitrageApp() {
  const { writeContract, data: hash, isPending } = useWriteContract();
  const publicClient = usePublicClient({ chainId: 5042002 });
 
- const [binanceFunding, setBinanceFunding] = useState<string>("Loading...");
- const [bybitFunding, setBybitFunding] = useState<string>("Loading...");
- const [hypFunding, setHypFunding] = useState<string>("Loading...");
- const [dydxFunding, setDydxFunding] = useState<string>("Loading...");
- const [okxFunding, setOkxFunding] = useState<string>("Loading...");
- const [recentHarvests, setRecentHarvests] = useState<{amount: string, time: string}[]>([]);
-
- useEffect(() => {
- const fetchRates = () => {
- // Binance
- fetch('https://fapi.binance.com/fapi/v1/premiumIndex?symbol=BTCUSDT')
- .then(res => res.json())
- .then(data => {
- if (data && data.lastFundingRate) {
- const percent = (parseFloat(data.lastFundingRate) * 100).toFixed(4);
- setBinanceFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setBinanceFunding("+0.0123% / 8h"));
-
- // Bybit
- fetch('https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT')
- .then(res => res.json())
- .then(data => {
- if (data && data.result && data.result.list && data.result.list[0]) {
- const percent = (parseFloat(data.result.list[0].fundingRate) * 100).toFixed(4);
- setBybitFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setBybitFunding("+0.0118% / 8h"));
- 
- // Hyperliquid
- fetch('https://api.hyperliquid.xyz/info', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ type: 'metaAndAssetCtxs' })
- })
- .then(res => res.json())
- .then(data => {
- if (data && data[1]) {
- const btcCtx = data[1][0];
- if (btcCtx && btcCtx.funding) {
- const percent = (parseFloat(btcCtx.funding) * 100).toFixed(4);
- setHypFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- }
- })
- .catch(() => setHypFunding("+0.0145% / 8h"));
-
- // dYdX
- fetch('https://api.dydx.exchange/v3/markets/BTC-USD')
- .then(res => res.json())
- .then(data => {
- if (data && data.market && data.market.nextFundingRate) {
- const percent = (parseFloat(data.market.nextFundingRate) * 100).toFixed(4);
- setDydxFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setDydxFunding("+0.0098% / 8h"));
-
- // OKX
- fetch('https://www.okx.com/api/v5/public/funding-rate?instId=BTC-USDT-SWAP')
- .then(res => res.json())
- .then(data => {
- if (data && data.data && data.data[0] && data.data[0].fundingRate) {
- const percent = (parseFloat(data.data[0].fundingRate) * 100).toFixed(4);
- setOkxFunding((parseFloat(percent) > 0 ? "+" : "") + percent + "% / 8h");
- }
- })
- .catch(() => setOkxFunding("+0.0105% / 8h"));
- };
-
- fetchRates();
- const interval = setInterval(fetchRates, 5000); // Poll real exchanges every 5 seconds for live monitor updates
- return () => clearInterval(interval);
- }, []);
-
- useEffect(() => {
- if (!publicClient) return;
-
- const fetchLogs = async () => {
- try {
- const blockNumber = await publicClient.getBlockNumber();
- const fromBlock = blockNumber > BigInt(9000) ? blockNumber - BigInt(9000) : BigInt(0);
- const logs = await publicClient.getLogs({
- address: VAULT_ADDRESS,
- event: parseAbiItem('event ArbitrageYieldHarvested(uint256 indexed amount, uint256 totalAssetsAfter)'),
- fromBlock: fromBlock,
- toBlock: 'latest'
- });
- 
- if (logs && logs.length > 0) {
- const recent = logs.reverse().slice(0, 3).map((log, index) => {
- const val = log.args.amount ? parseFloat(formatUnits(log.args.amount, 18)).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "0.00";
- return {
- amount: val,
- time: index === 0 ? "Just now" : index === 1 ? "2 hours ago" : "8 hours ago" 
- };
- });
- setRecentHarvests(recent);
- }
- } catch (e) {
- console.error("Failed to fetch logs", e);
- }
- };
- 
- fetchLogs();
- const interval = setInterval(fetchLogs, 2000);
- return () => clearInterval(interval);
- }, [publicClient]);
-
- // --- Simulation Fallback State (when contract addresses are placeholders) ---
+ // --- Simulation Fallback State ---
  const isMockMode = (VAULT_ADDRESS as string) === "0x0000000000000000000000000000000000000000";
- const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(5000000000)); // $5,000 mock USDC default
- const [simulationUserBalance, setSimulationUserBalance] = useState(BigInt(0));
+ const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(5000000000)); 
  const [simulationUserShares, setSimulationUserShares] = useState(BigInt(0));
- const [simulationTotalAssets, setSimulationTotalAssets] = useState(BigInt(148920000000000)); // $148.92M default pool size
  const [simulationAllowance, setSimulationAllowance] = useState(BigInt(0));
- const [simulationIsMinting, setSimulationIsMinting] = useState(false);
  const [simulationIsPending, setSimulationIsPending] = useState(false);
 
- // Live Yield Compounding Ticker in Simulation Mode to show active yield capture live
- useEffect(() => {
- if (!isMockMode) return;
- const interval = setInterval(() => {
- setSimulationUserBalance((prev) => {
- if (prev === BigInt(0)) return prev;
- // Live visual yield capture tick: compounding micro-USDC values
- return prev + BigInt(3);
- });
- setSimulationTotalAssets((prev) => {
- return prev + BigInt(30);
- });
- }, 1000);
-
- return () => clearInterval(interval);
- }, [isMockMode]);
-
- // --- Smart Contract Reads with Poll Intervals ---
  const { data: totalAssets } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "totalAssets",
- chainId: 5042002,
- query: { refetchInterval: 2000 },
+   address: VAULT_ADDRESS,
+   abi: VAULT_ABI,
+   functionName: "totalAssets",
+   chainId: 5042002,
+   query: { refetchInterval: 2000 },
  });
 
  const { data: estimatedAPY } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "estimatedAPY",
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- const { data: userBalance } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "userValue",
- args: address ? [address] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
+   address: VAULT_ADDRESS,
+   abi: VAULT_ABI,
+   functionName: "estimatedAPY",
+   chainId: 5042002,
+   query: { refetchInterval: 2000 },
  });
 
  const { data: userShares } = useReadContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "balanceOf",
- args: address ? [address] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
+   address: VAULT_ADDRESS,
+   abi: VAULT_ABI,
+   functionName: "balanceOf",
+   args: address ? [address] : undefined,
+   chainId: 5042002,
+   query: { refetchInterval: 2000 },
  });
 
  const { data: usdcERC20Balance } = useReadContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "balanceOf",
- args: address ? [address] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
+   address: USDC_ADDRESS,
+   abi: USDC_ABI,
+   functionName: "balanceOf",
+   args: address ? [address] : undefined,
+   chainId: 5042002,
+   query: { refetchInterval: 2000 },
  });
 
  const { data: usdcAllowance } = useReadContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "allowance",
- args: address ? [address, VAULT_ADDRESS] : undefined,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
- });
-
- // Since Arc uses USDC natively, we also fetch the native gas balance and use whichever is higher
- const { data: nativeBalanceData } = useBalance({
- address: address,
- chainId: 5042002,
- query: { refetchInterval: 2000 },
+   address: USDC_ADDRESS,
+   abi: USDC_ABI,
+   functionName: "allowance",
+   args: address ? [address, VAULT_ADDRESS] : undefined,
+   chainId: 5042002,
+   query: { refetchInterval: 2000 },
  });
 
  const usdcBalance = usdcERC20Balance || BigInt(0);
 
- // --- Dynamic Mappings (Real vs. Mock fallback) ---
  const activeUsdcBalance = isMockMode ? simulationUsdcBalance : usdcBalance;
- const activeUserBalance = isMockMode ? simulationUserBalance : userBalance;
  const activeUserShares = isMockMode ? simulationUserShares : userShares;
- const activeTotalAssets = isMockMode ? simulationTotalAssets : totalAssets;
  const activeAllowance = isMockMode ? simulationAllowance : usdcAllowance;
  const activePendingState = isMockMode ? simulationIsPending : isPending;
 
- // --- Faucet Mint Handler ---
- const handleFaucetMint = async () => {
- if (isMockMode) {
- setSimulationIsMinting(true);
- setTimeout(() => {
- setSimulationUsdcBalance((prev) => prev + BigInt(10000000000)); // Add 10,000 mock USDC
- setSimulationIsMinting(false);
- triggerSuccessNotification();
- }, 1000);
- return;
- }
-
- // Real on-chain mint transaction
- writeContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "mint",
- args: [address!, parseUnits("10000", 18)],
- });
- };
-
- const handleBridge = () => {
- if (!bridgeAmount) return;
- setIsBridging(true);
- setBridgeStep(1);
- 
- // Step 1: Approving USDC spent on source chain
- setTimeout(() => {
- setBridgeStep(2);
- // Step 2: CCTP Burning USDC on Source Chain
- setTimeout(() => {
- setBridgeStep(3);
- setBridgeTxHash("0xc3a4f826" + Math.random().toString(16).substr(2, 8) + "da7e82e66b5fc55fa44a44c6f6b");
- // Step 3: Fetching CCTP Attestation & Minting on Arc Testnet
- setTimeout(() => {
- setBridgeStep(4);
- // Step 4: Depositing into Janus Yield Vault
- setTimeout(() => {
- if (isMockMode) {
- const amountBigInt = parseUnits(bridgeAmount, 18);
- setSimulationUsdcBalance(prev => prev + amountBigInt);
- }
- setIsBridging(false);
- setBridgeStep(0);
- setBridgeAmount("");
- setBridgeTxHash("");
- triggerSuccessNotification();
- }, 2000);
- }, 3000);
- }, 2500);
- }, 2000);
- };
-
- // --- Transaction Handlers ---
+ // Transaction Handlers
  const approveUSDC = () => {
- if (!depositAmount) return;
- // USDC uses 6 decimals on Arc Testnet
- const amount = parseUnits(depositAmount, 6);
- 
- if (isMockMode) {
- setSimulationIsPending(true);
- setTimeout(() => {
- setSimulationAllowance(amount);
- setSimulationIsPending(false);
- triggerSuccessNotification();
- }, 1000);
- return;
- }
-
- writeContract({
- address: USDC_ADDRESS,
- abi: USDC_ABI,
- functionName: "approve",
- args: [VAULT_ADDRESS, amount],
- });
+   if (!depositAmount) return;
+   const amount = parseUnits(depositAmount, 6);
+   if (isMockMode) {
+     setSimulationIsPending(true);
+     setTimeout(() => {
+       setSimulationAllowance(amount);
+       setSimulationIsPending(false);
+     }, 1000);
+     return;
+   }
+   writeContract({
+     address: USDC_ADDRESS,
+     abi: USDC_ABI,
+     functionName: "approve",
+     args: [VAULT_ADDRESS, amount],
+   });
  };
 
  const handleDeposit = async () => {
- if (!depositAmount) return;
- // USDC uses 6 decimals on Arc Testnet
- const amount = parseUnits(depositAmount, 6);
- 
- // Check if approval is needed first
- if (!activeAllowance || activeAllowance < amount) {
- approveUSDC();
- return;
- }
- 
- if (isMockMode) {
- setSimulationIsPending(true);
- setTimeout(() => {
- if (simulationUsdcBalance >= amount) {
- setSimulationUsdcBalance((prev) => prev - amount);
- setSimulationUserBalance((prev) => prev + amount);
- setSimulationUserShares((prev) => prev + amount); // mock ERC-4626 exchange rate
- setSimulationTotalAssets((prev) => prev + amount);
- setDepositAmount("");
- }
- setSimulationIsPending(false);
- triggerSuccessNotification();
- }, 1200);
- return;
- }
+   if (!depositAmount) return;
+   const amount = parseUnits(depositAmount, 6);
+   
+   if (!activeAllowance || activeAllowance < amount) {
+     approveUSDC();
+     return;
+   }
+   
+   if (isMockMode) {
+     setSimulationIsPending(true);
+     setTimeout(() => {
+       if (simulationUsdcBalance >= amount) {
+         setSimulationUsdcBalance((prev) => prev - amount);
+         setSimulationUserShares((prev) => prev + amount); 
+         setDepositAmount("");
+       }
+       setSimulationIsPending(false);
+     }, 1200);
+     return;
+   }
 
- writeContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "deposit",
- args: [amount, address!],
- });
+   writeContract({
+     address: VAULT_ADDRESS,
+     abi: VAULT_ABI,
+     functionName: "deposit",
+     args: [amount, address!],
+   });
  };
 
  const handleWithdraw = async () => {
- if (!withdrawShares) return;
- const sharesAmount = parseUnits(withdrawShares, 6);
+   if (!withdrawShares) return;
+   const sharesAmount = parseUnits(withdrawShares, 6);
 
- if (isMockMode) {
- setSimulationIsPending(true);
- setTimeout(() => {
- const usdcEquivalent = sharesAmount;
- if (simulationUserShares >= sharesAmount) {
- setSimulationUserShares((prev) => prev - sharesAmount);
- setSimulationUserBalance((prev) => prev - usdcEquivalent);
- setSimulationUsdcBalance((prev) => prev + usdcEquivalent);
- setSimulationTotalAssets((prev) => prev - usdcEquivalent);
- setWithdrawShares("");
- }
- setSimulationIsPending(false);
- triggerSuccessNotification();
- }, 1200);
- return;
- }
+   if (isMockMode) {
+     setSimulationIsPending(true);
+     setTimeout(() => {
+       if (simulationUserShares >= sharesAmount) {
+         setSimulationUserShares((prev) => prev - sharesAmount);
+         setSimulationUsdcBalance((prev) => prev + sharesAmount);
+         setWithdrawShares("");
+       }
+       setSimulationIsPending(false);
+     }, 1200);
+     return;
+   }
 
- writeContract({
- address: VAULT_ADDRESS,
- abi: VAULT_ABI,
- functionName: "withdraw",
- args: [sharesAmount, address!, address!],
- });
+   writeContract({
+     address: VAULT_ADDRESS,
+     abi: VAULT_ABI,
+     functionName: "withdraw",
+     args: [sharesAmount, address!, address!],
+   });
  };
 
- // Helper success toast triggers
- const triggerSuccessNotification = () => {
- setTransactionSuccess(true);
- setTimeout(() => setTransactionSuccess(false), 3000);
- };
-
- // --- Number Formatter ---
  const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
- if (!value) return "0.00";
- return parseFloat(formatUnits(value, decimals)).toLocaleString("en-US", {
- minimumFractionDigits: 2,
- maximumFractionDigits: 2,
- });
+   if (!value) return "0.00";
+   return parseFloat(formatUnits(value, decimals)).toLocaleString("en-US", {
+     minimumFractionDigits: 2,
+     maximumFractionDigits: 6,
+   });
  };
 
  return (
-    <div className="min-h-screen bg-transparent text-black dark:text-white font-mono p-4 sm:p-8">
+    <div className="relative min-h-screen bg-background pt-32 pb-24 flex justify-center overflow-hidden">
       
-      {/* Success Notification */}
-      {transactionSuccess && (
-        <div className="fixed top-20 right-8 z-50 p-4 border border-black dark:border-white bg-emerald-500 text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2 shadow-brutal dark:shadow-brutal-dark">
-          <Check className="w-4 h-4" />
-          <span>TX EXECUTED_</span>
-        </div>
-      )}
+      {/* Subtle Premium Background Mesh */}
+      <div className="absolute top-[10%] left-[20%] w-[30%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[20%] w-[40%] h-[30%] rounded-full bg-violet-500/5 dark:bg-violet-500/10 blur-[100px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="relative z-10 w-full max-w-[480px] px-4">
         
-        {/* Title Block */}
-        <div className="border-b border-black/10 dark:border-white/10 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end">
-          <div>
-            {isMockMode && (
-              <div className="inline-block px-2 py-1 bg-amber-500 text-black text-[10px] font-bold uppercase tracking-widest mb-4">
-                Sandbox Sim Mode
-              </div>
-            )}
-            <h1 className="text-3xl md:text-5xl font-heading font-black tracking-tighter uppercase">
-              Vault_Terminal
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 tracking-widest uppercase">
-              Deposit USDC &gt;&gt; Lock Funding Rate Yield
-            </p>
-          </div>
+        {/* Main Swap/Deposit Widget */}
+        <div className="bg-panel border border-borderLine rounded-3xl p-2 shadow-premium dark:shadow-premium-dark backdrop-blur-xl transition-all">
           
-          <div className="mt-4 md:mt-0 px-4 py-2 border border-black dark:border-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 bg-black text-white dark:bg-white dark:text-black">
-            <span className="w-2 h-2 bg-emerald-500 animate-pulse" />
-            <span>Connection Active</span>
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-4">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setActiveMode("deposit")}
+                className={`font-semibold text-lg transition-colors ${activeMode === "deposit" ? "text-foreground" : "text-slate-400 hover:text-slate-300"}`}
+              >
+                Deposit
+              </button>
+              <button 
+                onClick={() => setActiveMode("withdraw")}
+                className={`font-semibold text-lg transition-colors ${activeMode === "withdraw" ? "text-foreground" : "text-slate-400 hover:text-slate-300"}`}
+              >
+                Withdraw
+              </button>
+            </div>
+            <button className="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+              <Settings className="w-5 h-5" />
+            </button>
           </div>
-        </div>
 
-        {/* Real Live Stats Dashboard Ticker */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border border-black/10 dark:border-white/10">
-          {[
-            { label: "Vault APY", val: `${estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(2) : "32.40"}%` },
-            { label: "Total Assets", val: `$${formatNumber(activeTotalAssets)}` },
-            { label: "Your Principal", val: `$${formatNumber(activeUserBalance)}` },
-            { label: "Vault Shares", val: `${formatNumber(activeUserShares, 6)} JANUS` }
-          ].map((card, idx) => (
-            <div key={idx} className="p-6 border-r border-b lg:border-b-0 border-black/10 dark:border-white/10 last:border-r-0 flex flex-col justify-center">
-              <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">
-                // {card.label}
-              </div>
-              <div className="text-xl md:text-2xl font-mono font-bold tracking-tight">
-                {card.val}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Grid Layout for Interaction */}
-        <div className="grid lg:grid-cols-12 gap-8">
-          
-          {/* Main Action Panel */}
-          <div className="lg:col-span-8 border border-black/10 dark:border-white/10 p-6 md:p-8 bg-zinc-50 dark:bg-zinc-950">
-            {/* Minimalist Tabs */}
-            <div className="flex border-b border-black/10 dark:border-white/10 mb-8 overflow-x-auto">
-              {[
-                { id: "deposit", label: "Deposit" },
-                { id: "withdraw", label: "Withdraw" },
-                { id: "bridge", label: "CCTP Bridge" },
-                { id: "oracle", label: "Data Feed" }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors whitespace-nowrap ${
-                    activeTab === tab.id 
-                    ? "bg-black text-white dark:bg-white dark:text-black border-t-2 border-black dark:border-white" 
-                    : "text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 border-t-2 border-transparent"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {(!mounted || !isConnected) ? (
-              <div className="text-center py-20 border border-dashed border-black/20 dark:border-white/20">
-                <Wallet className="w-8 h-8 mx-auto mb-4 text-zinc-400" />
-                <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Auth Required</h3>
-                <p className="text-xs text-zinc-500">Connect Web3 wallet to access terminal.</p>
-              </div>
-            ) : (
-              <div className="animate-in fade-in duration-0">
-                
-                {/* Deposit Tab */}
-                {activeTab === "deposit" && (
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="font-bold text-sm uppercase tracking-widest mb-1">Execute Deposit</h3>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Convert USDC &gt;&gt; JANUS Shares</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">
-                          <span>Amount_</span>
-                          <div className="flex items-center gap-2">
-                            <span>Balance: {formatNumber(activeUsdcBalance)}</span>
-                            <button onClick={handleFaucetMint} className="text-emerald-500 hover:text-emerald-400 underline">
-                              (Mint)
-                            </button>
-                          </div>
-                        </div>
-                        <div className="relative border border-black/20 dark:border-white/20 focus-within:border-black dark:focus-within:border-white transition-colors bg-white dark:bg-black">
-                          <input
-                            type="number"
-                            value={depositAmount}
-                            onChange={(e) => setDepositAmount(e.target.value)}
-                            placeholder="0.00"
-                            className="w-full px-4 py-4 bg-transparent focus:outline-none text-2xl font-mono text-black dark:text-white"
-                          />
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-zinc-400 text-xs tracking-widest uppercase">
-                            USDC
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-4 gap-2">
-                        {["1K", "5K", "10K", "MAX"].map((short) => (
-                          <button
-                            key={short}
-                            onClick={() => {
-                              if (short === "MAX" && activeUsdcBalance) setDepositAmount(formatUnits(activeUsdcBalance, 6));
-                              else setDepositAmount(short.replace("K", "000"));
-                            }}
-                            className="py-2 text-[10px] font-bold tracking-widest uppercase border border-black/10 dark:border-white/10 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
-                          >
-                            {short}
-                          </button>
-                        ))}
-                      </div>
-
-                      <button
-                        onClick={handleDeposit}
-                        disabled={!depositAmount || activePendingState}
-                        className="w-full py-4 bg-black text-white dark:bg-white dark:text-black font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-emerald-500 dark:hover:bg-emerald-400 hover:text-black transition-colors"
+          {!mounted || !isConnected ? (
+             <div className="p-12 text-center flex flex-col items-center">
+               <div className="w-16 h-16 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center mb-4">
+                  <Wallet className="w-8 h-8 text-slate-400" />
+               </div>
+               <h3 className="font-semibold text-lg mb-2">Connect Wallet</h3>
+               <p className="text-sm text-slate-500 mb-6">Connect your wallet to access the Janus terminal.</p>
+               <button className="w-full py-4 rounded-2xl bg-accent/10 text-accent font-semibold hover:bg-accent/20 transition-colors">
+                  Connect Wallet
+               </button>
+             </div>
+          ) : activeMode === "deposit" ? (
+             <div className="p-2">
+               {/* Input Section */}
+               <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
+                 <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                    <span>You pay</span>
+                    <span className="flex items-center gap-2">
+                      Balance: {formatNumber(activeUsdcBalance)}
+                      <button 
+                        onClick={() => {
+                           if (activeUsdcBalance) setDepositAmount(formatUnits(activeUsdcBalance, 6));
+                        }}
+                        className="text-accent hover:text-accentHover font-semibold"
                       >
-                        <ArrowUpRight className="w-4 h-4" />
-                        <span>
-                          {simulationIsMinting 
-                            ? "Minting..." 
-                            : activePendingState 
-                            ? "Processing..." 
-                            : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
-                            ? "Approve Spender"
-                            : "Execute Transaction"
-                          }
-                        </span>
+                        Max
                       </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Withdraw Tab */}
-                {activeTab === "withdraw" && (
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="font-bold text-sm uppercase tracking-widest mb-1">Execute Withdrawal</h3>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Convert JANUS Shares &gt;&gt; USDC</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">
-                          <span>Shares_</span>
-                          <span>Available: {formatNumber(activeUserShares, 6)}</span>
-                        </div>
-                        <div className="relative border border-black/20 dark:border-white/20 focus-within:border-black dark:focus-within:border-white transition-colors bg-white dark:bg-black">
-                          <input
-                            type="number"
-                            value={withdrawShares}
-                            onChange={(e) => setWithdrawShares(e.target.value)}
-                            placeholder="0.00"
-                            className="w-full px-4 py-4 bg-transparent focus:outline-none text-2xl font-mono text-black dark:text-white"
-                          />
-                          <button
-                            onClick={() => {
-                              if (activeUserShares) setWithdrawShares(formatUnits(activeUserShares, 6));
-                            }}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase tracking-widest text-emerald-500 hover:text-emerald-400"
-                          >
-                            MAX
-                          </button>
-                        </div>
+                    </span>
+                 </div>
+                 <div className="flex items-center justify-between">
+                    <input
+                      type="number"
+                      value={depositAmount}
+                      onChange={(e) => setDepositAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
+                    />
+                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
+                      <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-bold">
+                        $
                       </div>
+                      <span className="font-semibold text-sm">USDC</span>
+                    </div>
+                 </div>
+               </div>
 
-                      <button
-                        onClick={handleWithdraw}
-                        disabled={!withdrawShares || activePendingState}
-                        className="w-full py-4 border border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
+               {/* Center Arrow */}
+               <div className="relative h-2 flex justify-center items-center z-10">
+                  <div className="absolute w-10 h-10 bg-panel border border-borderLine rounded-xl flex items-center justify-center shadow-sm">
+                    <ArrowDownUp className="w-4 h-4 text-slate-400" />
+                  </div>
+               </div>
+
+               {/* Output Section */}
+               <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 mt-2 border border-transparent">
+                 <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                    <span>You receive (est.)</span>
+                 </div>
+                 <div className="flex items-center justify-between opacity-80">
+                    <input
+                      type="number"
+                      value={depositAmount} // 1:1 roughly
+                      disabled
+                      placeholder="0.00"
+                      className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
+                    />
+                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
+                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
+                        J
+                      </div>
+                      <span className="font-semibold text-sm">JANUS</span>
+                    </div>
+                 </div>
+               </div>
+
+               {/* Execute Button */}
+               <div className="mt-4">
+                 <button
+                   onClick={handleDeposit}
+                   disabled={!depositAmount || activePendingState}
+                   className={`w-full py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
+                     !depositAmount
+                       ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
+                       : activePendingState
+                       ? "bg-accent/50 text-white cursor-wait"
+                       : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
+                       ? "bg-accent/10 text-accent hover:bg-accent/20"
+                       : "bg-accent text-white hover:bg-accentHover shadow-premium hover:shadow-premium-hover active:scale-[0.98]"
+                   }`}
+                 >
+                   {activePendingState 
+                     ? "Processing..." 
+                     : (!depositAmount) 
+                     ? "Enter an amount" 
+                     : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
+                     ? "Approve USDC"
+                     : "Deposit"}
+                 </button>
+               </div>
+             </div>
+          ) : (
+             <div className="p-2">
+               {/* Withdraw Section */}
+               <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
+                 <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                    <span>Withdraw Shares</span>
+                    <span className="flex items-center gap-2">
+                      Available: {formatNumber(activeUserShares)}
+                      <button 
+                        onClick={() => {
+                           if (activeUserShares) setWithdrawShares(formatUnits(activeUserShares, 6));
+                        }}
+                        className="text-accent hover:text-accentHover font-semibold"
                       >
-                        <ArrowDownLeft className="w-4 h-4" />
-                        <span>
-                          {activePendingState ? "Processing..." : "Execute Withdrawal"}
-                        </span>
+                        Max
                       </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Bridge Tab */}
-                {activeTab === "bridge" && (
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-bold text-sm uppercase tracking-widest mb-1">CCTP Gateway</h3>
-                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Cross-Chain USDC Transfer</p>
+                    </span>
+                 </div>
+                 <div className="flex items-center justify-between">
+                    <input
+                      type="number"
+                      value={withdrawShares}
+                      onChange={(e) => setWithdrawShares(e.target.value)}
+                      placeholder="0.00"
+                      className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
+                    />
+                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
+                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
+                        J
                       </div>
-                      <div className="px-2 py-1 bg-black text-white dark:bg-white dark:text-black text-[8px] font-bold uppercase tracking-widest">
-                        Circle SDK
-                      </div>
+                      <span className="font-semibold text-sm">JANUS</span>
                     </div>
+                 </div>
+               </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Source_</label>
-                        <select 
-                          value={bridgeSourceChain} 
-                          onChange={(e) => setBridgeSourceChain(e.target.value)}
-                          className="w-full px-4 py-3 bg-white dark:bg-black border border-black/20 dark:border-white/20 text-xs font-mono focus:outline-none focus:border-black dark:focus:border-white"
-                        >
-                          <option value="Base_Sepolia">BASE SEP</option>
-                          <option value="Arbitrum_Sepolia">ARB SEP</option>
-                          <option value="Ethereum_Sepolia">ETH SEP</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Dest_</label>
-                        <div className="w-full px-4 py-3 border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-xs font-mono flex items-center gap-2 text-emerald-500">
-                          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-none animate-pulse" />
-                          ARC L1
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Amount_</label>
-                      <input
-                        type="number"
-                        value={bridgeAmount}
-                        onChange={(e) => setBridgeAmount(e.target.value)}
-                        placeholder="0.00"
-                        disabled={isBridging}
-                        className="w-full px-4 py-4 bg-white dark:bg-black border border-black/20 dark:border-white/20 focus:outline-none text-xl font-mono disabled:opacity-50"
-                      />
-                    </div>
-
-                    <button
-                      onClick={handleBridge}
-                      disabled={!bridgeAmount || isBridging}
-                      className="w-full py-4 bg-black text-white dark:bg-white dark:text-black font-bold text-xs uppercase tracking-widest disabled:opacity-50 hover:bg-emerald-500 dark:hover:bg-emerald-400 hover:text-black transition-colors"
-                    >
-                      {isBridging ? "Bridging..." : "Init Transfer"}
-                    </button>
-                    
-                    {isBridging && (
-                      <div className="p-4 border border-black/20 dark:border-white/20 text-xs font-mono space-y-2 mt-4 bg-white dark:bg-black">
-                        <div className="flex justify-between text-[10px] text-zinc-500 mb-4 border-b border-black/10 dark:border-white/10 pb-2">
-                          <span>STATUS</span><span>ACTIVE</span>
-                        </div>
-                        {[
-                          { step: 1, label: "Approve Source" },
-                          { step: 2, label: "Burn Source" },
-                          { step: 3, label: "Attestation" },
-                          { step: 4, label: "Mint Dest" }
-                        ].map((s) => (
-                          <div key={s.step} className="flex items-center gap-3">
-                            <span className={`text-[10px] ${bridgeStep >= s.step ? "text-emerald-500" : "text-zinc-500"}`}>
-                              {bridgeStep > s.step ? "[DONE]" : bridgeStep === s.step ? "[BUSY]" : "[WAIT]"}
-                            </span>
-                            <span className={bridgeStep === s.step ? "animate-pulse" : ""}>{s.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Oracle Tab */}
-                {activeTab === "oracle" && (
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-bold text-sm uppercase tracking-widest mb-1">Oracle Data</h3>
-                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Live Funding Rates (Pyth)</p>
-                      </div>
-                    </div>
-
-                    <div className="border border-black/20 dark:border-white/20 bg-white dark:bg-black">
-                      <div className="grid grid-cols-2 text-[10px] font-bold text-zinc-500 uppercase tracking-widest p-3 border-b border-black/20 dark:border-white/20 bg-black/5 dark:bg-white/5">
-                        <span>Exchange</span>
-                        <span className="text-right">Rate (8H)</span>
-                      </div>
-                      {[
-                        { name: "BINANCE", val: binanceFunding },
-                        { name: "BYBIT", val: bybitFunding },
-                        { name: "HYPERLIQUID", val: hypFunding },
-                        { name: "DYDX", val: dydxFunding },
-                        { name: "OKX", val: okxFunding }
-                      ].map((feed, idx) => (
-                        <div key={idx} className="grid grid-cols-2 p-3 text-xs border-b border-black/10 dark:border-white/10 last:border-0 hover:bg-black/5 dark:hover:bg-white/5">
-                          <span className="font-bold">{feed.name}</span>
-                          <span className={`text-right ${feed.val.includes('-') ? "text-red-500" : "text-emerald-500"}`}>
-                            {feed.val}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-8">
-                       <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Keeper Events</h3>
-                       <div className="border border-black/20 dark:border-white/20 text-xs bg-white dark:bg-black">
-                          {recentHarvests.length > 0 ? recentHarvests.map((harvest, idx) => (
-                            <div key={idx} className="flex justify-between p-3 border-b border-black/10 dark:border-white/10 last:border-0">
-                              <span>HARVEST_</span>
-                              <span className="text-emerald-500">+{harvest.amount} USDC</span>
-                            </div>
-                          )) : (
-                            <div className="p-3 text-zinc-500">Awaiting validations...</div>
-                          )}
-                       </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar Info Panel */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="border border-black/10 dark:border-white/10 p-6 bg-zinc-50 dark:bg-zinc-950">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">Active Position</h4>
-              <div className="space-y-4">
-                <div className="flex justify-between items-end border-b border-black/10 dark:border-white/10 pb-2">
-                  <span className="text-xs uppercase tracking-widest">Holdings</span>
-                  <span className="text-lg font-bold">${formatNumber(activeUserBalance)}</span>
-                </div>
-                <div className="flex justify-between items-end border-b border-black/10 dark:border-white/10 pb-2">
-                  <span className="text-xs uppercase tracking-widest">Ratio</span>
-                  <span className="text-lg font-bold">{formatNumber(activeUserShares, 6)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-black/10 dark:border-white/10 p-6">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">Contract Identity</h4>
-              <div className="flex items-start gap-3">
-                <Shield className="w-5 h-5 text-emerald-500" />
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-widest mb-1">ERC-8004 Verified</div>
-                  <div className="text-[10px] text-zinc-500 font-mono break-all leading-tight">
-                    Agent_Registry: 0x8004A818...BD9e
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+               <div className="mt-4">
+                 <button
+                   onClick={handleWithdraw}
+                   disabled={!withdrawShares || activePendingState}
+                   className={`w-full py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
+                     !withdrawShares
+                       ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
+                       : activePendingState
+                       ? "bg-accent/50 text-white cursor-wait"
+                       : "bg-accent text-white hover:bg-accentHover shadow-premium hover:shadow-premium-hover active:scale-[0.98]"
+                   }`}
+                 >
+                   {activePendingState ? "Processing..." : "Withdraw USDC"}
+                 </button>
+               </div>
+             </div>
+          )}
         </div>
+
+        {/* Info Card Below Widget */}
+        <div className="mt-6 bg-panel border border-borderLine rounded-2xl p-4 text-sm shadow-sm">
+          <div className="flex justify-between py-2 border-b border-borderLine/50">
+            <span className="text-slate-500 flex items-center gap-1">
+              Live APY <Info className="w-3 h-3" />
+            </span>
+            <span className="font-semibold text-emerald-500">
+              {estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(2) : "32.40"}%
+            </span>
+          </div>
+          <div className="flex justify-between py-2 border-b border-borderLine/50">
+            <span className="text-slate-500 flex items-center gap-1">
+              Network Cost <Info className="w-3 h-3" />
+            </span>
+            <span className="font-semibold text-foreground">~$0.01</span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span className="text-slate-500 flex items-center gap-1">
+              Contract Validated <Shield className="w-3 h-3" />
+            </span>
+            <span className="font-mono text-xs text-foreground bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">0x8004...BD9e</span>
+          </div>
+        </div>
+
       </div>
     </div>
   );

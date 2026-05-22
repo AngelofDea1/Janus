@@ -1,30 +1,34 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { Providers } from './providers'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import type { Metadata } from "next";
+import { headers } from 'next/headers';
+import "./globals.css";
+
+import { Providers } from "./providers";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: 'Janus - Institutional Arbitrage',
-  description: 'Delta-neutral funding rate arbitrage on Arc',
-}
+  title: "Janus",
+  description: "Institutional-grade delta-neutral funding rate arbitrage on the Arc Network.",
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  // We use headers to derive initial theme state if possible, but the client will handle the toggle
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className="bg-white dark:bg-black text-black dark:text-white min-h-screen flex flex-col font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <html lang="en" className="antialiased">
+      <body className="min-h-screen flex flex-col relative selection:bg-accent/20">
         <Providers>
           <Navbar />
-          <div className="flex-grow border-x border-black/10 dark:border-white/10 max-w-[1400px] mx-auto w-full bg-white dark:bg-black">
+          {/* Main content area */}
+          <main className="flex-1 w-full flex flex-col relative z-0 pb-16">
             {children}
-          </div>
+          </main>
           <Footer />
         </Providers>
       </body>
     </html>
-  )
+  );
 }

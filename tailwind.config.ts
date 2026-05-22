@@ -14,14 +14,19 @@ const config: Config = {
         sans: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         heading: ['"Space Grotesk"', 'sans-serif'],
       },
-      animation: {
-        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      colors: {
+        background: 'rgb(var(--theme-bg))',
+        foreground: 'rgb(var(--theme-foreground))',
+        panel: 'rgb(var(--theme-panel))',
+        accent: 'rgb(var(--theme-accent))',
+        accentHover: 'rgb(var(--theme-accent-hover))',
+        borderLine: 'rgb(var(--theme-border))',
       },
       boxShadow: {
-        'brutal': '4px 4px 0px 0px rgba(0, 0, 0, 1)',
-        'brutal-sm': '2px 2px 0px 0px rgba(0, 0, 0, 1)',
-        'brutal-dark': '4px 4px 0px 0px rgba(255, 255, 255, 1)',
-        'brutal-dark-sm': '2px 2px 0px 0px rgba(255, 255, 255, 1)',
+        'premium': '0 8px 30px rgba(0, 0, 0, 0.08)',
+        'premium-hover': '0 12px 40px rgba(0, 0, 0, 0.12)',
+        'premium-dark': '0 8px 30px rgba(0, 0, 0, 0.4)',
+        'premium-dark-hover': '0 12px 40px rgba(0, 0, 0, 0.6)',
       }
     },
   },

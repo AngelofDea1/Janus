@@ -55,45 +55,32 @@ export default function AnalyticsDashboard() {
     query: { refetchInterval: 2000 },
   });
 
-  const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
-    if (!value) return "0.00";
-    const parsed = parseFloat(value.toString()) / 10 ** decimals;
-    return parsed.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-white dark:bg-black flex flex-col items-center justify-center font-mono text-black dark:text-white">
-        <div className="border border-black dark:border-white p-8 max-w-sm text-center">
-          <Activity className="w-8 h-8 mb-4 mx-auto animate-pulse" />
-          <h2 className="text-sm font-bold uppercase tracking-widest mb-2">
-            Loading_Neural_Metrics
-          </h2>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-4">
-            Awaiting data stream...
-          </p>
-          <div className="w-full h-1 bg-black/10 dark:bg-white/10 relative">
-            <div className="absolute top-0 left-0 h-full bg-black dark:bg-white w-2/3 animate-pulse" />
-          </div>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <div className="relative w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 animate-pulse">
+          <Activity className="w-8 h-8 text-accent" />
+          <div className="absolute inset-0 rounded-full border border-accent/30 animate-ping opacity-75" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-transparent text-black dark:text-white font-mono p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="relative min-h-screen bg-background text-foreground transition-colors py-16 sm:py-24 overflow-hidden">
+      
+      {/* Background Gradients */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[120px] pointer-events-none" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 space-y-12">
         
         {/* Title */}
-        <div className="border-b border-black/10 dark:border-white/10 pb-6">
-          <h1 className="text-3xl md:text-5xl font-heading font-black tracking-tighter uppercase mb-2">
-            Analytics_Dashboard
+        <div className="max-w-3xl">
+          <h1 className="text-4xl font-extrabold font-heading tracking-tight text-foreground mb-4">
+            Protocol Analytics
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 tracking-widest uppercase">
-            Protocol historical compound metrics & live ML neural engine
+          <p className="text-slate-500 dark:text-slate-400">
+            Analyze historical compound metrics and monitor the live predictive funding rate engine.
           </p>
         </div>
 
@@ -101,13 +88,13 @@ export default function AnalyticsDashboard() {
         <PredictiveEngine />
 
         {/* Big spacious chart card */}
-        <div className="border border-black/10 dark:border-white/10 bg-white dark:bg-black p-6 md:p-8">
+        <div className="bg-panel border border-borderLine p-8 rounded-3xl shadow-sm">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h3 className="font-bold text-sm uppercase tracking-widest mb-1">Compound Arbitrage Volume</h3>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Weekly volume routed by Janus keeper bots</p>
+              <h3 className="font-bold text-lg text-foreground">Compound Arbitrage Volume</h3>
+              <p className="text-sm text-slate-500 mt-1">Weekly volume securely routed by Janus bots</p>
             </div>
-            <span className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black text-[10px] font-bold uppercase tracking-widest">
+            <span className="px-4 py-2 rounded-full bg-accent/10 text-accent font-medium text-sm">
               USD Principal
             </span>
           </div>
@@ -117,31 +104,30 @@ export default function AnalyticsDashboard() {
               <AreaChart data={volumeData}>
                 <defs>
                   <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(120, 120, 120, 0.2)" />
-                <XAxis dataKey="name" stroke="#888" fontSize={10} tickLine={false} tickFormatter={(val) => val.toUpperCase()} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.1)" />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} />
                 <YAxis 
-                  stroke="#888" 
-                  fontSize={10} 
+                  stroke="#64748b" 
+                  fontSize={12} 
                   tickLine={false} 
                   tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
                 />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: "#000", 
-                    border: "1px solid #333", 
-                    borderRadius: "0px", 
+                    backgroundColor: "rgba(15, 23, 42, 0.95)", 
+                    border: "none", 
+                    borderRadius: "16px", 
                     color: "#fff",
-                    fontFamily: "monospace",
-                    fontSize: "10px",
-                    textTransform: "uppercase"
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
                   }}
-                  itemStyle={{ color: "#10b981" }}
+                  labelStyle={{ fontWeight: "bold" }}
+                  itemStyle={{ color: "#818cf8" }}
                 />
-                <Area type="step" dataKey="volume" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorVolume)" />
+                <Area type="monotone" dataKey="volume" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -151,21 +137,21 @@ export default function AnalyticsDashboard() {
         <div className="grid md:grid-cols-2 gap-8">
           
           {/* APY Metrics Card */}
-          <div className="p-8 border border-black/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-950">
-            <h4 className="font-bold text-sm uppercase tracking-widest mb-6 border-b border-black/10 dark:border-white/10 pb-4">
-              Yield_Statistics
+          <div className="p-8 bg-panel border border-borderLine rounded-3xl shadow-sm space-y-6">
+            <h4 className="font-bold text-lg text-foreground">
+              Historical Yield Stats
             </h4>
-            <div className="space-y-0 text-xs">
+            <div className="space-y-4">
               {[
-                { period: "Live Estimated APY", value: `${estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(1) : "0.0"}%`, highlight: true },
+                { period: "Current Live Estimated APY", value: `${estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(1) : "0.0"}%`, bold: true },
                 { period: "Last 7 Days Average APY", value: "32.4%" },
                 { period: "Last 30 Days Average APY", value: "28.9%" },
                 { period: "All-Time Highest Peak APY", value: "54.2%" },
-                { period: "Keeper Daily Multiplier", value: "0.088%" },
+                { period: "Keeper Daily Yield Multiplier", value: "0.088%" },
               ].map((stat, idx) => (
-                <div key={idx} className="flex justify-between items-center py-4 border-b border-black/10 dark:border-white/10 last:border-b-0 hover:bg-black/5 dark:hover:bg-white/5 transition-colors px-2">
-                  <span className="text-zinc-500 uppercase tracking-widest">{stat.period}</span>
-                  <span className={`font-bold ${stat.highlight ? "text-emerald-500 text-sm" : ""}`}>
+                <div key={idx} className="flex justify-between items-center py-3 border-b border-borderLine/50 text-sm">
+                  <span className="text-slate-500 font-medium">{stat.period}</span>
+                  <span className={`font-semibold ${stat.bold ? "text-emerald-500 text-lg" : "text-foreground"}`}>
                     {stat.value}
                   </span>
                 </div>
@@ -174,25 +160,25 @@ export default function AnalyticsDashboard() {
           </div>
 
           {/* Vault Mechanics Card */}
-          <div className="p-8 border border-black/10 dark:border-white/10 bg-white dark:bg-black flex flex-col justify-between">
+          <div className="p-8 bg-panel border border-borderLine rounded-3xl shadow-sm flex flex-col justify-between">
             <div className="space-y-6">
-              <h4 className="font-bold text-sm uppercase tracking-widest border-b border-black/10 dark:border-white/10 pb-4">
-                Vault_Mechanics
+              <h4 className="font-bold text-lg text-foreground">
+                Vault Mechanics Summary
               </h4>
-              <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed uppercase tracking-widest">
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                 Janus Vault holds stable assets such as USDC. When deposits are requested, our keeper contract automatically allocates funds across low-risk, delta-neutral pools to lock in highest available yield.
               </p>
-              <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed uppercase tracking-widest">
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                 The vault standard conforms strictly to the ERC-4626 Tokenized Vaults standard. When depositing USDC, users receive JANUS vault shares. The exchange rate between USDC and JANUS shares grows linearly over time as yield is compounded back into the vault assets.
               </p>
             </div>
             
-            <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-widest pt-6 border-t border-black/10 dark:border-white/10 mt-6">
-              <span className="px-3 py-1.5 border border-black/20 dark:border-white/20 text-emerald-500">
-                ERC-4626 Valid
+            <div className="flex flex-wrap gap-2 text-xs font-semibold pt-6 border-t border-borderLine/50 mt-6">
+              <span className="px-3 py-1.5 bg-accent/10 text-accent rounded-full">
+                ERC-4626 Standard
               </span>
-              <span className="px-3 py-1.5 border border-black/20 dark:border-white/20 text-emerald-500">
-                Delta-Neutral
+              <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-500 rounded-full">
+                Delta-Neutral Principal
               </span>
             </div>
           </div>

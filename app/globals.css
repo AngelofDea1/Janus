@@ -5,183 +5,183 @@
 @import "tailwindcss";
 
 @layer base {
- :root {
- --theme-bg: 255, 255, 255; /* Pure White */
- --theme-foreground: 0, 0, 0; /* Pure Black */
- --theme-panel: 250, 250, 250; /* Light Gray Panel */
- --theme-accent: 15, 23, 42; /* Slate-900 */
- }
+  :root {
+    --theme-bg: 252, 252, 252; /* Very faint gray/white */
+    --theme-foreground: 15, 23, 42; /* Slate 900 */
+    --theme-panel: 255, 255, 255; /* Pure white */
+    --theme-accent: 79, 70, 229; /* Indigo 600 */
+    --theme-accent-hover: 67, 56, 202; /* Indigo 700 */
+    --theme-border: 226, 232, 240; /* Slate 200 */
+  }
 
- .dark {
- --theme-bg: 0, 0, 0; /* Pure Black */
- --theme-foreground: 255, 255, 255; /* Pure White */
- --theme-panel: 9, 9, 11; /* Zinc-950 */
- --theme-accent: 255, 255, 255; /* Pure White Accent */
- }
+  .dark {
+    --theme-bg: 5, 5, 5; /* Ultra deep gray/black */
+    --theme-foreground: 248, 250, 252; /* Slate 50 */
+    --theme-panel: 14, 14, 14; /* Slightly elevated dark */
+    --theme-accent: 99, 102, 241; /* Indigo 500 */
+    --theme-accent-hover: 129, 140, 248; /* Indigo 400 */
+    --theme-border: 38, 38, 38; /* Neutral 800 */
+  }
 }
 
 body {
- font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
- -webkit-font-smoothing: antialiased;
- -moz-osx-font-smoothing: grayscale;
- background-color: rgb(var(--theme-bg));
- color: rgb(var(--theme-foreground));
- /* Grid pattern background for brutalist feel */
- background-image: 
-   linear-gradient(to right, rgba(var(--theme-foreground), 0.05) 1px, transparent 1px),
-   linear-gradient(to bottom, rgba(var(--theme-foreground), 0.05) 1px, transparent 1px);
- background-size: 40px 40px;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(var(--theme-bg));
+  color: rgb(var(--theme-foreground));
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
- font-family: 'Space Grotesk', sans-serif;
- font-feature-settings: "ss01" on, "ss02" on;
+  font-family: 'Space Grotesk', sans-serif;
+  font-feature-settings: "ss01" on, "ss02" on;
 }
 
 .font-mono {
- font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* Hide input number arrows/spinners */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
- -webkit-appearance: none;
- margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 input[type=number] {
- -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
-/* Brutalist sharp focus styles */
+/* Smooth focus rings */
 *:focus-visible {
- outline: 2px solid rgb(var(--theme-foreground));
- outline-offset: 2px;
+  outline: 2px solid rgba(var(--theme-accent), 0.5);
+  outline-offset: 2px;
 }
 
 /* Markdown Content Styling */
 .markdown-content {
- font-family: 'Outfit', sans-serif;
- line-height: 1.75;
- font-size: 0.95rem;
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.75;
+  font-size: 1rem;
 }
 
 .markdown-content h1 {
- font-size: 2.25rem;
- font-weight: 800;
- margin-top: 1.5rem;
- margin-bottom: 1.5rem;
- color: rgb(var(--theme-foreground));
- border-bottom: 1px solid rgba(var(--theme-foreground), 0.1);
- padding-bottom: 0.5rem;
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: rgb(var(--theme-foreground));
+  border-bottom: 1px solid rgba(var(--theme-border), 1);
+  padding-bottom: 0.5rem;
 }
 
 .markdown-content h2 {
- font-size: 1.6rem;
- font-weight: 700;
- margin-top: 2rem;
- margin-bottom: 1rem;
- color: rgb(var(--theme-foreground));
- border-bottom: 1px solid rgba(var(--theme-foreground), 0.06);
- padding-bottom: 0.25rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: rgb(var(--theme-foreground));
+  border-bottom: 1px solid rgba(var(--theme-border), 1);
+  padding-bottom: 0.25rem;
 }
 
 .markdown-content h3 {
- font-size: 1.25rem;
- font-weight: 700;
- margin-top: 1.5rem;
- margin-bottom: 0.75rem;
- color: rgb(var(--theme-foreground));
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: rgb(var(--theme-foreground));
 }
 
 .markdown-content p {
- margin-bottom: 1.25rem;
- color: #52525b; /* Zinc-600 */
+  margin-bottom: 1.25rem;
+  color: #475569; /* Slate 600 */
 }
 .dark .markdown-content p {
- color: #a1a1aa; /* Zinc-400 */
+  color: #94a3b8; /* Slate 400 */
 }
 
 .markdown-content strong {
- font-weight: 700;
- color: rgb(var(--theme-foreground));
+  font-weight: 700;
+  color: rgb(var(--theme-foreground));
 }
 
 .markdown-content em {
- font-style: italic;
+  font-style: italic;
 }
 
 .markdown-content a {
- color: rgb(var(--theme-foreground));
- font-weight: 600;
- text-decoration: underline;
- text-decoration-thickness: 1px;
- text-underline-offset: 4px;
- transition: opacity 0.2s;
+  color: rgb(var(--theme-accent));
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
 }
 .markdown-content a:hover {
- opacity: 0.7;
+  opacity: 0.8;
 }
 
 .markdown-content ul {
- list-style-type: square; /* Brutalist square bullets */
- padding-left: 1.5rem;
- margin-bottom: 1.25rem;
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .markdown-content ol {
- list-style-type: decimal-leading-zero;
- padding-left: 1.5rem;
- margin-bottom: 1.25rem;
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .markdown-content li {
- margin-bottom: 0.5rem;
- color: #52525b;
+  margin-bottom: 0.5rem;
+  color: #475569;
 }
 .dark .markdown-content li {
- color: #a1a1aa;
+  color: #94a3b8;
 }
 
 .markdown-content blockquote {
- border-left: 4px solid rgb(var(--theme-foreground));
- padding: 1rem 1.5rem;
- margin: 1.5rem 0;
- background-color: rgba(var(--theme-foreground), 0.03);
- color: inherit;
- font-weight: 500;
+  border-left: 3px solid rgb(var(--theme-accent));
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background-color: rgba(var(--theme-accent), 0.05);
+  border-radius: 0.5rem;
+  color: inherit;
+  font-weight: 500;
 }
 
 .markdown-content blockquote p {
- margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .markdown-content code {
- font-family: 'JetBrains Mono', monospace;
- font-size: 0.85em;
- padding: 0.2rem 0.4rem;
- background-color: rgba(var(--theme-foreground), 0.05);
- border: 1px solid rgba(var(--theme-foreground), 0.1);
- color: inherit;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  padding: 0.2rem 0.4rem;
+  background-color: rgba(var(--theme-border), 0.5);
+  border-radius: 0.375rem;
+  color: inherit;
 }
 
 .markdown-content pre {
- margin: 1.5rem 0;
- padding: 1.25rem;
- background-color: rgba(var(--theme-foreground), 0.02);
- border: 1px solid rgba(var(--theme-foreground), 0.1);
- overflow-x: auto;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background-color: rgb(var(--theme-panel));
+  border: 1px solid rgba(var(--theme-border), 1);
+  border-radius: 0.75rem;
+  overflow-x: auto;
 }
 
 .markdown-content pre code {
- background-color: transparent;
- padding: 0;
- border: none;
- color: inherit;
- font-size: 0.9em;
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: 0.9em;
 }
 
 .markdown-content hr {
- margin: 2rem 0;
- border: 0;
- border-top: 1px solid rgba(var(--theme-foreground), 0.1);
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid rgba(var(--theme-border), 1);
 }
