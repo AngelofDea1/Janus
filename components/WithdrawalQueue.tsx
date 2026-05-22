@@ -26,22 +26,27 @@ export default function WithdrawalQueue() {
  });
 
  // Mock initial requests for premium demo display, merging with active chain status
- const [requests, setRequests] = useState<WithdrawalRequest[]>([
- {
- requestId: 5012,
- shares: BigInt("1250000000000000000000"), // 1250 shares
- requestTime: BigInt(Math.floor(Date.now() / 1000) - 180000), // ~2 days ago
- timeRemaining: BigInt(0),
- completed: false
- },
- {
- requestId: 5013,
- shares: BigInt("5000000000000000000000"), // 5000 shares
- requestTime: BigInt(Math.floor(Date.now() / 1000) - 36000), // 10 hours ago
- timeRemaining: BigInt(136800), // 38 hours remaining
- completed: false
- }
- ]);
+ const [requests, setRequests] = useState<WithdrawalRequest[]>([]);
+
+ React.useEffect(() => {
+   const now = Math.floor(Date.now() / 1000);
+   setRequests([
+     {
+       requestId: 5012,
+       shares: BigInt("1250000000000000000000"), // 1250 shares
+       requestTime: BigInt(now - 180000), // ~2 days ago
+       timeRemaining: BigInt(0),
+       completed: false
+     },
+     {
+       requestId: 5013,
+       shares: BigInt("5000000000000000000000"), // 5000 shares
+       requestTime: BigInt(now - 36000), // 10 hours ago
+       timeRemaining: BigInt(136800), // 38 hours remaining
+       completed: false
+     }
+   ]);
+ }, []);
 
  const completeWithdrawal = (requestId: number) => {
  setClaimProgress(requestId);

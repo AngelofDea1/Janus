@@ -70,31 +70,32 @@ export default function PredictiveEngine() {
  };
 
  return (
- <div className="space-y-12">
+ <div className="space-y-8 bg-panel border border-borderLine rounded-[32px] p-6 md:p-10 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative z-10">
  
- <div className="flex flex-col sm:flex-row justify-between sm:items-baseline gap-6 border-b border-borderLine pb-6">
+ <div className="flex flex-col sm:flex-row justify-between sm:items-baseline gap-6 mb-4">
  <div>
- <h3 className="font-heading font-medium text-xl text-foreground mb-1">
+ <h3 className="font-heading font-bold text-2xl text-foreground mb-2">
  ML Predictive Engine
  </h3>
- <p className="text-sm text-slate-500">
+ <p className="text-sm text-slate-500 max-w-md">
  Real-time deep learning model predicting funding rate spreads before they occur across major CEXs and DEXs.
  </p>
  </div>
 
- <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
- <div className="text-xs font-medium text-slate-500">
- Model: <span className="text-foreground">{activeModel}</span>
+ <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+ <div className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine text-xs font-medium text-slate-500 flex items-center gap-2">
+ <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+ {activeModel}
  </div>
  <button
  onClick={runAnalysis}
  disabled={isAnalyzing}
- className="text-sm font-medium text-foreground hover:text-slate-500 transition-colors disabled:opacity-50 flex items-center gap-2"
+ className="px-6 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all bg-accent text-white hover:bg-accentHover shadow-premium hover:shadow-premium-hover active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {isAnalyzing ? (
  <>
  <RefreshCw className="w-4 h-4 animate-spin" />
- Generating...
+ Analyzing...
  </>
  ) : (
  <>
@@ -106,32 +107,35 @@ export default function PredictiveEngine() {
  </div>
 
  {/* Prediction Results */}
- <div className="space-y-6">
+ <div className="space-y-4">
  {routes.map((route, idx) => (
  <div 
  key={`${route.id}-${idx}`}
- className={`border-b border-borderLine pb-6 transition-all duration-500 ${
- isAnalyzing ? "opacity-50" : "opacity-100"
+ className={`bg-black/5 dark:bg-[#09090b] border border-borderLine rounded-2xl p-6 transition-all duration-500 hover:border-accent/30 ${
+ isAnalyzing ? "opacity-50 blur-[2px]" : "opacity-100 blur-0"
  }`}
  >
  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
  
  {/* Left: Route Path */}
  <div className="flex-1">
- <div className="flex items-center gap-3 mb-2 text-xs uppercase tracking-widest font-medium">
- <span className={idx === 0 ? "text-foreground" : "text-slate-500"}>
- {idx === 0 ? "Highest Alpha" : "Alternative Route"}
+ <div className="flex items-center gap-3 mb-3 text-xs uppercase tracking-widest font-medium">
+ {idx === 0 && (
+ <span className="px-2 py-1 rounded bg-accent/10 text-accent font-bold border border-accent/20">
+ Highest Alpha
  </span>
- <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full" />
- <span className="text-slate-500">{route.asset}</span>
+ )}
+ <span className="text-foreground">{route.asset}</span>
  <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full" />
  <span className="text-slate-500 font-mono">ID: {route.id}</span>
  </div>
  
- <div className="flex flex-wrap items-center gap-2 text-sm text-foreground">
+ <div className="flex flex-wrap items-center gap-2 text-sm text-foreground font-medium">
  {route.venues.map((venue, vIdx) => (
  <React.Fragment key={vIdx}>
- <span>{venue}</span>
+ <span className="bg-white dark:bg-[#1a1a1a] px-3 py-1.5 rounded-lg border border-borderLine shadow-sm">
+ {venue}
+ </span>
  {vIdx < route.venues.length - 1 && (
  <ChevronRight className="w-4 h-4 text-slate-400" />
  )}
@@ -141,30 +145,24 @@ export default function PredictiveEngine() {
  </div>
 
  {/* Right: Stats */}
- <div className="flex items-center gap-8 w-full lg:w-auto pt-4 lg:pt-0">
- <div>
- <div className="text-xs uppercase tracking-widest font-medium text-slate-500 mb-1">
- Predicted Spread
- </div>
- <div className="text-xl font-heading font-medium text-foreground">
+ <div className="flex items-center gap-6 w-full lg:w-auto pt-4 lg:pt-0">
+ <div className="px-4 py-3 bg-white dark:bg-[#1a1a1a] border border-borderLine rounded-xl shadow-sm text-center min-w-[100px]">
+ <div className="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-1">Spread</div>
+ <div className="text-xl font-heading font-bold text-foreground">
  {route.spread.toFixed(3)}%
  </div>
  </div>
  
- <div>
- <div className="text-xs uppercase tracking-widest font-medium text-slate-500 mb-1">
- Model Confidence
- </div>
- <div className="text-xl font-heading font-medium text-foreground">
+ <div className="px-4 py-3 bg-white dark:bg-[#1a1a1a] border border-borderLine rounded-xl shadow-sm text-center min-w-[100px]">
+ <div className="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-1">Confidence</div>
+ <div className="text-xl font-heading font-bold text-emerald-500">
  {route.confidence}%
  </div>
  </div>
 
- <div className="text-right">
- <div className="text-xs uppercase tracking-widest font-medium text-slate-500 mb-1">
- Est. Profit
- </div>
- <div className="text-2xl font-heading font-medium text-foreground">
+ <div className="text-right ml-4">
+ <div className="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-1">Est. Profit</div>
+ <div className="text-3xl font-heading font-bold text-foreground">
  {route.estimatedProfit}
  </div>
  </div>
