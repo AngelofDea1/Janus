@@ -20,8 +20,7 @@ const CryptoLogo = ({ asset }: { asset: string }) => {
   const sources = [
     `https://assets.coincap.io/assets/icons/${symbol}@2x.png`,
     `https://www.gate.io/images/coin_icon/64/${symbol}.png`,
-    `https://assets.kucoin.com/www/coin/pc/${asset.toUpperCase()}.png`,
-    `https://ui-avatars.com/api/?name=${asset}&background=10b981&color=fff&rounded=true&bold=true&font-size=0.4`
+    `https://assets.kucoin.com/www/coin/pc/${asset.toUpperCase()}.png`
   ];
   const [srcIndex, setSrcIndex] = useState(0);
 
@@ -31,9 +30,15 @@ const CryptoLogo = ({ asset }: { asset: string }) => {
       src={sources[srcIndex]} 
       alt={asset}
       className="w-full h-full object-cover z-10"
-      onError={() => {
+      onError={(e) => {
         if (srcIndex < sources.length - 1) {
           setSrcIndex(srcIndex + 1);
+        } else {
+          // If all image sources fail, hide the entire row so we don't show blank/fallback logos
+          const row = e.currentTarget.closest('tr');
+          if (row) {
+            row.style.display = 'none';
+          }
         }
       }}
     />
