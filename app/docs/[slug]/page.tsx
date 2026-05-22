@@ -145,14 +145,19 @@ export default async function DocPage({ params }: PageProps) {
   const activeDoc = DOC_METADATA[slug];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div className="relative min-h-screen bg-background transition-colors py-32 overflow-hidden flex justify-center">
+      
+      {/* Background Mesh */}
+      <div className="absolute top-[20%] left-[10%] w-[35%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[10%] w-[30%] h-[40%] rounded-full bg-emerald-500/5 dark:bg-emerald-500/10 blur-[100px] pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-6xl px-4 md:px-6">
         
         {/* Navigation & Header */}
-        <div className="mb-16">
+        <div className="mb-12">
           <Link 
             href="/docs" 
-            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-foreground transition-colors mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine text-sm font-medium text-slate-500 hover:text-foreground hover:bg-black/10 dark:hover:bg-white/10 transition-all mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Documentation
@@ -160,34 +165,34 @@ export default async function DocPage({ params }: PageProps) {
 
           <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-6">
             <div>
-              <div className="flex items-center gap-3 text-sm text-slate-500 mb-3">
-                <span>{activeDoc.category}</span>
+              <div className="flex items-center gap-3 text-sm text-slate-500 mb-3 font-medium">
+                <span className="px-2 py-1 rounded bg-black/5 dark:bg-white/5 border border-borderLine">{activeDoc.category}</span>
                 <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
                 <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {activeDoc.readTime}</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl font-heading font-medium tracking-tight text-foreground">
+              <h1 className="text-4xl sm:text-5xl font-heading font-extrabold tracking-tight text-foreground">
                 {activeDoc.title}
               </h1>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Main Content Area */}
-          <main className="lg:col-span-8">
+          <main className="lg:col-span-8 bg-panel border border-borderLine rounded-[32px] p-6 md:p-10 lg:p-12 shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
             <article 
-              className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-heading prose-headings:font-medium prose-a:text-foreground prose-a:underline-offset-4 hover:prose-a:text-slate-500 prose-img:rounded-xl"
+              className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-heading prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-accent prose-a:font-medium prose-a:underline-offset-4 hover:prose-a:text-accentHover prose-img:rounded-2xl prose-img:border prose-img:border-borderLine prose-img:shadow-sm"
               dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           </main>
 
           {/* Right Sidebar */}
-          <aside className="lg:col-span-4 space-y-12 sticky top-24 hidden lg:block">
+          <aside className="lg:col-span-4 space-y-8 sticky top-24 hidden lg:block bg-panel border border-borderLine rounded-[32px] p-6 md:p-8 shadow-sm backdrop-blur-xl">
             {/* Table of Contents */}
             {toc.length > 0 && (
               <div>
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-4">
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">
                   On this page
                 </h3>
                 <nav className="flex flex-col gap-3">
@@ -195,7 +200,7 @@ export default async function DocPage({ params }: PageProps) {
                     <a
                       key={item.id}
                       href={`#${item.id}`}
-                      className="text-sm text-slate-500 hover:text-foreground transition-colors leading-relaxed"
+                      className="text-sm font-medium text-slate-500 hover:text-accent transition-colors leading-relaxed"
                     >
                       {item.title}
                     </a>
@@ -205,8 +210,8 @@ export default async function DocPage({ params }: PageProps) {
             )}
 
             {/* Other Documents */}
-            <div>
-              <h3 className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <div className={toc.length > 0 ? "pt-8 border-t border-borderLine" : ""}>
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                 <List className="w-3.5 h-3.5" /> Library
               </h3>
               <nav className="flex flex-col gap-1">
@@ -216,10 +221,10 @@ export default async function DocPage({ params }: PageProps) {
                     <Link
                       key={docSlug}
                       href={`/docs/${docSlug}`}
-                      className={`flex items-center gap-3 py-2 text-sm transition-colors ${
+                      className={`flex items-center gap-3 py-2 px-3 rounded-xl text-sm transition-all ${
                         isActive
-                          ? "text-foreground font-medium"
-                          : "text-slate-500 hover:text-foreground"
+                          ? "bg-accent/10 text-accent font-bold border border-accent/20"
+                          : "text-slate-500 font-medium hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 border border-transparent"
                       }`}
                     >
                       {docInfo.title}
@@ -231,14 +236,14 @@ export default async function DocPage({ params }: PageProps) {
             
             {/* Support */}
             <div className="pt-8 border-t border-borderLine">
-               <p className="text-sm text-slate-500 mb-4">
+               <p className="text-sm font-medium text-slate-500 mb-4">
                  Can't find what you are looking for?
                </p>
                <a 
                  href="https://discord.gg/janus" 
                  target="_blank" 
                  rel="noreferrer" 
-                 className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-slate-500 transition-colors"
+                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine text-sm font-semibold text-foreground hover:text-accent transition-all hover:border-accent/30"
                >
                  Join Discord <ArrowRight className="w-4 h-4" />
                </a>

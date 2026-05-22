@@ -39,37 +39,44 @@ export default function DocumentationPage() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground transition-colors pt-32 pb-24">
-      <div className="max-w-4xl mx-auto px-6 space-y-16">
+    <div className="relative min-h-screen bg-background transition-colors py-32 overflow-hidden flex justify-center">
+      
+      {/* Background Mesh */}
+      <div className="absolute top-[10%] left-[20%] w-[35%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[40%] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[100px] pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-5xl px-4 md:px-6">
         
-        {/* Minimal Header */}
-        <div className="max-w-2xl">
-          <h1 className="text-5xl md:text-6xl font-extrabold font-heading tracking-tighter text-foreground mb-6">
-            Documentation.
+        {/* Header Section */}
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight text-foreground mb-4">
+            Documentation
           </h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">
+          <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
             Everything you need to understand, build on, or invest in the Janus Protocol.
           </p>
         </div>
 
-        {/* Minimalist List Layout */}
-        <div className="space-y-4">
+        {/* Floating Glassmorphic Container */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {docs.map((doc, idx) => (
             <Link 
               key={idx} 
               href={doc.link} 
-              className="group block py-6 border-b border-borderLine hover:border-accent transition-colors"
+              className="group bg-panel border border-borderLine rounded-3xl p-8 shadow-sm backdrop-blur-md hover:border-accent/30 transition-all hover:shadow-premium"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col h-full justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold font-heading text-foreground group-hover:text-accent transition-colors mb-2">
+                  <h3 className="text-2xl font-bold font-heading text-foreground group-hover:text-accent transition-colors mb-3">
                     {doc.title}
                   </h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
                     {doc.description}
                   </p>
                 </div>
-                <ArrowRight className="w-6 h-6 text-slate-300 dark:text-slate-700 group-hover:text-accent group-hover:translate-x-2 transition-all" />
+                <div className="mt-8 flex items-center text-sm font-semibold text-accent opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all">
+                  Read documentation <ArrowRight className="w-4 h-4 ml-1" />
+                </div>
               </div>
             </Link>
           ))}
