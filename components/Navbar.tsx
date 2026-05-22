@@ -43,7 +43,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Terminal", path: "/app" },
     { name: "Analytics", path: "/analytics" },
-    { name: "Developers", path: "/docs" },
+    { name: "Documentation", path: "/docs" },
     { name: "Governance", path: "/governance" }
   ];
 

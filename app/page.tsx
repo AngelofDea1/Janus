@@ -20,15 +20,15 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
             </span>
-            Janus Protocol v1.0 Live
+            Automated Delta-Neutral Yields
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-[90px] font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-6">
-            Yield. <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">Automated.</span>
+            Institutional-grade <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
           </h1>
 
           <p className="text-lg md:text-2xl text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed mb-10">
-            The sovereign delta-neutral liquidity engine. Zero manual execution. Pure absolute returns engineered for the next era of DeFi.
+            Automated market-neutral perpetual strategies capturing funding rate spreads across top exchanges. Consistent, risk-mitigated APY secured natively on the Arc Network.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
