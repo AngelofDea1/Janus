@@ -11,7 +11,12 @@ export async function GET() {
     ]);
 
     if (!binanceRes.ok || !bybitRes.ok) {
-      throw new Error("Failed to fetch from one or more exchanges");
+      return NextResponse.json({
+        success: false,
+        error: "Failed to fetch from exchanges",
+        binance: { status: binanceRes.status, statusText: binanceRes.statusText },
+        bybit: { status: bybitRes.status, statusText: bybitRes.statusText }
+      }, { status: 500 });
     }
 
     const binanceData = await binanceRes.json();
