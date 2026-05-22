@@ -48,12 +48,12 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 ### Q: How do I deposit?
 **A:**
 1. Go to https://janus.finance
-2. Click "Connect Wallet" (MetaMask or other)
+2. Click "Connect Wallet"
 3. Go to Deposit tab
 4. Enter amount (any amount, no minimum)
 5. Click "Deposit USDC"
-6. Approve spending limit in MetaMask
-7. Confirm deposit in MetaMask
+6. Approve spending limit in your Web3 Wallet
+7. Confirm deposit in your Web3 Wallet
 8. Wait 1-2 minutes for blockchain confirmation
 9. You now own JANUS shares earning yield
 
@@ -65,10 +65,10 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 1. Go to Withdraw tab
 2. Enter amount of JANUS shares (or click MAX)
 3. Click "Request Withdrawal"
-4. Approve in MetaMask
+4. Approve in your Web3 Wallet
 5. **Wait 2 days** (settlement period)
 6. After 2 days, click "Complete Withdrawal"
-7. Confirm in MetaMask
+7. Confirm in your Web3 Wallet
 8. USDC transfers back to your wallet
 
 ### Q: Why the 2-day withdrawal delay?
@@ -144,7 +144,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 **A:** Arc L1 (a new institutional blockchain launched 2026). Chain ID: 5042002 (testnet). Arc was built to make DeFi cheaper and faster.
 
 ### Q: What wallet can I use?
-**A:** MetaMask recommended. Also: WalletConnect, Coinbase Wallet, Ledger, Trezor. Any EVM-compatible wallet works.
+**A:** Any Web3 Wallet. Rabby, Rainbow, MetaMask, WalletConnect, Coinbase Wallet, Ledger, Trezor. Any EVM-compatible wallet works.
 
 ### Q: Do I need to pay gas?
 **A:** Yes, but very cheap. Arc gas fees: ~$0.01-0.05 per transaction (vs $50-300 on Ethereum). You pay gas for: deposit, withdrawal request, withdrawal completion.
@@ -162,10 +162,10 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 
 ## Troubleshooting
 
-### Problem: MetaMask shows "Network not found"
+### Problem: Wallet shows "Network not found"
 
 **Solution:**
-1. Open MetaMask
+1. Open your Web3 Wallet
 2. Click network dropdown (top left)
 3. Click "Add Network"
 4. Add Arc Testnet:
@@ -187,7 +187,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 ### Problem: Deposit says "Approved" but doesn't go through
 
 **Solutions:**
-1. Check MetaMask shows "Confirmed" (green checkmark)
+1. Check your Web3 Wallet shows "Confirmed" (green checkmark)
 2. Check Arc explorer: paste tx hash, see if it processed
 3. If stuck: wait 2 minutes (blockchain is slow sometimes)
 4. If still stuck: try again with slightly higher gas price

@@ -127,7 +127,7 @@ Arc + Regulatory Clarity + Capital Searching for Yield = **Winner takes all the 
 - Real-time funding rate monitor
 - Governance & insurance portal
 - On-chain audit trail
-- MetaMask integration (RainbowKit + Wagmi)
+- Web3 Wallet integrations (RainbowKit + Wagmi)
 
 #### Smart Contracts
 - ERC-4626 vault deployed (`0x70E5...eA3`)

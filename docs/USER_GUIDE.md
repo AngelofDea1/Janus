@@ -4,7 +4,7 @@
 
 ### Step 1: Prepare Your Wallet
 
-1. Install MetaMask (or compatible wallet)
+1. Install a Web3 Wallet (e.g. Rabby, Rainbow, MetaMask)
 2. Add Arc Testnet network:
  - Network Name: `Arc Testnet`
  - RPC URL: `https://rpc.testnet.arc.network`
@@ -18,7 +18,7 @@
 
 1. Go to `https://janus.finance`
 2. Click "Connect Wallet"
-3. Choose MetaMask (or your wallet)
+3. Choose your wallet provider
 4. Approve network switch to Arc
 5. You're connected!
 
@@ -31,7 +31,7 @@
 1. On the dashboard, find "Deposit Amount"
 2. Enter amount (e.g., 1000 USDC)
 3. Click "Deposit USDC"
-4. MetaMask popup: "Approve spending limit"
+4. Web3 Wallet popup: "Approve spending limit"
 5. Click "Approve"
 6. Wait for transaction (30-60 seconds)
 
@@ -40,7 +40,7 @@
 ### Step 2: Execute Deposit
 
 1. After approval, click "Deposit USDC" again
-2. MetaMask popup: "Confirm transaction"
+2. Web3 Wallet popup: "Confirm transaction"
 3. Click "Confirm"
 4. Wait for blockchain confirmation
 5. Dashboard updates with your JANUS shares
@@ -85,7 +85,7 @@
 1. Go to "Withdraw" section
 2. Enter shares amount (or click "MAX")
 3. Click "Request Withdrawal"
-4. MetaMask popup
+4. Web3 Wallet popup
 5. Click "Confirm"
 
 **Why the delay?** Prevents bank runs, protects other users.
@@ -101,7 +101,7 @@
 
 1. After 2 days, withdrawal is "ready"
 2. Click "Complete Withdrawal"
-3. MetaMask popup
+3. Web3 Wallet popup
 4. Click "Confirm"
 5. USDC transferred back to your wallet
 6. JANUS shares burned
@@ -187,7 +187,7 @@
 
 ## Troubleshooting
 
-### MetaMask Won't Connect
+### Wallet Won't Connect
 1. Check Arc network is added correctly
 2. Switch network dropdown to Arc
 3. Refresh page
