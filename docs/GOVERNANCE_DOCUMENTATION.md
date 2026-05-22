@@ -1,4 +1,4 @@
-# ⚖️ Janus Protocol - Governance Documentation
+# Janus Protocol - Governance Documentation
 
 ## Executive Summary
 
@@ -55,29 +55,29 @@ Approve or reject critical vault operations requiring multiple trusted parties.
 
 ```
 1. PROPOSE
-   - Anyone can propose action on-chain
-   - Proposal includes: action, description, parameters
-   - Stored immutably on blockchain
+ - Anyone can propose action on-chain
+ - Proposal includes: action, description, parameters
+ - Stored immutably on blockchain
 
 2. REVIEW (7 days)
-   - Signers review proposal
-   - Discussion in Discord/forums
-   - Public visibility (fully transparent)
+ - Signers review proposal
+ - Discussion in Discord/forums
+ - Public visibility (fully transparent)
 
 3. VOTE
-   - Signers electronically sign proposal
-   - When 5+ sign, proposal moves forward
-   - All signatures visible on-chain
+ - Signers electronically sign proposal
+ - When 5+ sign, proposal moves forward
+ - All signatures visible on-chain
 
 4. TIMELOCK (24 hours)
-   - Mandatory 24-hour delay before execution
-   - Users have time to withdraw if they disagree
-   - Can be cancelled before execution window
+ - Mandatory 24-hour delay before execution
+ - Users have time to withdraw if they disagree
+ - Can be cancelled before execution window
 
 5. EXECUTE
-   - After 24h delay, anyone can execute
-   - Proposal takes effect
-   - Event logged on-chain
+ - After 24h delay, anyone can execute
+ - Proposal takes effect
+ - Event logged on-chain
 ```
 
 ### Security Properties
@@ -99,16 +99,16 @@ Mandate a waiting period before critical parameter changes take effect.
 
 ```
 Day 1: Multisig approves proposal (5-of-9 vote)
-       ↓
-       Timelock starts (24-hour counter)
-       ↓
-       Users see proposal + can withdraw
-       
+ ↓
+ Timelock starts (24-hour counter)
+ ↓
+ Users see proposal + can withdraw
+ 
 Day 2: 24 hours elapsed
-       ↓
-       Proposal can now be executed
-       ↓
-       Parameters change in vault
+ ↓
+ Proposal can now be executed
+ ↓
+ Parameters change in vault
 ```
 
 ### Why 24 Hours?
@@ -122,11 +122,11 @@ Day 2: 24 hours elapsed
 
 | Parameter | Current | Locked? | Rationale |
 |-----------|---------|---------|-----------|
-| APY Estimate | 32.4% | ✅ Yes | Users need warning before yield drops |
-| Vault Cap | $10M | ✅ Yes | Large deposits need notice |
-| Withdrawal Delay | 2 days | ✅ Yes | Changes affect user liquidity |
-| Performance Fee | 15% | ✅ Yes | Users need time to exit before cut increases |
-| Keeper Address | 0x... | ✅ Yes | Changing bot requires full transparency |
+| APY Estimate | 32.4% | Yes | Users need warning before yield drops |
+| Vault Cap | $10M | Yes | Large deposits need notice |
+| Withdrawal Delay | 2 days | Yes | Changes affect user liquidity |
+| Performance Fee | 15% | Yes | Users need time to exit before cut increases |
+| Keeper Address | 0x... | Yes | Changing bot requires full transparency |
 
 ### Emergency Override (Rare)
 
@@ -193,14 +193,14 @@ Monday: Proposal posted, discussion opens
 Tuesday-Wednesday: Community debate (Discord, forums)
 Thursday: Snapshot voting opens
 Friday: 72-hour voting window closes
-        Result: 67% approval (2.1M votes)
+ Result: 67% approval (2.1M votes)
 
 Saturday: If multisig agrees, prepares on-chain transaction
 Sunday: Transaction queued with 24-hour timelock
 
 Monday: Timelock expires
-        Anyone executes transaction
-        Vault cap updated to $50M
+ Anyone executes transaction
+ Vault cap updated to $50M
 ```
 
 ---
@@ -287,13 +287,13 @@ Monday: Timelock expires
 
 ```
 Month 0: Founder proposes → Multisig approves → Execute
-         (centralized but transparent)
+ (centralized but transparent)
 
 Month 7: Founder proposes → Multisig approves → Token holders vote → Execute
-         (hybrid governance)
+ (hybrid governance)
 
 Month 13: Token holders propose → Token holders vote → Execute
-          (full decentralization)
+ (full decentralization)
 ```
 
 ---
@@ -364,19 +364,19 @@ Month 13: Token holders propose → Token holders vote → Execute
 
 ### What Makes Good Governance?
 
-✅ **Transparency**: All decisions visible, voteable, reversible
-✅ **Diversity**: Signers from different backgrounds, geographies
-✅ **Accountability**: Bad actors can be removed by community
-✅ **Speed**: Can respond to emergencies quickly (multisig override)
-✅ **User Control**: Users can always exit (withdrawal delay)
+ **Transparency**: All decisions visible, voteable, reversible
+ **Diversity**: Signers from different backgrounds, geographies
+ **Accountability**: Bad actors can be removed by community
+ **Speed**: Can respond to emergencies quickly (multisig override)
+ **User Control**: Users can always exit (withdrawal delay)
 
 ### Red Flags (What We Avoid)
 
-❌ **Centralization**: One person controls vault
-❌ **Secrecy**: Governance decisions made in private
-❌ **Immutability**: Parameters can't be changed
-❌ **Slowness**: Takes months to respond to issues
-❌ **Irreversibility**: Can't undo bad decisions
+ **Centralization**: One person controls vault
+ **Secrecy**: Governance decisions made in private
+ **Immutability**: Parameters can't be changed
+ **Slowness**: Takes months to respond to issues
+ **Irreversibility**: Can't undo bad decisions
 
 ---
 

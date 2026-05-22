@@ -1,4 +1,4 @@
-# 🎯 Janus Protocol - Investor Pitch Deck
+# Janus Protocol - Investor Pitch Deck
 
 ## SLIDE 1: THE OPPORTUNITY
 
@@ -11,10 +11,10 @@
 
 ### The Gap
 ```
-Traditional Staking:        4% APY  (boring, low risk)
-Funding Rate Arbitrage:     30% APY (complex, institutional only)
-                                ↑
-                          JANUS FILLS THIS GAP
+Traditional Staking: 4% APY (boring, low risk)
+Funding Rate Arbitrage: 30% APY (complex, institutional only)
+ ↑
+ JANUS FILLS THIS GAP
 ```
 
 ### Market Size
@@ -56,19 +56,19 @@ Net 6-month: $1,280
 
 ### Three Converging Forces
 
-#### 1️⃣ Arc L1 Launching (Q2 2026)
+#### 1⃣ Arc L1 Launching (Q2 2026)
 - **Institutional backing**: BlackRock, Goldman Sachs testing
 - **Sub-cent gas**: $0.01 vs $200 on Ethereum
 - **USDC-native**: No wrapped tokens
 - **Clean slate**: Early ecosystem advantage
 
-#### 2️⃣ MiCA Compliance Deadline (July 2026)
+#### 2⃣ MiCA Compliance Deadline (July 2026)
 - **EU regulation**: Crypto-asset service providers must comply
 - **Institutional demand**: Funds need compliant yield products
 - **First-mover advantage**: We're built compliant from Day 1
 - **Regulatory moat**: Our governance structure prevents future problems
 
-#### 3️⃣ Stablecoin Expansion
+#### 3⃣ Stablecoin Expansion
 - **$75B USDC** circulating (up from $30B in 2023)
 - **$295B+ stablecoins** total market cap
 - **Institutions allocating**: BlackRock, PayPal, Enterprise clients
@@ -123,30 +123,30 @@ Arc + Regulatory Clarity + Capital Searching for Yield = **Winner takes all the 
 ### Live Products (Right Now)
 
 #### Frontend
-- ✅ Professional dashboard (localhost:3000)
-- ✅ Real-time funding rate monitor
-- ✅ Governance & insurance portal
-- ✅ On-chain audit trail
-- ✅ MetaMask integration (RainbowKit + Wagmi)
+- Professional dashboard (localhost:3000)
+- Real-time funding rate monitor
+- Governance & insurance portal
+- On-chain audit trail
+- MetaMask integration (RainbowKit + Wagmi)
 
 #### Smart Contracts
-- ✅ ERC-4626 vault deployed (`0x70E5...eA3`)
-- ✅ 5-of-9 multisig deployed (`0xc8d7...e1`)
-- ✅ 24-hour timelock deployed (`0x892a...22d`)
-- ✅ Insurance fund deployed (`0x2500...f8`)
-- ✅ All contracts verified on Arc explorer
+- ERC-4626 vault deployed (`0x70E5...eA3`)
+- 5-of-9 multisig deployed (`0xc8d7...e1`)
+- 24-hour timelock deployed (`0x892a...22d`)
+- Insurance fund deployed (`0x2500...f8`)
+- All contracts verified on Arc explorer
 
 #### Keeper Bot
-- ✅ 24/7 automated execution
-- ✅ Real funding rate data (Binance, Bybit, Hyperliquid)
-- ✅ Risk management & monitoring
-- ✅ Discord/Telegram alerts
+- 24/7 automated execution
+- Real funding rate data (Binance, Bybit, Hyperliquid)
+- Risk management & monitoring
+- Discord/Telegram alerts
 
 #### Traction
-- ✅ Live on Arc testnet (Chain ID: 5042002)
-- ✅ Registered as ERC-8004 AI Agent on-chain
-- ✅ Real deposits/withdrawals working
-- ✅ Delivering 24-32% APY (live demo available)
+- Live on Arc testnet (Chain ID: 5042002)
+- Registered as ERC-8004 AI Agent on-chain
+- Real deposits/withdrawals working
+- Delivering 24-32% APY (live demo available)
 
 ---
 
@@ -219,10 +219,10 @@ Month 10-12: Series A at $20-50M valuation
 ### Founder/CEO: [Your Name]
 - **Background**: [Your technical/entrepreneurial background]
 - **Why I'm Building Janus**: 
-  - Identified funding rate arbitrage as untapped market
-  - Built entire stack (contracts, bot, frontend) solo
-  - Live on Arc testnet with real users testing
-  - Committed to institutional-grade safety
+ - Identified funding rate arbitrage as untapped market
+ - Built entire stack (contracts, bot, frontend) solo
+ - Live on Arc testnet with real users testing
+ - Committed to institutional-grade safety
 - **Previous**: [Previous relevant experience]
 
 ### Board Advisors (To Be Recruited)
@@ -256,9 +256,9 @@ Month 10-12: Series A at $20-50M valuation
 ## SLIDE 9: ROADMAP & MILESTONES
 
 ### Phase 1: Beta (Q1 2026 - Current)
-- ✅ Smart contracts deployed
-- ✅ Keeper bot operational
-- ✅ Frontend live
+- Smart contracts deployed
+- Keeper bot operational
+- Frontend live
 - [ ] Professional audit (3 weeks)
 - [ ] $1M TVL (Month 3 target)
 
@@ -352,12 +352,12 @@ Year 2: Acquisition/IPO at $5B+ valuation
 
 ### Due Diligence Package
 
-1. ✅ Full technical whitepaper (50+ pages)
-2. ✅ Smart contract source code (GitHub)
-3. ✅ Financial projections (Excel model)
-4. ✅ Team background (LinkedIn profiles)
-5. ✅ Roadmap & milestones (detailed timeline)
-6. ✅ Risk analysis & mitigation (comprehensive)
+1. Full technical whitepaper (50+ pages)
+2. Smart contract source code (GitHub)
+3. Financial projections (Excel model)
+4. Team background (LinkedIn profiles)
+5. Roadmap & milestones (detailed timeline)
+6. Risk analysis & mitigation (comprehensive)
 
 **Available upon request.**
 

@@ -1,4 +1,4 @@
-# ❓ Janus Protocol - Frequently Asked Questions
+# Janus Protocol - Frequently Asked Questions
 
 ---
 
@@ -169,10 +169,10 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 2. Click network dropdown (top left)
 3. Click "Add Network"
 4. Add Arc Testnet:
-   - Network: Arc Testnet
-   - RPC: https://rpc.testnet.arc.network
-   - Chain ID: 5042002
-   - Currency: ETH
+ - Network: Arc Testnet
+ - RPC: https://rpc.testnet.arc.network
+ - Chain ID: 5042002
+ - Currency: ETH
 5. Click "Save"
 6. You're connected
 

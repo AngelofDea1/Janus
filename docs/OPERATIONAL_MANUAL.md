@@ -1,4 +1,4 @@
-# 🔧 Janus Protocol - Operational Manual
+# Janus Protocol - Operational Manual
 
 ## For: Protocol Operations Team, Multisig Members, Community Moderators
 
@@ -9,29 +9,29 @@
 ### Every 24 Hours
 
 - [ ] **Monitor Keeper Bot Health**
-  - Check bot is running (no crashed processes)
-  - Verify funding rates are being fetched
-  - Confirm positions are open/closing normally
+ - Check bot is running (no crashed processes)
+ - Verify funding rates are being fetched
+ - Confirm positions are open/closing normally
 
 - [ ] **Check Vault Metrics**
-  - TVL stable (no unexpected drops)
-  - APY within expected range (±2%)
-  - No pending insurance claims
+ - TVL stable (no unexpected drops)
+ - APY within expected range (±2%)
+ - No pending insurance claims
 
 - [ ] **Review Governance**
-  - Any new proposals?
-  - All multisig votes active?
-  - Community feedback in Discord?
+ - Any new proposals?
+ - All multisig votes active?
+ - Community feedback in Discord?
 
 - [ ] **Verify RPC Health**
-  - Arc testnet RPC responding
-  - Block time normal (<2 seconds)
-  - No gas price spikes
+ - Arc testnet RPC responding
+ - Block time normal (<2 seconds)
+ - No gas price spikes
 
 - [ ] **Monitor User Support**
-  - Respond to support questions
-  - Flag any unusual activity
-  - Update FAQ with new questions
+ - Respond to support questions
+ - Flag any unusual activity
+ - Update FAQ with new questions
 
 ### Weekly
 
@@ -158,14 +158,14 @@ Risks: Larger capital at risk, needs keeper bot optimization
 curl http://localhost:3000/api/keeper/status
 
 {
-  "uptime": "99.9%",
-  "last_check": "2026-01-15T14:32:00Z",
-  "positions_open": 3,
-  "positions_closed_today": 2,
-  "funding_collected": "$2,400",
-  "errors": 0,
-  "rpc_calls": 4821,
-  "gas_spent": "0.034 ETH"
+ "uptime": "99.9%",
+ "last_check": "2026-01-15T14:32:00Z",
+ "positions_open": 3,
+ "positions_closed_today": 2,
+ "funding_collected": "$2,400",
+ "errors": 0,
+ "rpc_calls": 4821,
+ "gas_spent": "0.034 ETH"
 }
 ```
 
@@ -217,13 +217,13 @@ A: In normal conditions: No (market-neutral). Extreme conditions: Possibly (1 in
 
 ```
 User question in Discord
-    ↓
+ ↓
 Community moderator responds (if straightforward)
-    ↓
+ ↓
 If technical issue: escalate to ops team
-    ↓
+ ↓
 If governance issue: escalate to multisig
-    ↓
+ ↓
 If emergency: trigger emergency hotline
 ```
 

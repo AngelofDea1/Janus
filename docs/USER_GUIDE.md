@@ -1,4 +1,4 @@
-# 📖 Janus User Guide - Step-by-Step
+# Janus User Guide - Step-by-Step
 
 ## Getting Started
 
@@ -6,13 +6,13 @@
 
 1. Install MetaMask (or compatible wallet)
 2. Add Arc Testnet network:
-   - Network Name: `Arc Testnet`
-   - RPC URL: `https://rpc.testnet.arc.network`
-   - Chain ID: `5042002`
-   - Currency: `ETH`
+ - Network Name: `Arc Testnet`
+ - RPC URL: `https://rpc.testnet.arc.network`
+ - Chain ID: `5042002`
+ - Currency: `ETH`
 3. Get testnet funds:
-   - ETH (gas): Visit Arc faucet
-   - USDC: Request from Janus team or swap ETH
+ - ETH (gas): Visit Arc faucet
+ - USDC: Request from Janus team or swap ETH
 
 ### Step 2: Connect to Janus
 

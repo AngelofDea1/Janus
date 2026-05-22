@@ -1,4 +1,4 @@
-# 🏛️ Janus Protocol - Complete Overview
+# Janus Protocol - Complete Overview
 
 ## What is Janus?
 
@@ -42,17 +42,17 @@ Perpetual futures have "funding rates" - payments between long and short traders
 
 ```
 User deposits USDC
-    ↓
+ ↓
 Receives JANUS shares (ERC-4626)
-    ↓
+ ↓
 Keeper bot finds funding rate spreads
-    ↓
+ ↓
 Opens market-neutral positions
-    ↓
+ ↓
 Collects funding payments every 8 hours
-    ↓
+ ↓
 Yield automatically compounds
-    ↓
+ ↓
 User can withdraw anytime (2-day settlement)
 ```
 
@@ -60,7 +60,7 @@ User can withdraw anytime (2-day settlement)
 
 ## Key Features
 
-### 🛡️ Institutional-Grade Safety
+### Institutional-Grade Safety
 
 - **5-of-9 Multisig Governance**: Critical decisions require majority approval
 - **24-Hour Timelock**: All parameter changes have 24-hour delay for users to exit
@@ -68,14 +68,14 @@ User can withdraw anytime (2-day settlement)
 - **2-Day Withdrawal Delay**: Settlement period prevents bank runs
 - **On-Chain Audit Trail**: Every action logged permanently, verifiable
 
-### 🧠 Predictive ML Engine
+### Predictive ML Engine
 
 - **Funding Rate Forecasting**: ML model predicts spreads before they widen
 - **Multi-Leg Arbitrage**: Captures 3-4 protocol cascading trades, not just 2-leg
 - **Dynamic Position Sizing**: Scales with liquidity depth and gas costs
 - **Slippage Optimization**: Routes through best liquidity sources
 
-### 📊 Real-Time Transparency
+### Real-Time Transparency
 
 - Live TVL, APY, positions on dashboard
 - Real funding rate data from Binance, Bybit, Hyperliquid

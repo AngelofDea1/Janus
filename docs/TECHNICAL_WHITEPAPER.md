@@ -1,4 +1,4 @@
-# 🛡️ Janus Protocol - Technical Whitepaper
+# Janus Protocol - Technical Whitepaper
 
 ## Executive Summary
 
@@ -50,10 +50,10 @@ Janus automates funding rate arbitrage through:
 
 ```solidity
 contract JanusVault is ERC4626, Ownable {
-    // ERC-20 USDC asset
-    // User deposits → receive JANUS shares
-    // Shares represent proportional vault ownership
-    // Yield compounds automatically
+ // ERC-20 USDC asset
+ // User deposits → receive JANUS shares
+ // Shares represent proportional vault ownership
+ // Yield compounds automatically
 }
 ```
 
@@ -75,9 +75,9 @@ contract JanusVault is ERC4626, Ownable {
 
 ```solidity
 contract JanusMultiSig {
-    // 9 signers (Arc core 3 + community 2 + builder 1 + others 3)
-    // 5 signatures required for critical actions
-    // All proposals are on-chain, verifiable
+ // 9 signers (Arc core 3 + community 2 + builder 1 + others 3)
+ // 5 signatures required for critical actions
+ // All proposals are on-chain, verifiable
 }
 ```
 
@@ -91,9 +91,9 @@ contract JanusMultiSig {
 
 ```solidity
 contract JanusTimelock is TimelockController {
-    // 24-hour execution delay on all proposals
-    // Users have time window to exit if they disagree
-    // Prevents surprise parameter changes
+ // 24-hour execution delay on all proposals
+ // Users have time window to exit if they disagree
+ // Prevents surprise parameter changes
 }
 ```
 
@@ -101,9 +101,9 @@ contract JanusTimelock is TimelockController {
 
 ```solidity
 contract JanusInsuranceFund {
-    // Accumulates 5% of performance fees
-    // Available for claims if smart contract exploited
-    // User claims require multi-sig approval
+ // Accumulates 5% of performance fees
+ // Available for claims if smart contract exploited
+ // User claims require multi-sig approval
 }
 ```
 
@@ -111,63 +111,63 @@ contract JanusInsuranceFund {
 
 ```
 ┌─────────────────────────┐
-│   Keeper Bot (Node.js)  │
+│ Keeper Bot (Node.js) │
 ├─────────────────────────┤
-│  1. Monitor Layer       │
-│     - Fetch funding     │
-│       rates             │
-│     - Cache in Redis    │
-│     - 30s polling       │
+│ 1. Monitor Layer │
+│ - Fetch funding │
+│ rates │
+│ - Cache in Redis │
+│ - 30s polling │
 ├─────────────────────────┤
-│  2. Decision Engine     │
-│     - Find spreads      │
-│     - Score             │
-│       opportunities     │
-│     - Calculate size    │
+│ 2. Decision Engine │
+│ - Find spreads │
+│ - Score │
+│ opportunities │
+│ - Calculate size │
 ├─────────────────────────┤
-│  3. Execution Layer     │
-│     - Open positions    │
-│     - Close positions   │
-│     - Rebalance         │
+│ 3. Execution Layer │
+│ - Open positions │
+│ - Close positions │
+│ - Rebalance │
 ├─────────────────────────┤
-│  4. Risk Management     │
-│     - Monitor leverage  │
-│     - Check liquidity   │
-│     - Alert on issues   │
+│ 4. Risk Management │
+│ - Monitor leverage │
+│ - Check liquidity │
+│ - Alert on issues │
 └─────────────────────────┘
-        ↓
-   ┌──────────┐
-   │ Arc L1   │
-   └──────────┘
+ ↓
+ ┌──────────┐
+ │ Arc L1 │
+ └──────────┘
 ```
 
 ### 2.3 Data Flow
 
 ```
 User Deposit (USDC)
-    ↓
+ ↓
 JanusVault.deposit() 
-    ↓
+ ↓
 Mint JANUS shares 
-    ↓
+ ↓
 Keeper Bot monitors funding rates
-    ↓
+ ↓
 Spread detected (e.g., 0.03%)
-    ↓
+ ↓
 Open market-neutral position:
-  - SHORT on high-rate protocol
-  - LONG on low-rate protocol
-    ↓
+ - SHORT on high-rate protocol
+ - LONG on low-rate protocol
+ ↓
 Collect funding payments (every 8h)
-    ↓
+ ↓
 Close position when spread disappears
-    ↓
+ ↓
 Harvest yield via harvestYield()
-    ↓
+ ↓
 Yield compounds in vault
-    ↓
+ ↓
 User can withdraw (2-day settlement)
-    ↓
+ ↓
 Shares burn, USDC transferred back
 ```
 
@@ -359,10 +359,10 @@ If funding rate = +0.05% per 8 hours:
 
 ### 9.1 Current Status
 
-- ✅ Internal code review: Passed
-- ✅ TypeScript/Solidity linting: Passed
-- ⏳ Professional audit: Scheduled Q3 2026
-- ⏳ Bug bounty: Launching pre-mainnet
+- Internal code review: Passed
+- TypeScript/Solidity linting: Passed
+- Professional audit: Scheduled Q3 2026
+- Bug bounty: Launching pre-mainnet
 
 ### 9.2 Audit Scope
 
@@ -378,9 +378,9 @@ If funding rate = +0.05% per 8 hours:
 ## 10. Roadmap
 
 ### Q1 2026 (Current)
-- ✅ Smart contracts deployed
-- ✅ Keeper bot live
-- ✅ Frontend operational
+- Smart contracts deployed
+- Keeper bot live
+- Frontend operational
 - [ ] Professional audit
 
 ### Q2 2026
