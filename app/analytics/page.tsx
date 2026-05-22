@@ -13,6 +13,7 @@ import {
 import { Activity } from "lucide-react";
 import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 import PredictiveEngine from "@/components/PredictiveEngine";
+import MarketMonitor from "@/components/MarketMonitor";
 
 const volumeData = [
   { name: "Mon", volume: 1200000 },
@@ -129,6 +130,11 @@ export default function AnalyticsDashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        {/* Live Market Monitor */}
+        <div className="w-full">
+          <MarketMonitor />
         </div>
 
         {/* AI Predictive Engine */}
