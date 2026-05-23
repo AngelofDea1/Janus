@@ -38,7 +38,9 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 .font-mono {
-  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: 'tnum', 'cv05';
+  font-variant-numeric: tabular-nums;
 }
 
 /* Hide input number arrows/spinners */
@@ -53,8 +55,7 @@ input[type=number] {
 
 /* Smooth focus rings */
 *:focus-visible {
-  outline: 2px solid rgba(var(--theme-accent), 0.5);
-  outline-offset: 2px;
+  outline: none;
 }
 
 /* Markdown Content Styling */

@@ -295,8 +295,11 @@ export default function ArbitrageApp() {
                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
                     />
                     <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
-                      <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-bold">
-                        $
+                      <div className="w-6 h-6 shrink-0">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="16" cy="16" r="16" fill="#2775CA"/>
+                          <path d="M19.333 13.52c-.64-1.28-1.92-2.24-3.6-2.56v-2.08h-1.92v2.08c-1.92.32-3.36 1.44-4.16 3.04l1.6 1.04c.56-1.12 1.52-1.92 2.56-2.16v4.64c-2.48.64-4.8 1.44-4.8 4.32 0 2.48 1.92 4.16 4.32 4.64v2.08h1.92v-2.08c2.08-.32 3.68-1.52 4.48-3.2l-1.68-1.04c-.56 1.28-1.68 2.08-2.8 2.32V18.16c2.8-.72 4.88-1.76 4.88-4.64 0-.48-.08-.96-.24-1.36-.16-.48-.32-.88-.56-1.28zM13.773 14.56c-.88.16-1.44.8-1.44 1.6 0 1.2 1.12 1.6 2.4 1.92v-3.76c-.4.08-.8.16-1.12.32-.24.08-.56.16-.8.48zm2.4 8.24c-1.12-.24-1.68-.88-1.68-1.76 0-1.28 1.2-1.68 2.64-2.08v4.08c-.4.08-.88.16-1.2.24-.24.08-.56.16-.8.32z" fill="#FFF"/>
+                        </svg>
                       </div>
                       <span className="font-semibold text-sm">USDC</span>
                     </div>

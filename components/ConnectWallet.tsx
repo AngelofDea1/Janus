@@ -30,8 +30,8 @@ const MetamaskIcon = () => (
 );
 
 const WalletConnectIcon = () => (
-  <svg viewBox="0 0 40 40" className="w-8 h-8 rounded-xl bg-[#3396FF] p-1.5 shadow-sm">
-    <path fill="#fff" d="M12.1,14.6c4.4-4.2,11.5-4.2,15.8,0l1.3,1.3c0.3,0.3,0.8,0.3,1.1,0l2.3-2.3c0.3-0.3,0.3-0.8,0-1.1c-6.2-6-16.3-6-22.5,0c-0.3,0.3-0.3,0.8,0,1.1l2.3,2.3c0.3,0.3,0.8,0.3,1.1,0L12.1,14.6z M33.6,18.4c-7.4-7.1-19.6-7.1-27.1,0c-0.3,0.3-0.3,0.8,0,1.1l2.3,2.3c0.3,0.3,0.8,0.3,1.1,0c4.9-4.7,12.9-4.7,17.8,0l1.3,1.3c0.3,0.3,0.8,0.3,1.1,0l2.3-2.3C34,19.2,34,18.7,33.6,18.4z M20,22c-3.1-2.9-8-2.9-11,0c-0.3,0.3-0.3,0.8,0,1.1l2.3,2.3c0.3,0.3,0.8,0.3,1.1,0c1.7-1.6,4.5-1.6,6.2,0l1.3,1.3c0.3,0.3,0.8,0.3,1.1,0l2.3-2.3C23.7,24,23.7,23.5,23.4,23.2C22.4,22.3,21.1,22,20,22z" />
+  <svg viewBox="0 0 512 512" className="w-8 h-8 rounded-xl bg-[#3396FF] p-1.5 shadow-sm">
+    <path fill="#fff" d="M125.6 156.4c71.8-69.6 188.9-69.6 260.8 0l20.4 19.8c4.7 4.5 4.7 11.9 0 16.5L370 228.3c-2.3 2.3-6.1 2.3-8.5 0l-21.3-20.6c-46.8-45.4-122.7-45.4-169.5 0l-21.3 20.6c-2.3 2.3-6.1 2.3-8.5 0l-36.8-35.6c-4.7-4.5-4.7-11.9 0-16.5l21.5-19.8zm339.6 57.5c-117.8-114.2-308.8-114.2-426.6 0c-4.7 4.5-4.7 11.9 0 16.5l36.8 35.6c2.3 2.3 6.1 2.3 8.5 0l21.3-20.6c93.1-90.3 243.9-90.3 337.1 0l21.3 20.6c2.3 2.3 6.1 2.3 8.5 0l36.8-35.6c4.6-4.6 4.6-12 0-16.5zm-225.4 179.6c-49.4-47.9-129.5-47.9-178.9 0c-4.7 4.5-4.7 11.9 0 16.5l36.8 35.6c2.3 2.3 6.1 2.3 8.5 0l21.3-20.6c26.6-25.8 69.8-25.8 96.4 0l21.3 20.6c2.3 2.3 6.1 2.3 8.5 0l36.8-35.6c4.7-4.6 4.7-12 0-16.5z"/>
   </svg>
 );
 
@@ -59,6 +59,20 @@ const OkxIcon = () => (
   </svg>
 );
 
+const SafeIcon = () => (
+  <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-xl bg-[#12FF80] p-1 shadow-sm">
+    <path d="M16 4L4 10V22L16 28L28 22V10L16 4Z" fill="#121312"/>
+    <path d="M16 8L8 12V20L16 24L24 20V12L16 8Z" fill="#12FF80"/>
+  </svg>
+);
+
+const BaseIcon = () => (
+  <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-xl bg-[#0052FF] p-1.5 shadow-sm">
+    <circle cx="16" cy="16" r="14" fill="#0052FF"/>
+    <circle cx="16" cy="16" r="6" fill="white"/>
+  </svg>
+);
+
 // Renders the icon using the wallet's injected EIP-6963 icon, or falls back to our high-quality SVGs.
 const WalletIcon = ({ connector }: { connector: any }) => {
   // EIP-6963 injects a base64 encoded SVG or PNG into `connector.icon`
@@ -73,6 +87,8 @@ const WalletIcon = ({ connector }: { connector: any }) => {
   if (lowerName.includes('rabby')) return <RabbyIcon />;
   if (lowerName.includes('phantom')) return <PhantomIcon />;
   if (lowerName.includes('okx')) return <OkxIcon />;
+  if (lowerName.includes('safe')) return <SafeIcon />;
+  if (lowerName.includes('base')) return <BaseIcon />;
   
   // Generic fallback if absolutely no icon is provided
   return (
@@ -141,13 +157,8 @@ export default function ConnectWallet() {
   const prominentConnectors = uniqueConnectors.filter(c => prominentNames.some(name => c.name.toLowerCase().includes(name)));
   const otherConnectors = uniqueConnectors.filter(c => !prominentNames.some(name => c.name.toLowerCase().includes(name)) && c.id !== 'injected');
 
-  // Featured top wallet (e.g. MetaMask or Rabby)
-  const featuredConnector = prominentConnectors.find(c => c.name.toLowerCase().includes('metamask')) 
-                         || prominentConnectors.find(c => c.name.toLowerCase().includes('rabby'))
-                         || prominentConnectors[0];
-
-  // Remove the featured connector from the main list so it doesn't duplicate
-  const mainListConnectors = prominentConnectors.filter(c => c.uid !== featuredConnector?.uid);
+  // We are removing the featured connector logic because the user asked not to recommend any wallet.
+  const mainListConnectors = prominentConnectors;
 
   return (
     <div className="relative">
@@ -217,31 +228,13 @@ export default function ConnectWallet() {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {/* Featured Top Wallet Block */}
-                  {featuredConnector && (
-                    <button
-                      onClick={() => {
-                        connect({ connector: featuredConnector });
-                        setIsOpen(false);
-                      }}
-                      className="w-full relative overflow-hidden group bg-gradient-to-br from-orange-500/10 to-orange-600/5 hover:from-orange-500/20 hover:to-orange-600/10 border border-orange-500/20 rounded-3xl p-4 mb-2 transition-all text-left flex items-center gap-4"
-                    >
-                      <div className="shrink-0 group-hover:scale-105 transition-transform">
-                        <WalletIcon connector={featuredConnector} />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-foreground text-base">Install {featuredConnector.name}</div>
-                        <div className="text-xs text-orange-600 dark:text-orange-400 mt-0.5">Recommended for Janus</div>
-                      </div>
-                    </button>
-                  )}
-
+                <div className="space-y-3 pt-2">
                   {/* Main List of Prominent Wallets */}
                   <div className="space-y-1">
                     {mainListConnectors.map((connector) => {
                       const isRecent = connector.id === 'metaMask';
-                      const isDetected = !isRecent && (connector.id === 'okx' || connector.id === 'phantom' || connector.id === 'keplr' || !!connector.icon);
+                      // Only show 'Detected' if we actively received an icon injection from the browser extension
+                      const isDetected = !isRecent && !!connector.icon;
                       
                       return (
                         <button
@@ -295,30 +288,29 @@ export default function ConnectWallet() {
 
                       {showOtherWallets && (
                         <div className="space-y-1 mt-1 animate-in slide-in-from-top-2 fade-in duration-200 pl-2 border-l-2 border-borderLine ml-2">
-                          {otherConnectors.map((connector) => (
-                            <button
-                              key={connector.uid}
-                              onClick={() => {
-                                connect({ connector });
-                                setIsOpen(false);
-                              }}
-                              className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
-                            >
-                              <div className="flex items-center gap-4">
-                                <div className="shrink-0 group-hover:scale-110 transition-transform w-6 h-6">
-                                  {connector.icon ? (
-                                    <img src={connector.icon} alt={connector.name} className="w-6 h-6 rounded-lg object-contain shadow-sm" />
-                                  ) : (
-                                    <div className="w-6 h-6 rounded-lg bg-slate-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                                      {connector.name.charAt(0).toUpperCase()}
-                                    </div>
-                                  )}
+                          {otherConnectors.map((connector) => {
+                            const isDetected = !!connector.icon;
+                            return (
+                              <button
+                                key={connector.uid}
+                                onClick={() => {
+                                  connect({ connector });
+                                  setIsOpen(false);
+                                }}
+                                className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className="shrink-0 group-hover:scale-110 transition-transform">
+                                    <WalletIcon connector={connector} />
+                                  </div>
+                                  <span className="font-medium text-sm text-slate-400 group-hover:text-foreground transition-colors">{connector.name}</span>
                                 </div>
-                                <span className="font-medium text-sm text-slate-400 group-hover:text-foreground transition-colors">{connector.name}</span>
-                              </div>
-                              <span className="text-[10px] font-medium text-slate-500">Detected</span>
-                            </button>
-                          ))}
+                                {isDetected && (
+                                  <span className="text-[10px] font-medium text-slate-500">Detected</span>
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

@@ -94,13 +94,7 @@ export default function Navbar() {
 
           {/* RIGHT: Actions */}
           <div className="flex items-center justify-end gap-2 flex-1 shrink-0">
-            {/* Mock Network Selector */}
-            <button className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-foreground font-medium text-[15px]">
-              <div className="w-5 h-5 rounded-full bg-[#627EEA] flex items-center justify-center p-0.5">
-                <svg viewBox="0 0 32 32" className="w-full h-full text-white"><path fill="currentColor" d="M15.925 23.969l-9.819-5.794L15.925 32l9.825-13.825-9.825 5.794zM16.075 0L6.25 16.319l9.825 5.813 9.819-5.813L16.075 0z"/></svg>
-              </div>
-              <ChevronDown className="w-4 h-4 text-slate-400" />
-            </button>
+            {/* Network Selector Removed */}
 
             {/* Theme Toggle */}
             <button 

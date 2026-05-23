@@ -120,10 +120,6 @@ export default function PortfolioDashboard() {
             <h1 className="text-4xl md:text-5xl font-extrabold font-heading tracking-tighter text-foreground mb-4">
               Your Portfolio
             </h1>
-            <div className="flex items-center gap-3 text-sm text-slate-500 bg-panel border border-borderLine rounded-full px-4 py-2 inline-flex">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Connected: <span className="font-mono text-foreground">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-            </div>
           </div>
           <Link 
             href="/app"
