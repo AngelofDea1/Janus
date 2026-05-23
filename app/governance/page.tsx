@@ -69,7 +69,6 @@ export default function GovernancePage() {
                       : 'text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-accent' : 'text-slate-400'}`} />
                   {tab.label}
                 </button>
               );

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap');
 
 @config "../tailwind.config.ts";
 
@@ -29,7 +29,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(var(--theme-bg));
-  color: rgb(var(--theme-foreground));
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -39,7 +38,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* Hide input number arrows/spinners */
@@ -155,7 +154,7 @@ input[type=number] {
 }
 
 .markdown-content code {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Roboto Mono', monospace;
   font-size: 0.85em;
   padding: 0.2rem 0.4rem;
   background-color: rgba(var(--theme-border), 0.5);

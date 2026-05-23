@@ -116,10 +116,6 @@ export default function AnalyticsDashboard() {
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
               Live APY
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-emerald-500">
               {estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(1) : "0.0"}%
@@ -128,10 +124,6 @@ export default function AnalyticsDashboard() {
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
               Total TVL
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-              </span>
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
               ${formatLargeNumber(totalAssets as bigint | undefined)}
@@ -140,10 +132,6 @@ export default function AnalyticsDashboard() {
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
               Active Keepers
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-              </span>
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
               {totalAssets && totalAssets > BigInt(0) ? "1" : "0"}
@@ -152,10 +140,6 @@ export default function AnalyticsDashboard() {
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
               Vault Shares
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/70 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-              </span>
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
               {formatLargeNumber(totalSupply as bigint | undefined)}

@@ -76,11 +76,10 @@ export default function ProfitCalculator() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-accent" />
             <h3 className="font-heading font-bold text-2xl text-foreground">Profit Calculator</h3>
           </div>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Real earnings based on live funding rate spreads — no estimates, no guessing.
+            Real earnings based on live funding rate spreads, no estimates, no guessing.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-full border border-borderLine">
@@ -122,11 +121,10 @@ export default function ProfitCalculator() {
                     setPositionSize(preset);
                     setInputValue(preset.toString());
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    positionSize === preset
-                      ? "bg-accent text-white border-accent shadow-[0_0_15px_rgba(52,211,153,0.3)]"
-                      : "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-borderLine hover:border-accent/50"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${positionSize === preset
+                    ? "bg-accent text-white border-accent shadow-[0_0_15px_rgba(52,211,153,0.3)]"
+                    : "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-borderLine hover:border-accent/50"
+                    }`}
                 >
                   ${preset >= 1000 ? `${preset / 1000}K` : preset}
                 </button>
@@ -147,11 +145,10 @@ export default function ProfitCalculator() {
                   <button
                     key={opp.asset}
                     onClick={() => setSelectedOpp(opp)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${
-                      selectedOpp?.asset === opp.asset
-                        ? "bg-accent/10 border-accent/40 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
-                        : "bg-white dark:bg-[#111] border-borderLine hover:border-accent/30"
-                    }`}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${selectedOpp?.asset === opp.asset
+                      ? "bg-accent/10 border-accent/40 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
+                      : "bg-white dark:bg-[#111] border-borderLine hover:border-accent/30"
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-foreground text-sm">{opp.asset}</span>
@@ -159,11 +156,10 @@ export default function ProfitCalculator() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-mono text-slate-500">Spread: {opp.spread}%</span>
-                      <span className={`text-xs font-bold font-mono px-2 py-0.5 rounded ${
-                        selectedOpp?.asset === opp.asset
-                          ? "text-accent"
-                          : "text-slate-600 dark:text-slate-300"
-                      }`}>
+                      <span className={`text-xs font-bold font-mono px-2 py-0.5 rounded ${selectedOpp?.asset === opp.asset
+                        ? "text-accent"
+                        : "text-slate-600 dark:text-slate-300"
+                        }`}>
                         {opp.projectedAPY}% APY
                       </span>
                     </div>
