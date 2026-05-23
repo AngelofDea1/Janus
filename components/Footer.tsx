@@ -34,10 +34,9 @@ export default function Footer() {
               ]
             },
             {
-              title: "Developers",
+              title: "Resources",
               links: [
-                { name: "Documentation", path: "/docs" },
-                { name: "Keeper API", path: "/keeper" }
+                { name: "Documentation", path: "/docs" }
               ]
             },
             {
