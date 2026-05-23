@@ -19,7 +19,7 @@ export default function Home() {
             Automated Delta-Neutral Yields
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-[90px] font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.1] mb-6">
             Institutional-grade <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
           </h1>
 
@@ -76,9 +76,6 @@ export default function Home() {
 
         <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
           <div className="p-8 rounded-3xl bg-panel border border-borderLine hover:border-accent/30 shadow-sm transition-all duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-              <TrendingUp className="text-accent" size={24} />
-            </div>
             <h3 className="text-xl font-bold font-heading mb-4 text-foreground">Consistent Delta-Neutral Yield</h3>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               Positions are mathematically balanced. Janus hedges spot assets against perpetual shorts, letting you safely harvest interest spreads in all bull, bear, or sideways trends.
@@ -86,9 +83,6 @@ export default function Home() {
           </div>
 
           <div className="p-8 rounded-3xl bg-panel border border-borderLine hover:border-accent/30 shadow-sm transition-all duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-              <Shield className="text-accent" size={24} />
-            </div>
             <h3 className="text-xl font-bold font-heading mb-4 text-foreground">Institutional Custody Safety</h3>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               Complete decentralized architecture. Assets reside in standard audited ERC-4626 multi-sig vaults, ensuring absolute withdrawal transparency and governance.
@@ -96,9 +90,6 @@ export default function Home() {
           </div>
 
           <div className="p-8 rounded-3xl bg-panel border border-borderLine hover:border-accent/30 shadow-sm transition-all duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-              <Zap className="text-accent" size={24} />
-            </div>
             <h3 className="text-xl font-bold font-heading mb-4 text-foreground">24/7 Automated Rebalancing</h3>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               No manual migrations needed. Distributed keeper loops evaluate rates across exchanges around the clock, deploying trades at optimal intervals.
@@ -133,14 +124,43 @@ export default function Home() {
 
           <div className="space-y-4">
             {[
-              { status: "Arbitraged", tx: "Binance ➔ dYdX", detail: "Gain: +0.084% spread", time: "12s ago" },
-              { status: "Arbitraged", tx: "OKX ➔ GMX", detail: "Gain: +0.122% spread", time: "45s ago" },
-              { status: "Monitoring", tx: "Bybit ➔ Arc Portal", detail: "Rate Delta: 0.045% spread", time: "Active" },
+              { 
+                status: "Arbitraged", 
+                tx: "Binance ➔ dYdX", 
+                detail: "Gain: +0.084% spread", 
+                time: "12s ago",
+                icon: (
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#FCD535">
+                    <path d="M12.001 5.289l2.894 2.893 2.257-2.256L12.001.775 6.85 5.926l2.257 2.256 2.894-2.893zm0 13.422l-2.894-2.893-2.257 2.256 5.151 5.151 5.151-5.151-2.257-2.256-2.894 2.893zM3.468 9.544l-2.693 2.693 2.693 2.693 2.257-2.257-2.693-2.693-2.257-2.257L3.468 9.544zm17.064 0l-2.257 2.257 2.693 2.693-2.693 2.693 2.257 2.257 2.693-2.693-2.693-2.693 2.693-2.693-2.693-2.693zm-8.531 6.136l3.682-3.682-3.682-3.681-3.681 3.681 3.681 3.682z"/>
+                  </svg>
+                )
+              },
+              { 
+                status: "Arbitraged", 
+                tx: "OKX ➔ GMX", 
+                detail: "Gain: +0.122% spread", 
+                time: "45s ago",
+                icon: (
+                  <svg viewBox="0 0 32 32" className="w-4 h-4">
+                    <path fill="#fff" d="M16 2.667a13.333 13.333 0 100 26.666A13.333 13.333 0 0016 2.667zm-3.333 18.666L8 16l4.667-5.333h2.666L10.667 16l4.666 5.333h-2.666zm9.333 0l-4.667-5.333L22 10.667h-2.666L14.667 16l4.666 5.333H22z" />
+                  </svg>
+                )
+              },
+              { 
+                status: "Monitoring", 
+                tx: "Bybit ➔ Arc Portal", 
+                detail: "Rate Delta: 0.045% spread", 
+                time: "Active",
+                icon: (
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#F7A600">
+                    <path d="M12 0l4.316 7.474L24 12l-7.684 4.526L12 24l-4.316-7.474L0 12l7.684-4.526z" />
+                  </svg>
+                )
+              },
             ].map((tx, idx) => (
               <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine hover:border-accent/20 transition-colors">
-                <div className={`p-1.5 rounded-lg ${tx.status === "Arbitraged" ? "bg-emerald-500/10 text-emerald-500" : "bg-accent/10 text-accent"
-                  }`}>
-                  <Shield className="w-3.5 h-3.5" />
+                <div className={`p-1.5 rounded-lg bg-black dark:bg-[#1a1a1a] shadow-sm flex items-center justify-center`}>
+                  {tx.icon}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center">

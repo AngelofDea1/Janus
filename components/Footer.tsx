@@ -37,7 +37,7 @@ export default function Footer() {
               title: "Developers",
               links: [
                 { name: "Documentation", path: "/docs" },
-                { name: "Keeper API", path: "/docs" }
+                { name: "Keeper API", path: "/keeper" }
               ]
             },
             {
@@ -45,7 +45,7 @@ export default function Footer() {
               links: [
                 { name: "Twitter", path: "https://twitter.com/JanusProtocol", external: true },
                 { name: "Discord", path: "https://discord.gg/janus", external: true },
-                { name: "Blog", path: "/docs" }
+                { name: "Blog", path: "#", external: true }
               ]
             }
           ].map((section, idx) => (
