@@ -53,7 +53,7 @@ export default function Footer() {
               <h4 className="font-bold text-sm mb-6 text-foreground">{section.title}</h4>
               <div className="flex flex-col gap-4 text-sm text-slate-500 dark:text-slate-400">
                 {section.links.map(l => 
-                  l.external ? (
+                  'external' in l && l.external ? (
                     <a key={l.name} href={l.path} target="_blank" rel="noreferrer" className="hover:text-accent transition-colors">{l.name}</a>
                   ) : (
                     <Link key={l.name} href={l.path} className="hover:text-accent transition-colors">{l.name}</Link>
