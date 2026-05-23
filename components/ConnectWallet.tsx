@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useConnect, useAccount, useDisconnect, useEnsName } from "wagmi";
-import { Wallet, X, ChevronDown, LogOut, CheckCircle2 } from "lucide-react";
+import { X, ChevronDown, LogOut, CheckCircle2, ChevronRight } from "lucide-react";
 
-// --- SVG Icons for Wallets ---
+// Fallback SVGs for wallets that might not inject an icon via EIP-6963
 const MetamaskIcon = () => (
   <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-xl bg-white p-1 shadow-sm">
     <path fill="#E17726" d="M27.8,9.6l-6.1-4l-3.2,12.5l5.5,5.1l5.2-1.3l0.3-6.1C29.6,13.6,28.8,11.3,27.8,9.6z" />
@@ -53,34 +53,40 @@ const PhantomIcon = () => (
   </svg>
 );
 
-const GenericIcon = ({ char, bg }: { char: string, bg: string }) => (
-  <div className={`w-8 h-8 rounded-xl ${bg} flex items-center justify-center text-white font-bold text-sm shadow-sm`}>
-    {char}
-  </div>
+const OkxIcon = () => (
+  <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-xl bg-black p-1.5 shadow-sm">
+    <path fill="#fff" d="M16 2.667a13.333 13.333 0 100 26.666A13.333 13.333 0 0016 2.667zm-3.333 18.666L8 16l4.667-5.333h2.666L10.667 16l4.666 5.333h-2.666zm9.333 0l-4.667-5.333L22 10.667h-2.666L14.667 16l4.666 5.333H22z" />
+  </svg>
 );
 
-const getWalletIcon = (name: string, id: string) => {
-  const lowerName = name.toLowerCase();
-  const lowerId = id.toLowerCase();
-  if (lowerName.includes('metamask') || lowerId.includes('meta')) return <MetamaskIcon />;
-  if (lowerName.includes('walletconnect') || lowerId.includes('walletconnect')) return <WalletConnectIcon />;
-  if (lowerName.includes('coinbase') || lowerId.includes('coinbase')) return <CoinbaseIcon />;
-  if (lowerName.includes('rabby') || lowerId.includes('rabby')) return <RabbyIcon />;
-  if (lowerName.includes('phantom') || lowerId.includes('phantom')) return <PhantomIcon />;
+// Renders the icon using the wallet's injected EIP-6963 icon, or falls back to our high-quality SVGs.
+const WalletIcon = ({ connector }: { connector: any }) => {
+  // EIP-6963 injects a base64 encoded SVG or PNG into `connector.icon`
+  if (connector.icon) {
+    return <img src={connector.icon} alt={connector.name} className="w-8 h-8 rounded-xl object-contain shadow-sm" />;
+  }
+
+  const lowerName = connector.name.toLowerCase();
+  if (lowerName.includes('metamask')) return <MetamaskIcon />;
+  if (lowerName.includes('walletconnect')) return <WalletConnectIcon />;
+  if (lowerName.includes('coinbase')) return <CoinbaseIcon />;
+  if (lowerName.includes('rabby')) return <RabbyIcon />;
+  if (lowerName.includes('phantom')) return <PhantomIcon />;
+  if (lowerName.includes('okx')) return <OkxIcon />;
   
-  // Fallbacks based on name
-  if (lowerName.includes('okx')) return <GenericIcon char="O" bg="bg-black" />;
-  if (lowerName.includes('keplr')) return <GenericIcon char="K" bg="bg-[#00C3DA]" />;
-  if (lowerName.includes('hot')) return <GenericIcon char="H" bg="bg-orange-500" />;
-  if (lowerName.includes('binance')) return <GenericIcon char="B" bg="bg-[#F3BA2F]" />;
-  if (lowerName.includes('safe')) return <GenericIcon char="S" bg="bg-[#12FF80] text-black" />;
-  
-  return <GenericIcon char={name.charAt(0).toUpperCase()} bg="bg-slate-600" />;
+  // Generic fallback if absolutely no icon is provided
+  return (
+    <div className="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+      {connector.name.charAt(0).toUpperCase()}
+    </div>
+  );
 };
 
 export default function ConnectWallet() {
   const [isOpen, setIsOpen] = useState(false);
-  const { connectors, connect, status: connectStatus } = useConnect();
+  const [showOtherWallets, setShowOtherWallets] = useState(false);
+  
+  const { connectors, connect } = useConnect();
   const { address, isConnected, connector: activeConnector } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
@@ -97,6 +103,7 @@ export default function ConnectWallet() {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setShowOtherWallets(false);
       }
     }
     if (isOpen) {
@@ -107,7 +114,10 @@ export default function ConnectWallet() {
     };
   }, [isOpen]);
 
-  const toggleModal = () => setIsOpen(!isOpen);
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+    setShowOtherWallets(false); // Reset dropdown state when opening modal
+  };
 
   const formatAddress = (addr: string | undefined) => {
     if (!addr) return "";
@@ -116,23 +126,28 @@ export default function ConnectWallet() {
 
   if (!mounted) return <div className="w-32 h-10 bg-black/5 dark:bg-white/5 animate-pulse rounded-full"></div>;
 
-  // --- Deduplicate and sort connectors ---
-  // EIP-6963 often injects multiple versions of the same wallet (e.g. injected, walletConnect, injected MetaMask)
+  // --- Deduplicate and categorize connectors ---
+  // Normalize names to prevent duplicates like "WalletConnect" and "WalletConnectLegacy"
   const uniqueConnectors = Array.from(new Map(connectors.map(c => {
-    // Normalize names to prevent duplicates like "WalletConnect" and "WalletConnectLegacy"
     let normalizedName = c.name;
     if (normalizedName.toLowerCase().includes('walletconnect')) normalizedName = 'WalletConnect';
     if (normalizedName.toLowerCase().includes('metamask')) normalizedName = 'MetaMask';
     return [normalizedName, c];
   })).values());
 
-  // Move a specific wallet (like Rabby or MetaMask) to the top highlight block
-  const featuredWalletName = "Rabby Wallet";
-  const featuredConnector = uniqueConnectors.find(c => c.name.toLowerCase().includes('rabby')) 
-                         || uniqueConnectors.find(c => c.name === 'MetaMask') 
-                         || uniqueConnectors[0];
+  // Define prominent wallets that should be shown in the main list
+  const prominentNames = ['metamask', 'okx wallet', 'rabby wallet', 'phantom', 'coinbase wallet', 'walletconnect'];
   
-  const otherConnectors = uniqueConnectors.filter(c => c.uid !== featuredConnector?.uid && c.id !== 'injected');
+  const prominentConnectors = uniqueConnectors.filter(c => prominentNames.some(name => c.name.toLowerCase().includes(name)));
+  const otherConnectors = uniqueConnectors.filter(c => !prominentNames.some(name => c.name.toLowerCase().includes(name)) && c.id !== 'injected');
+
+  // Featured top wallet (e.g. MetaMask or Rabby)
+  const featuredConnector = prominentConnectors.find(c => c.name.toLowerCase().includes('metamask')) 
+                         || prominentConnectors.find(c => c.name.toLowerCase().includes('rabby'))
+                         || prominentConnectors[0];
+
+  // Remove the featured connector from the main list so it doesn't duplicate
+  const mainListConnectors = prominentConnectors.filter(c => c.uid !== featuredConnector?.uid);
 
   return (
     <div className="relative">
@@ -202,7 +217,7 @@ export default function ConnectWallet() {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Featured Top Wallet Block */}
                   {featuredConnector && (
                     <button
@@ -210,10 +225,10 @@ export default function ConnectWallet() {
                         connect({ connector: featuredConnector });
                         setIsOpen(false);
                       }}
-                      className="w-full relative overflow-hidden group bg-gradient-to-br from-orange-500/10 to-orange-600/5 hover:from-orange-500/20 hover:to-orange-600/10 border border-orange-500/20 rounded-3xl p-4 transition-all text-left flex items-center gap-4"
+                      className="w-full relative overflow-hidden group bg-gradient-to-br from-orange-500/10 to-orange-600/5 hover:from-orange-500/20 hover:to-orange-600/10 border border-orange-500/20 rounded-3xl p-4 mb-2 transition-all text-left flex items-center gap-4"
                     >
                       <div className="shrink-0 group-hover:scale-105 transition-transform">
-                        {getWalletIcon(featuredConnector.name, featuredConnector.id)}
+                        <WalletIcon connector={featuredConnector} />
                       </div>
                       <div>
                         <div className="font-semibold text-foreground text-base">Install {featuredConnector.name}</div>
@@ -222,18 +237,11 @@ export default function ConnectWallet() {
                     </button>
                   )}
 
-                  {/* Divider */}
-                  <div className="flex items-center gap-3 py-2 px-2">
-                    <div className="h-px bg-borderLine flex-1"></div>
-                    <span className="text-xs text-slate-500 font-medium">Other wallets</span>
-                    <div className="h-px bg-borderLine flex-1"></div>
-                  </div>
-                  
-                  {/* List of other wallets */}
+                  {/* Main List of Prominent Wallets */}
                   <div className="space-y-1">
-                    {otherConnectors.map((connector) => {
+                    {mainListConnectors.map((connector) => {
                       const isRecent = connector.id === 'metaMask';
-                      const isDetected = !isRecent && (connector.id === 'okx' || connector.id === 'phantom' || connector.id === 'keplr');
+                      const isDetected = !isRecent && (connector.id === 'okx' || connector.id === 'phantom' || connector.id === 'keplr' || !!connector.icon);
                       
                       return (
                         <button
@@ -246,28 +254,78 @@ export default function ConnectWallet() {
                         >
                           <div className="flex items-center gap-4">
                             <div className="shrink-0 group-hover:scale-110 transition-transform">
-                              {getWalletIcon(connector.name, connector.id)}
+                              <WalletIcon connector={connector} />
                             </div>
                             <span className="font-medium text-[15px]">{connector.name}</span>
                           </div>
                           
-                          {isRecent && (
-                            <span className="text-[11px] font-medium text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-md">
-                              Recent
-                            </span>
-                          )}
-                          {isDetected && (
-                            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                              Detected
-                            </span>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {isRecent && (
+                              <span className="text-[11px] font-medium text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-md">
+                                Recent
+                              </span>
+                            )}
+                            {isDetected && !isRecent && (
+                              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                Detected
+                              </span>
+                            )}
+                          </div>
                         </button>
                       )
                     })}
                   </div>
+
+                  {/* "Other Wallets" Dropdown Accordion */}
+                  {otherConnectors.length > 0 && (
+                    <div className="pt-2">
+                      <button 
+                        onClick={() => setShowOtherWallets(!showOtherWallets)}
+                        className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
+                      >
+                        <span className="font-medium text-[15px] text-slate-500 group-hover:text-foreground transition-colors">
+                          Other wallets
+                        </span>
+                        {showOtherWallets ? (
+                          <ChevronDown className="w-5 h-5 text-slate-400" />
+                        ) : (
+                          <ChevronRight className="w-5 h-5 text-slate-400" />
+                        )}
+                      </button>
+
+                      {showOtherWallets && (
+                        <div className="space-y-1 mt-1 animate-in slide-in-from-top-2 fade-in duration-200 pl-2 border-l-2 border-borderLine ml-2">
+                          {otherConnectors.map((connector) => (
+                            <button
+                              key={connector.uid}
+                              onClick={() => {
+                                connect({ connector });
+                                setIsOpen(false);
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
+                            >
+                              <div className="flex items-center gap-4">
+                                <div className="shrink-0 group-hover:scale-110 transition-transform w-6 h-6">
+                                  {connector.icon ? (
+                                    <img src={connector.icon} alt={connector.name} className="w-6 h-6 rounded-lg object-contain shadow-sm" />
+                                  ) : (
+                                    <div className="w-6 h-6 rounded-lg bg-slate-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                                      {connector.name.charAt(0).toUpperCase()}
+                                    </div>
+                                  )}
+                                </div>
+                                <span className="font-medium text-sm text-slate-400 group-hover:text-foreground transition-colors">{connector.name}</span>
+                              </div>
+                              <span className="text-[10px] font-medium text-slate-500">Detected</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   
                   {/* Disclaimer */}
-                  <div className="pt-4 mt-4 px-4 text-center">
+                  <div className="pt-6 px-4 text-center">
                     <p className="text-[11px] leading-relaxed text-slate-500">
                       By connecting a wallet, you agree to our Terms of Service and Privacy Policy.
                     </p>
