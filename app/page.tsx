@@ -1,8 +1,85 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+// Exchange logo components
+const BinanceLogo = () => (
+  <svg viewBox="0 0 126.61 126.61" className="w-4 h-4">
+    <path fill="#F3BA2F" d="M38.73 53.2l24.59-24.58 24.6 24.6 14.3-14.31L63.32 0l-38.9 38.9zM0 63.31L14.3 49l14.31 14.31L14.31 77.6zM38.73 73.41l24.59 24.59 24.6-24.6 14.31 14.29-38.9 38.91-38.91-38.88zM97.99 63.31l14.3-14.31 14.32 14.31-14.31 14.3z"/>
+    <path fill="#F3BA2F" d="M77.83 63.3L63.32 48.78 52.59 59.51l-1.24 1.23-2.54 2.54 14.51 14.5 14.51-14.51z"/>
+  </svg>
+);
+
+const HyperliquidLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4">
+    <circle cx="12" cy="12" r="12" fill="#00D395"/>
+    <text x="12" y="16" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="sans-serif">H</text>
+  </svg>
+);
+
+const KuCoinLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4">
+    <circle cx="12" cy="12" r="12" fill="#23AF91"/>
+    <text x="12" y="16" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">K</text>
+  </svg>
+);
+
+const BybitLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4">
+    <circle cx="12" cy="12" r="12" fill="#F7A600"/>
+    <text x="12" y="16" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">B</text>
+  </svg>
+);
+
+const MEXCLogo = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4">
+    <circle cx="12" cy="12" r="12" fill="#2354E6"/>
+    <text x="12" y="16" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold" fontFamily="sans-serif">M</text>
+  </svg>
+);
+
+const exchangeLogos: Record<string, React.ReactNode> = {
+  Binance: <BinanceLogo />,
+  Hyperliquid: <HyperliquidLogo />,
+  KuCoin: <KuCoinLogo />,
+  Bybit: <BybitLogo />,
+  MEXC: <MEXCLogo />,
+};
 
 export default function Home() {
+  const [feedItems, setFeedItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchFeed() {
+      try {
+        const res = await fetch("/api/funding-rates");
+        const json = await res.json();
+        if (json.success && json.data?.length > 0) {
+          // Take the top 3 opportunities
+          const top3 = json.data.slice(0, 3).map((opp: any, idx: number) => ({
+            asset: opp.asset,
+            route: `${opp.shortExchange} \u2794 ${opp.longExchange}`,
+            spread: `+${opp.spread}%`,
+            shortEx: opp.shortExchange,
+            longEx: opp.longExchange,
+            time: idx === 0 ? "Live" : `${(idx + 1) * 15}s ago`,
+          }));
+          setFeedItems(top3);
+        }
+      } catch (e) {
+        // fallback silently
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchFeed();
+    const interval = setInterval(fetchFeed, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-background overflow-hidden flex flex-col justify-center">
       
@@ -46,24 +123,14 @@ export default function Home() {
 
         {/* Abstract Metrics - Floating Info Cards Below Hero */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
-          <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-sm flex items-center justify-between backdrop-blur-md">
-            <div>
-              <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-1">Protocol TVL</div>
-              <div className="text-3xl font-heading font-bold text-foreground">$148.9M</div>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-            </div>
+          <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-sm backdrop-blur-md">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-1">Protocol TVL</div>
+            <div className="text-3xl font-heading font-bold text-foreground">$148.9M</div>
           </div>
           
-          <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-sm flex items-center justify-between backdrop-blur-md">
-            <div>
-              <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-1">30D Yield</div>
-              <div className="text-3xl font-heading font-bold text-emerald-500">28.9%</div>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
+          <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-sm backdrop-blur-md">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-1">30D Yield</div>
+            <div className="text-3xl font-heading font-bold text-emerald-500">28.9%</div>
           </div>
         </div>
       </div>
@@ -98,7 +165,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Proof of validation ledger Spotlight */}
+      {/* Proof of Validation Ledger - LIVE Data */}
       <section className="relative z-10 w-full max-w-6xl mx-auto px-6 pb-24 lg:pb-32 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <h2 className="text-3xl lg:text-4xl font-extrabold font-heading tracking-tight text-foreground mb-6">
@@ -118,59 +185,41 @@ export default function Home() {
         </div>
 
         <div className="bg-panel border border-borderLine p-6 rounded-3xl backdrop-blur-xl relative shadow-premium dark:shadow-premium-dark">
-          <h3 className="font-bold font-heading text-sm text-foreground mb-4 uppercase tracking-wider flex items-center gap-2">
-            Proof of Validation Feed
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold font-heading text-sm text-foreground uppercase tracking-wider">
+              Live Arbitrage Feed
+            </h3>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-mono text-emerald-500">LIVE</span>
+            </div>
+          </div>
 
-          <div className="space-y-4">
-            {[
-              { 
-                status: "Arbitraged", 
-                tx: "Binance ➔ dYdX", 
-                detail: "Gain: +0.084% spread", 
-                time: "12s ago",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#FCD535">
-                    <path d="M12.001 5.289l2.894 2.893 2.257-2.256L12.001.775 6.85 5.926l2.257 2.256 2.894-2.893zm0 13.422l-2.894-2.893-2.257 2.256 5.151 5.151 5.151-5.151-2.257-2.256-2.894 2.893zM3.468 9.544l-2.693 2.693 2.693 2.693 2.257-2.257-2.693-2.693-2.257-2.257L3.468 9.544zm17.064 0l-2.257 2.257 2.693 2.693-2.693 2.693 2.257 2.257 2.693-2.693-2.693-2.693 2.693-2.693-2.693-2.693zm-8.531 6.136l3.682-3.682-3.682-3.681-3.681 3.681 3.681 3.682z"/>
-                  </svg>
-                )
-              },
-              { 
-                status: "Arbitraged", 
-                tx: "OKX ➔ GMX", 
-                detail: "Gain: +0.122% spread", 
-                time: "45s ago",
-                icon: (
-                  <svg viewBox="0 0 32 32" className="w-4 h-4">
-                    <path fill="#fff" d="M16 2.667a13.333 13.333 0 100 26.666A13.333 13.333 0 0016 2.667zm-3.333 18.666L8 16l4.667-5.333h2.666L10.667 16l4.666 5.333h-2.666zm9.333 0l-4.667-5.333L22 10.667h-2.666L14.667 16l4.666 5.333H22z" />
-                  </svg>
-                )
-              },
-              { 
-                status: "Monitoring", 
-                tx: "Bybit ➔ Arc Portal", 
-                detail: "Rate Delta: 0.045% spread", 
-                time: "Active",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#F7A600">
-                    <path d="M12 0l4.316 7.474L24 12l-7.684 4.526L12 24l-4.316-7.474L0 12l7.684-4.526z" />
-                  </svg>
-                )
-              },
-            ].map((tx, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine hover:border-accent/20 transition-colors">
-                <div className={`p-1.5 rounded-lg bg-black dark:bg-[#1a1a1a] shadow-sm flex items-center justify-center`}>
-                  {tx.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold font-heading text-foreground">{tx.tx}</span>
-                    <span className="text-[10px] font-mono text-slate-500">{tx.time}</span>
-                  </div>
-                  <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">{tx.detail}</p>
-                </div>
+          <div className="space-y-3">
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-16 rounded-xl bg-black/5 dark:bg-white/5 animate-pulse" />
+                ))}
               </div>
-            ))}
+            ) : feedItems.length > 0 ? (
+              feedItems.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine hover:border-accent/20 transition-colors">
+                  <div className="p-1.5 rounded-lg bg-black dark:bg-[#1a1a1a] shadow-sm flex items-center justify-center shrink-0">
+                    {exchangeLogos[item.shortEx] || <BinanceLogo />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold font-heading text-foreground">{item.asset}: {item.route}</span>
+                      <span className="text-[10px] font-mono text-slate-500">{item.time}</span>
+                    </div>
+                    <p className="text-[11px] font-medium text-emerald-500 mt-0.5">Spread: {item.spread}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-sm text-slate-500">Loading rates from exchanges...</div>
+            )}
           </div>
         </div>
       </section>

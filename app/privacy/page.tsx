@@ -2,12 +2,12 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Shield } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 px-6 flex justify-center">
-      
+
       {/* Abstract Background Elements */}
       <div className="absolute top-[10%] left-[10%] w-[30%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[10%] w-[40%] h-[30%] rounded-full bg-violet-500/5 dark:bg-violet-500/10 blur-[100px] pointer-events-none" />
@@ -16,17 +16,14 @@ export default function PrivacyPage() {
         <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-foreground transition-colors mb-12 text-sm font-semibold">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
-        
+
         <div className="bg-panel border border-borderLine rounded-[32px] p-8 md:p-16 shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
-          <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-8">
-            <Shield className="w-8 h-8 text-accent" />
-          </div>
-          
+
           <h1 className="text-4xl md:text-5xl font-extrabold font-heading tracking-tighter mb-6 text-foreground">Privacy Policy</h1>
-          <p className="text-slate-500 font-mono text-sm mb-12 pb-8 border-b border-borderLine">Effective Date: {new Date().toLocaleDateString()}</p>
-          
+          <p className="text-slate-500 font-mono text-sm mb-12 pb-8 border-b border-borderLine">Effective Date: May 2026</p>
+
           <div className="space-y-12 text-slate-600 dark:text-slate-400 leading-relaxed">
-            
+
             <section>
               <h2 className="text-2xl font-bold font-heading text-foreground mb-4">1. Information We Collect</h2>
               <p>
