@@ -11,8 +11,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-        sans: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        heading: ['"Space Grotesk"', 'sans-serif'],
+        sans: ['"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
         background: 'rgb(var(--theme-bg))',

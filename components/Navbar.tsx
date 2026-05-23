@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import ConnectWallet from "./ConnectWallet";
 import { Shield, Moon, Sun, Menu, X } from "lucide-react";
 
 export default function Navbar() {
@@ -42,6 +42,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Terminal", path: "/app" },
+    { name: "Portfolio", path: "/portfolio" },
     { name: "Analytics", path: "/analytics" },
     { name: "Documentation", path: "/docs" },
     { name: "Governance", path: "/governance" }
@@ -96,10 +97,7 @@ export default function Navbar() {
             </button>
             
             <div className="hidden sm:block">
-              <ConnectButton 
-                chainStatus="icon" 
-                showBalance={false}
-              />
+              <ConnectWallet />
             </div>
 
             <button 
@@ -132,7 +130,7 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="pt-8 border-t border-borderLine flex justify-center">
-              <ConnectButton />
+              <ConnectWallet />
             </div>
           </div>
         </div>

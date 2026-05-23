@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useReadContract } from "wagmi";
+import { formatUnits } from "viem";
 import { 
   AreaChart, 
   Area, 
@@ -12,7 +13,7 @@ import {
 } from "recharts";
 import { Activity } from "lucide-react";
 import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
-import PredictiveEngine from "@/components/PredictiveEngine";
+import ProfitCalculator from "@/components/ProfitCalculator";
 import MarketMonitor from "@/components/MarketMonitor";
 
 const volumeData = [
@@ -59,6 +60,30 @@ export default function AnalyticsDashboard() {
     query: { refetchInterval: 2000 },
   });
 
+  const { data: totalAssets } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalAssets",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
+
+  const { data: totalSupply } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalSupply",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
+
+  const formatLargeNumber = (value: bigint | undefined) => {
+    if (!value) return "0.00";
+    const num = parseFloat(formatUnits(value, 6));
+    if (num >= 1000000) return (num / 1000000).toFixed(2) + "M";
+    if (num >= 1000) return (num / 1000).toFixed(2) + "K";
+    return num.toFixed(2);
+  };
+
   if (!mounted) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
@@ -88,23 +113,53 @@ export default function AnalyticsDashboard() {
 
         {/* Floating Borderless Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md">
-            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">Live APY</div>
+          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+              Live APY
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+            </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-emerald-500">
-              {estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(1) : "32.4"}%
+              {estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(1) : "0.0"}%
             </div>
           </div>
-          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md">
-            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">Total Volume</div>
-            <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">$16.8M</div>
+          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+              Total TVL
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+            </div>
+            <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
+              ${formatLargeNumber(totalAssets as bigint | undefined)}
+            </div>
           </div>
-          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md">
-            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">Active Keepers</div>
-            <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">14</div>
+          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+              Active Keepers
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+              </span>
+            </div>
+            <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
+              {totalAssets && totalAssets > BigInt(0) ? "1" : "0"}
+            </div>
           </div>
-          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md">
-            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">Vault Shares</div>
-            <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">2.4M</div>
+          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+              Vault Shares
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/70 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+              </span>
+            </div>
+            <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
+              {formatLargeNumber(totalSupply as bigint | undefined)}
+            </div>
           </div>
         </div>
 
@@ -137,9 +192,9 @@ export default function AnalyticsDashboard() {
           <MarketMonitor />
         </div>
 
-        {/* AI Predictive Engine */}
+        {/* Profit Calculator */}
         <div className="w-full">
-          <PredictiveEngine />
+          <ProfitCalculator />
         </div>
 
       </div>

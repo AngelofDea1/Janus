@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
 
 export default function Home() {
   return (
@@ -70,8 +70,98 @@ export default function Home() {
             </div>
           </div>
         </div>
-
       </div>
+
+      {/* Spaced Out Product Highlights Grid */}
+      <section className="relative z-10 w-full max-w-6xl mx-auto px-6 py-24 lg:py-32">
+        <h2 className="text-3xl lg:text-4xl font-extrabold font-heading tracking-tight text-center mb-16 text-foreground">
+          Why Secure Arbitrage via Janus?
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+          <div className="p-8 rounded-3xl bg-panel border border-borderLine hover:border-accent/30 shadow-sm transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+              <TrendingUp className="text-accent" size={24} />
+            </div>
+            <h3 className="text-xl font-bold font-heading mb-4 text-foreground">Consistent Delta-Neutral Yield</h3>
+            <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+              Positions are mathematically balanced. Janus hedges spot assets against perpetual shorts, letting you safely harvest interest spreads in all bull, bear, or sideways trends.
+            </p>
+          </div>
+
+          <div className="p-8 rounded-3xl bg-panel border border-borderLine hover:border-accent/30 shadow-sm transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+              <Shield className="text-accent" size={24} />
+            </div>
+            <h3 className="text-xl font-bold font-heading mb-4 text-foreground">Institutional Custody Safety</h3>
+            <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+              Complete decentralized architecture. Assets reside in standard audited ERC-4626 multi-sig vaults, ensuring absolute withdrawal transparency and governance.
+            </p>
+          </div>
+
+          <div className="p-8 rounded-3xl bg-panel border border-borderLine hover:border-accent/30 shadow-sm transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
+              <Zap className="text-accent" size={24} />
+            </div>
+            <h3 className="text-xl font-bold font-heading mb-4 text-foreground">24/7 Automated Rebalancing</h3>
+            <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+              No manual migrations needed. Distributed keeper loops evaluate rates across exchanges around the clock, deploying trades at optimal intervals.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Proof of validation ledger Spotlight */}
+      <section className="relative z-10 w-full max-w-6xl mx-auto px-6 pb-24 lg:pb-32 grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 className="text-3xl lg:text-4xl font-extrabold font-heading tracking-tight text-foreground mb-6">
+            Cryptographically Audited Relayer Spreads
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 leading-relaxed mb-8">
+            Every transaction routed through our arbitrage vaults is audited by cryptographic Proof of Validation logs. Distributed keeper nodes log state execution on-chain, proving rates and spreads transparently.
+          </p>
+          <div className="flex gap-4">
+            <Link
+              href="/analytics"
+              className="px-6 py-3 border border-borderLine hover:border-slate-400 dark:hover:border-slate-600 bg-panel rounded-xl text-sm font-semibold transition-all cursor-pointer text-foreground shadow-sm"
+            >
+              Analyze Live Ledger
+            </Link>
+          </div>
+        </div>
+
+        <div className="bg-panel border border-borderLine p-6 rounded-3xl backdrop-blur-xl relative shadow-premium dark:shadow-premium-dark">
+          <h3 className="font-bold font-heading text-sm text-foreground mb-4 uppercase tracking-wider flex items-center gap-2">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+            </span>
+            Proof of Validation Feed
+          </h3>
+
+          <div className="space-y-4">
+            {[
+              { status: "Arbitraged", tx: "Binance ➔ dYdX", detail: "Gain: +0.084% spread", time: "12s ago" },
+              { status: "Arbitraged", tx: "OKX ➔ GMX", detail: "Gain: +0.122% spread", time: "45s ago" },
+              { status: "Monitoring", tx: "Bybit ➔ Arc Portal", detail: "Rate Delta: 0.045% spread", time: "Active" },
+            ].map((tx, idx) => (
+              <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine hover:border-accent/20 transition-colors">
+                <div className={`p-1.5 rounded-lg ${tx.status === "Arbitraged" ? "bg-emerald-500/10 text-emerald-500" : "bg-accent/10 text-accent"
+                  }`}>
+                  <Shield className="w-3.5 h-3.5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold font-heading text-foreground">{tx.tx}</span>
+                    <span className="text-[10px] font-mono text-slate-500">{tx.time}</span>
+                  </div>
+                  <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">{tx.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

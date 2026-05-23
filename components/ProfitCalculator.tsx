@@ -1,0 +1,252 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { Calculator, TrendingUp, RefreshCw, DollarSign, ChevronDown } from "lucide-react";
+
+interface Opportunity {
+  asset: string;
+  exchangeARate: string;
+  exchangeBRate: string;
+  spread: string;
+  projectedAPY: string;
+  longExchange: string;
+  shortExchange: string;
+  exA: string;
+  exB: string;
+}
+
+const POSITION_PRESETS = [1000, 5000, 10000, 25000, 50000, 100000];
+
+export default function ProfitCalculator() {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [positionSize, setPositionSize] = useState(10000);
+  const [inputValue, setInputValue] = useState("10000");
+  const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const fetchRates = useCallback(async () => {
+    try {
+      const res = await fetch("/api/funding-rates");
+      const json = await res.json();
+      if (json.success && json.data.length > 0) {
+        setOpportunities(json.data);
+        // Auto-select the best opportunity (highest APY)
+        setSelectedOpp(json.data[0]);
+        setLastUpdated(new Date());
+      }
+    } catch {
+      // silently fail, keep showing last data
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRates();
+    const interval = setInterval(fetchRates, 30000);
+    return () => clearInterval(interval);
+  }, [fetchRates]);
+
+  const handlePositionInput = (val: string) => {
+    setInputValue(val);
+    const num = parseFloat(val.replace(/,/g, ""));
+    if (!isNaN(num) && num > 0) setPositionSize(num);
+  };
+
+  const spread = selectedOpp ? parseFloat(selectedOpp.spread) / 100 : 0;
+  const apy = selectedOpp ? parseFloat(selectedOpp.projectedAPY) / 100 : 0;
+
+  // Funding happens 3x per day (every 8 hours)
+  const fundingPerPeriod = positionSize * spread;
+  const daily = fundingPerPeriod * 3;
+  const weekly = daily * 7;
+  const monthly = daily * 30;
+  const yearly = positionSize * apy;
+
+  const fmt = (n: number) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
+
+  return (
+    <div className="w-full bg-panel border border-borderLine rounded-[32px] p-6 md:p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl mb-8 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-500/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Calculator className="w-5 h-5 text-accent" />
+            <h3 className="font-heading font-bold text-2xl text-foreground">Profit Calculator</h3>
+          </div>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+            Real earnings based on live funding rate spreads — no estimates, no guessing.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-full border border-borderLine">
+          {loading ? (
+            <span className="flex items-center gap-2"><RefreshCw className="w-3 h-3 animate-spin" /> Loading live data...</span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              Live · {lastUpdated?.toLocaleTimeString()}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* LEFT: Inputs */}
+        <div className="space-y-6">
+          {/* Position Size */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">
+              Position Size (USD)
+            </label>
+            <div className="relative">
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => handlePositionInput(e.target.value)}
+                className="w-full pl-10 pr-4 py-4 bg-white dark:bg-[#111] border border-borderLine rounded-2xl text-foreground font-mono font-bold text-xl focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all"
+                placeholder="10,000"
+              />
+            </div>
+            {/* Presets */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              {POSITION_PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => {
+                    setPositionSize(preset);
+                    setInputValue(preset.toString());
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                    positionSize === preset
+                      ? "bg-accent text-white border-accent shadow-[0_0_15px_rgba(52,211,153,0.3)]"
+                      : "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-borderLine hover:border-accent/50"
+                  }`}
+                >
+                  ${preset >= 1000 ? `${preset / 1000}K` : preset}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Opportunity Selector */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">
+              Select Arbitrage Pair
+            </label>
+            {loading ? (
+              <div className="h-14 bg-slate-100 dark:bg-slate-800/50 animate-pulse rounded-2xl" />
+            ) : (
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scroll">
+                {opportunities.map((opp) => (
+                  <button
+                    key={opp.asset}
+                    onClick={() => setSelectedOpp(opp)}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${
+                      selectedOpp?.asset === opp.asset
+                        ? "bg-accent/10 border-accent/40 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
+                        : "bg-white dark:bg-[#111] border-borderLine hover:border-accent/30"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-foreground text-sm">{opp.asset}</span>
+                      <span className="text-[10px] text-slate-400 uppercase">{opp.exB} → {opp.exA}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono text-slate-500">Spread: {opp.spread}%</span>
+                      <span className={`text-xs font-bold font-mono px-2 py-0.5 rounded ${
+                        selectedOpp?.asset === opp.asset
+                          ? "text-accent"
+                          : "text-slate-600 dark:text-slate-300"
+                      }`}>
+                        {opp.projectedAPY}% APY
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT: Results */}
+        <div className="flex flex-col gap-4">
+          {/* Strategy Info */}
+          {selectedOpp && (
+            <div className="bg-white dark:bg-[#0d0d12] border border-borderLine rounded-2xl p-5 text-sm">
+              <div className="text-xs font-medium text-slate-500 mb-3">Active Strategy</div>
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600 dark:text-slate-400">Short Position</span>
+                  <span className="font-mono text-foreground">
+                    {selectedOpp.exA} <span className="text-slate-500 ml-1">@ {selectedOpp.exchangeARate}%</span>
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600 dark:text-slate-400">Long Position</span>
+                  <span className="font-mono text-foreground">
+                    {selectedOpp.exB} <span className="text-slate-500 ml-1">@ {selectedOpp.exchangeBRate}%</span>
+                  </span>
+                </div>
+                <div className="h-px w-full bg-borderLine my-1" />
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600 dark:text-slate-400">Net Spread (8h)</span>
+                  <span className="font-mono font-medium text-foreground">{selectedOpp.spread}%</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Earnings Breakdown */}
+          <div className="grid grid-cols-2 gap-3 flex-1">
+            {[
+              { label: "Per Funding Period", sublabel: "Every 8 hours", value: fundingPerPeriod, highlight: false },
+              { label: "Daily", sublabel: "3 funding periods", value: daily, highlight: false },
+              { label: "Weekly", sublabel: "7 days", value: weekly, highlight: false },
+              { label: "Monthly", sublabel: "30 days", value: monthly, highlight: false },
+            ].map(({ label, sublabel, value, highlight }) => (
+              <div
+                key={label}
+                className="bg-white dark:bg-[#111] border border-borderLine rounded-2xl p-4 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</div>
+                  <div className="text-[9px] text-slate-400 mt-0.5">{sublabel}</div>
+                </div>
+                <div className="text-xl font-heading font-bold text-foreground mt-2">
+                  {loading || !selectedOpp ? "—" : fmt(value)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Annual Highlight */}
+          <div className="relative overflow-hidden bg-white dark:bg-[#09090b] border border-borderLine rounded-2xl p-6">
+            <div className="flex items-start justify-between relative z-10">
+              <div>
+                <div className="text-sm font-medium text-slate-500 mb-2">Projected Annual Earnings</div>
+                <div className="text-4xl font-heading font-semibold text-foreground tracking-tight">
+                  {loading || !selectedOpp ? "—" : fmt(yearly)}
+                </div>
+                <div className="text-sm text-slate-500 mt-2">
+                  on {fmt(positionSize)} at <span className="font-medium text-foreground">{selectedOpp?.projectedAPY ?? "—"}% APY</span>
+                </div>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+              </div>
+            </div>
+            <div className="mt-5 text-xs text-slate-400 dark:text-slate-500">
+              Projections assume consistent spread. Actual returns vary with market conditions, fees, and slippage.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

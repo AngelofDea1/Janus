@@ -23,6 +23,8 @@ export default function ArbitrageApp() {
  const { address: wagmiAddress, isConnected: wagmiIsConnected } = useAccount();
  const [localConnected, setLocalConnected] = useState(false);
  const [localAddress, setLocalAddress] = useState("");
+ const [showSettings, setShowSettings] = useState(false);
+ const [slippage, setSlippage] = useState("0.5");
 
  const [mounted, setMounted] = useState(false);
  useEffect(() => {
@@ -213,9 +215,46 @@ export default function ArbitrageApp() {
                 Withdraw
               </button>
             </div>
-            <button className="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowSettings(!showSettings)}
+                className={`p-2 rounded-xl transition-colors ${showSettings ? "bg-black/5 dark:bg-white/5 text-foreground" : "text-slate-400 hover:bg-black/5 dark:hover:bg-white/5"}`}
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+              
+              {showSettings && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-panel border border-borderLine rounded-2xl p-4 shadow-premium dark:shadow-premium-dark z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="text-sm font-semibold mb-3">Transaction Settings</div>
+                  <div className="text-xs text-slate-500 mb-2">Slippage Tolerance</div>
+                  <div className="flex gap-2 mb-3">
+                    {["0.1", "0.5", "1.0"].map((val) => (
+                      <button
+                        key={val}
+                        onClick={() => setSlippage(val)}
+                        className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                          slippage === val 
+                            ? "bg-accent text-white" 
+                            : "bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/10 dark:hover:bg-white/10"
+                        }`}
+                      >
+                        {val}%
+                      </button>
+                    ))}
+                  </div>
+                  <div className="relative">
+                    <input 
+                      type="number"
+                      value={slippage}
+                      onChange={(e) => setSlippage(e.target.value)}
+                      placeholder="Custom"
+                      className="w-full bg-black/5 dark:bg-[#09090b] border border-borderLine rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent/50"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">%</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {!mounted || !isConnected ? (

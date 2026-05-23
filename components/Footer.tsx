@@ -41,8 +41,7 @@ export default function Footer() {
               title: "Developers",
               links: [
                 { name: "Documentation", path: "/docs" },
-                { name: "Keeper API", path: "/docs" },
-                { name: "GitHub", path: "https://github.com/AngelofDea1/Janus", external: true }
+                { name: "Keeper API", path: "/docs" }
               ]
             },
             {
