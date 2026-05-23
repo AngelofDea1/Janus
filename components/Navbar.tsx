@@ -88,23 +88,8 @@ export default function Navbar() {
             </nav>
           </div>
 
-          {/* MIDDLE: Search Bar (Hidden on small screens) */}
+          {/* MIDDLE: Empty to push actions to the right */}
           <div className="hidden md:flex flex-1 max-w-[480px] px-4">
-            <div className="w-full relative group">
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-slate-400 group-hover:text-slate-500 transition-colors" />
-              </div>
-              <input 
-                type="text" 
-                placeholder="Search tokens and vaults" 
-                className="w-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 focus:bg-transparent dark:focus:bg-transparent focus:border-orange-500/50 border border-transparent rounded-2xl py-2.5 pl-10 pr-4 text-sm font-medium text-foreground placeholder:text-slate-500 outline-none transition-all"
-              />
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <div className="hidden sm:flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-borderLine rounded p-1 shadow-sm">
-                  <span className="text-[10px] font-mono text-slate-400 font-bold">⌘K</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* RIGHT: Actions */}
@@ -146,18 +131,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white dark:bg-[#050505] pt-20 px-4 lg:hidden">
           <div className="flex flex-col gap-2 mt-4">
-            <div className="mb-4">
-              <div className="w-full relative">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-slate-400" />
-                </div>
-                <input 
-                  type="text" 
-                  placeholder="Search..." 
-                  className="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-xl py-3 pl-10 pr-4 text-sm font-medium outline-none"
-                />
-              </div>
-            </div>
+            {/* Search removed from mobile menu */}
 
             {navLinks.map((link) => (
               <Link
