@@ -22,10 +22,6 @@ export default function Footer() {
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
               Institutional-grade delta-neutral funding rate arbitrage execution protocol on the Arc Network.
             </p>
-            <div className="flex items-center gap-2 text-xs font-medium text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full w-fit">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              All Systems Operational
-            </div>
           </div>
 
           {[
@@ -71,8 +67,8 @@ export default function Footer() {
         <div className="pt-8 border-t border-borderLine flex flex-col md:flex-row justify-between items-center text-sm text-slate-500 gap-4">
           <div>© 2026 Janus Protocol. All rights reserved.</div>
           <div className="flex gap-6">
-            <Link href="/docs" className="hover:text-foreground transition-colors">Terms of Service</Link>
-            <Link href="/docs" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
           </div>
         </div>
 

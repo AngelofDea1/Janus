@@ -165,7 +165,7 @@ export default function ConnectWallet() {
       {!isConnected ? (
         <button
           onClick={toggleModal}
-          className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2.5 rounded-full transition-all flex items-center gap-2 shadow-sm"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 text-sm rounded-full transition-all flex items-center gap-2 shadow-sm"
         >
           Connect
         </button>

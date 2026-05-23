@@ -185,3 +185,14 @@ input[type=number] {
   border: 0;
   border-top: 1px solid rgba(var(--theme-border), 1);
 }
+
+/* Recharts Focus Fix */
+.recharts-wrapper *:focus {
+  outline: none !important;
+}
+.recharts-surface:focus {
+  outline: none !important;
+}
+*:focus {
+  outline: none !important;
+}
