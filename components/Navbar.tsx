@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Search, Moon, Sun, Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ConnectWallet from "./ConnectWallet";
-import { Shield, Moon, Sun, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -14,7 +14,6 @@ export default function Navbar() {
 
   // Sync with document class
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (document.documentElement.classList.contains("dark")) {
       setTheme("dark");
     } else {
@@ -22,7 +21,7 @@ export default function Navbar() {
     }
 
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -41,10 +40,10 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { name: "Terminal", path: "/app" },
+    { name: "Trade", path: "/app" },
     { name: "Portfolio", path: "/portfolio" },
     { name: "Analytics", path: "/analytics" },
-    { name: "Documentation", path: "/docs" },
+    { name: "Docs", path: "/docs" },
     { name: "Governance", path: "/governance" }
   ];
 
@@ -53,55 +52,87 @@ export default function Navbar() {
       <header 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled 
-            ? "bg-white/70 dark:bg-[#050505]/70 backdrop-blur-xl border-b border-borderLine" 
+            ? "bg-white/90 dark:bg-[#050505]/90 backdrop-blur-xl border-b border-borderLine" 
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="w-full px-4 h-[72px] flex items-center justify-between">
           
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-white font-heading font-bold shadow-premium transition-transform group-hover:scale-105">
-              J
+          {/* LEFT: Logo + Nav Links */}
+          <div className="flex items-center gap-6 xl:gap-8 flex-1">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 group shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-heading font-bold shadow-sm transition-transform group-hover:scale-105">
+                J
+              </div>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.path;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.path}
+                    className={`px-3 py-2 rounded-xl text-[15px] font-medium transition-all ${
+                      isActive 
+                        ? "text-foreground font-semibold" 
+                        : "text-slate-500 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* MIDDLE: Search Bar (Hidden on small screens) */}
+          <div className="hidden md:flex flex-1 max-w-[480px] px-4">
+            <div className="w-full relative group">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-slate-400 group-hover:text-slate-500 transition-colors" />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search tokens and vaults" 
+                className="w-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 focus:bg-transparent dark:focus:bg-transparent focus:border-orange-500/50 border border-transparent rounded-2xl py-2.5 pl-10 pr-4 text-sm font-medium text-foreground placeholder:text-slate-500 outline-none transition-all"
+              />
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <div className="hidden sm:flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-borderLine rounded p-1 shadow-sm">
+                  <span className="text-[10px] font-mono text-slate-400 font-bold">⌘K</span>
+                </div>
+              </div>
             </div>
-            <span className="font-heading font-bold text-xl tracking-tight hidden sm:block">
-              Janus
-            </span>
-          </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center bg-black/5 dark:bg-white/5 rounded-full px-2 py-1.5 border border-borderLine">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.path}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-                  pathname === link.path 
-                    ? "bg-white dark:bg-[#1a1a1a] shadow-sm text-foreground" 
-                    : "text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
+          {/* RIGHT: Actions */}
+          <div className="flex items-center justify-end gap-2 flex-1 shrink-0">
+            {/* Mock Network Selector */}
+            <button className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-foreground font-medium text-[15px]">
+              <div className="w-5 h-5 rounded-full bg-[#627EEA] flex items-center justify-center p-0.5">
+                <svg viewBox="0 0 32 32" className="w-full h-full text-white"><path fill="currentColor" d="M15.925 23.969l-9.819-5.794L15.925 32l9.825-13.825-9.825 5.794zM16.075 0L6.25 16.319l9.825 5.813 9.819-5.813L16.075 0z"/></svg>
+              </div>
+              <ChevronDown className="w-4 h-4 text-slate-400" />
+            </button>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
             <button 
               onClick={toggleTheme}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-slate-500 hover:text-foreground transition-colors border border-borderLine"
+              className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 text-slate-500 hover:text-foreground transition-colors"
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             
-            <div className="hidden sm:block">
+            <div className="hidden sm:block ml-1">
               <ConnectWallet />
             </div>
 
+            {/* Mobile Menu Toggle */}
             <button 
-              className="md:hidden w-10 h-10 flex items-center justify-center text-slate-500 hover:text-foreground"
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 rounded-full"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -113,23 +144,36 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white dark:bg-[#050505] pt-24 px-6 md:hidden">
-          <div className="flex flex-col gap-4">
+        <div className="fixed inset-0 z-40 bg-white dark:bg-[#050505] pt-20 px-4 lg:hidden">
+          <div className="flex flex-col gap-2 mt-4">
+            <div className="mb-4">
+              <div className="w-full relative">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-slate-400" />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Search..." 
+                  className="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-xl py-3 pl-10 pr-4 text-sm font-medium outline-none"
+                />
+              </div>
+            </div>
+
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`p-4 rounded-2xl text-lg font-medium transition-all ${
+                className={`p-3 rounded-xl text-lg font-medium transition-all ${
                   pathname === link.path 
                     ? "bg-black/5 dark:bg-white/5 text-foreground" 
-                    : "text-slate-500"
+                    : "text-slate-500 hover:bg-black/5 dark:hover:bg-white/5"
                 }`}
               >
                 {link.name}
               </Link>
             ))}
-            <div className="pt-8 border-t border-borderLine flex justify-center">
+            <div className="pt-6 mt-2 border-t border-borderLine flex justify-center">
               <ConnectWallet />
             </div>
           </div>
