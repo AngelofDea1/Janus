@@ -4,7 +4,6 @@ import "./globals.css";
 
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Janus",
@@ -30,17 +29,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // We use headers to derive initial theme state if possible, but the client will handle the toggle
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col relative selection:bg-accent/20">
         <Providers>
           <Navbar />
-          {/* Main content area */}
-          <main className="flex-1 w-full flex flex-col relative z-0 pb-16">
+          <main className="flex-1 w-full flex flex-col relative z-0">
             {children}
           </main>
-          <Footer />
         </Providers>
       </body>
     </html>
