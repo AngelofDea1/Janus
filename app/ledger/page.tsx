@@ -43,10 +43,7 @@ export default function LedgerPage() {
         
         {/* Header */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 font-semibold text-xs mb-4 border border-emerald-500/20">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Live Network Status
-          </div>
+
           <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight text-foreground mb-4">
             Relayer Ledger
           </h1>
@@ -58,14 +55,13 @@ export default function LedgerPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Network Uptime", value: "99.99%", icon: <Zap className="w-4 h-4 text-emerald-500" /> },
-            { label: "Tx Success Rate", value: "100%", icon: <ShieldCheck className="w-4 h-4 text-emerald-500" /> },
-            { label: "Avg Block Time", value: "12s", icon: <Clock className="w-4 h-4 text-accent" /> },
-            { label: "Active Nodes", value: "24", icon: <ArrowLeftRight className="w-4 h-4 text-accent" /> },
+            { label: "Network Uptime", value: "99.99%" },
+            { label: "Tx Success Rate", value: "100%" },
+            { label: "Avg Block Time", value: "12s" },
+            { label: "Active Nodes", value: "24" },
           ].map((stat, i) => (
             <div key={i} className="bg-panel border border-borderLine rounded-2xl p-6 shadow-sm backdrop-blur-md">
               <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-slate-500 uppercase tracking-widest">
-                {stat.icon}
                 {stat.label}
               </div>
               <div className="text-2xl font-bold font-heading text-foreground">
