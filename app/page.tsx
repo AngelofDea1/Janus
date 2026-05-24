@@ -141,13 +141,13 @@ export default function Home() {
             const tvlCounter = { value: 0 };
             anime({
               targets: tvlCounter,
-              value: 148.9,
+              value: 4.00,
               duration: 2000,
               easing: "easeOutExpo",
-              round: 10,
+              round: 100,
               update: () => {
                 if (tvlRef.current) {
-                  tvlRef.current.textContent = `$${tvlCounter.value.toFixed(1)}M`;
+                  tvlRef.current.textContent = `$${tvlCounter.value.toFixed(2)}`;
                 }
               },
             });
@@ -156,7 +156,7 @@ export default function Home() {
             const yieldCounter = { value: 0 };
             anime({
               targets: yieldCounter,
-              value: 28.9,
+              value: 24.5,
               duration: 2200,
               easing: "easeOutExpo",
               round: 10,
@@ -176,8 +176,11 @@ export default function Home() {
               easing: "easeOutExpo",
               delay: anime.stagger(150),
             });
-
-            observer.unobserve(entry.target);
+          } else {
+            // Reset stats so animation replays
+            anime.set(".stat-card", { opacity: 0, translateY: 30 });
+            if (tvlRef.current) tvlRef.current.textContent = "$0.00";
+            if (yieldRef.current) yieldRef.current.textContent = "0.0%";
           }
         });
       },
@@ -212,8 +215,10 @@ export default function Home() {
               duration: 800,
               easing: "easeOutExpo",
             });
-
-            observer.unobserve(entry.target);
+          } else {
+            // Reset for replay
+            anime.set(".feature-card", { opacity: 0, translateY: 50 });
+            anime.set(".features-heading", { opacity: 0, translateY: 30 });
           }
         });
       },
@@ -248,8 +253,10 @@ export default function Home() {
               duration: 900,
               easing: "easeOutExpo",
             });
-
-            observer.unobserve(entry.target);
+          } else {
+            // Reset for replay
+            anime.set(".ledger-text", { opacity: 0, translateX: -40 });
+            anime.set(".ledger-feed", { opacity: 0, translateX: 40 });
           }
         });
       },
@@ -272,7 +279,7 @@ export default function Home() {
         <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all">
           
           <h1 className="hero-title text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-6 opacity-0">
-            Institutional-grade <br className="hidden md:block" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
+            Institutional-grade <br className="hidden md:block" /><span className="whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
           </h1>
 
           <p className="hero-subtitle text-lg md:text-2xl text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed mb-10 opacity-0">
@@ -377,8 +384,16 @@ export default function Home() {
             ) : feedItems.length > 0 ? (
               feedItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine hover:border-accent/20 transition-colors">
-                  <div className="p-1.5 rounded-lg bg-black dark:bg-[#1a1a1a] shadow-sm flex items-center justify-center shrink-0">
-                    {exchangeLogos[item.shortEx] || <BinanceLogo />}
+                  <div className="w-8 h-8 rounded-full shadow-sm flex items-center justify-center shrink-0 bg-white overflow-hidden border border-borderLine">
+                    <img 
+                      src={`https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${item.asset.toLowerCase()}.svg`} 
+                      alt={item.asset}
+                      className="w-5 h-5 object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-[10px] font-bold text-slate-800">${item.asset.slice(0,2)}</span>`;
+                      }}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center">

@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Janus",
@@ -37,6 +38,7 @@ export default function RootLayout({
           <main className="flex-1 w-full flex flex-col relative z-0">
             {children}
           </main>
+          <Footer />
         </Providers>
       </body>
     </html>

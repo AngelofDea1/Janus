@@ -73,11 +73,11 @@ input[type=number] {
   outline: none;
 }
 
-/* Markdown Content Styling */
 .markdown-content {
   font-family: 'Inter', sans-serif;
   line-height: 1.75;
   font-size: 1rem;
+  color: rgb(var(--theme-foreground));
 }
 
 .markdown-content h1 {
@@ -110,7 +110,7 @@ input[type=number] {
 
 .markdown-content p {
   margin-bottom: 1.25rem;
-  color: #475569; /* Slate 600 */
+  color: #334155; /* Slate 700 */
 }
 .dark .markdown-content p {
   color: #94a3b8; /* Slate 400 */
@@ -161,12 +161,16 @@ input[type=number] {
   margin: 1.5rem 0;
   background-color: rgba(var(--theme-accent), 0.05);
   border-radius: 0.5rem;
-  color: inherit;
+  color: #1e293b;
   font-weight: 500;
+}
+.dark .markdown-content blockquote {
+  color: #cbd5e1;
 }
 
 .markdown-content blockquote p {
   margin-bottom: 0;
+  color: inherit;
 }
 
 .markdown-content code {
@@ -175,7 +179,10 @@ input[type=number] {
   padding: 0.2rem 0.4rem;
   background-color: rgba(var(--theme-border), 0.5);
   border-radius: 0.375rem;
-  color: inherit;
+  color: #0f172a;
+}
+.dark .markdown-content code {
+  color: #f8fafc;
 }
 
 .markdown-content pre {

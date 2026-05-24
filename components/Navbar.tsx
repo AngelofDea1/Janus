@@ -55,6 +55,7 @@ export default function Navbar() {
     { name: "Trade", path: "/app" },
     { name: "Portfolio", path: "/portfolio" },
     { name: "Analytics", path: "/analytics" },
+    { name: "Ledger", path: "/ledger" },
     { name: "Governance", path: "/governance" }
   ];
 
