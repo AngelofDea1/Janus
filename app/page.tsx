@@ -73,53 +73,60 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Hero entrance animation
+  // Advanced Hero Grid & Entrance Animation
   useEffect(() => {
     if (!heroRef.current) return;
 
+    const gridEl = document.querySelector('.hero-grid');
+    if (gridEl && gridEl.children.length === 0) {
+      for (let i = 0; i < 100; i++) {
+        const div = document.createElement('div');
+        div.className = 'grid-item w-1.5 h-1.5 rounded-full bg-accent/30 dark:bg-accent/50 m-3';
+        gridEl.appendChild(div);
+      }
+
+      anime({
+        targets: '.grid-item',
+        scale: [
+          { value: 0.1, easing: 'easeOutSine', duration: 500 },
+          { value: 1.5, easing: 'easeInOutQuad', duration: 1200 }
+        ],
+        opacity: [
+          { value: 0.1, easing: 'easeOutSine', duration: 500 },
+          { value: 0.8, easing: 'easeInOutQuad', duration: 1200 }
+        ],
+        delay: anime.stagger(200, { grid: [10, 10], from: 'center' }),
+        loop: true,
+        direction: 'alternate'
+      });
+    }
+
     const tl = anime.timeline({ easing: "easeOutExpo" });
 
-    // Background blobs fade in
-    tl.add({
-      targets: ".hero-blob",
-      opacity: [0, 1],
-      scale: [0.6, 1],
-      duration: 1800,
-    });
-
-    // Badge slides in
-    tl.add({
-      targets: ".hero-badge",
-      opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 800,
-    }, "-=1400");
-
-    // Title characters stagger in
     tl.add({
       targets: ".hero-title",
       opacity: [0, 1],
-      translateY: [40, 0],
-      duration: 1000,
-    }, "-=1000");
+      translateY: [50, 0],
+      rotateX: [-20, 0],
+      duration: 1200,
+      delay: 200,
+    });
 
-    // Subtitle fades in
     tl.add({
       targets: ".hero-subtitle",
       opacity: [0, 1],
-      translateY: [25, 0],
-      duration: 800,
-    }, "-=600");
+      translateY: [30, 0],
+      duration: 1000,
+    }, "-=800");
 
-    // Buttons stagger in
     tl.add({
       targets: ".hero-btn",
       opacity: [0, 1],
       translateY: [20, 0],
-      scale: [0.95, 1],
-      duration: 600,
-      delay: anime.stagger(120),
-    }, "-=400");
+      scale: [0.9, 1],
+      duration: 800,
+      delay: anime.stagger(150),
+    }, "-=600");
   }, []);
 
   // Stats counter animation with intersection observer
@@ -256,21 +263,16 @@ export default function Home() {
   return (
     <div ref={heroRef} className="relative min-h-screen bg-background overflow-hidden flex flex-col justify-center">
       
-      {/* Subtle Premium Background Mesh */}
-      <div className="hero-blob absolute top-[15%] left-[25%] w-[35%] h-[45%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[130px] pointer-events-none opacity-0" />
-      <div className="hero-blob absolute bottom-[20%] right-[20%] w-[40%] h-[30%] rounded-full bg-violet-500/5 dark:bg-violet-500/10 blur-[100px] pointer-events-none opacity-0" />
+      {/* Animated Hero Grid Background */}
+      <div className="hero-grid absolute inset-0 flex flex-wrap justify-center content-center opacity-40 pointer-events-none" style={{ width: '100vw', height: '100vh', overflow: 'hidden' }} />
 
-      <div className="relative z-10 w-full px-6 flex flex-col items-center max-w-6xl mx-auto">
+      <div className="relative z-10 w-full px-6 flex flex-col items-center max-w-6xl mx-auto pt-20">
         
-        {/* Main Glassmorphic Hero Panel */}
-        <div className="bg-panel border border-borderLine rounded-[40px] p-10 md:p-16 shadow-premium dark:shadow-premium-dark backdrop-blur-xl w-full max-w-4xl text-center flex flex-col items-center transition-all">
+        {/* Main Hero Content */}
+        <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all">
           
-          <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent font-semibold text-sm mb-8 border border-accent/20 opacity-0">
-            Automated Delta-Neutral Yields
-          </div>
-
-          <h1 className="hero-title text-4xl md:text-5xl lg:text-7xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.1] mb-6 opacity-0">
-            Institutional-grade <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
+          <h1 className="hero-title text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-6 opacity-0">
+            Institutional-grade <br className="hidden md:block" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
           </h1>
 
           <p className="hero-subtitle text-lg md:text-2xl text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed mb-10 opacity-0">
@@ -286,8 +288,8 @@ export default function Home() {
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link 
-              href="/docs" 
-              className="hero-btn w-full sm:w-auto px-10 py-5 rounded-2xl bg-black/5 dark:bg-[#09090b] text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0"
+              href="/docs/overview" 
+              className="hero-btn w-full sm:w-auto px-10 py-5 rounded-2xl bg-panel text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0 backdrop-blur-md"
             >
               Read Docs
             </Link>
@@ -351,14 +353,7 @@ export default function Home() {
           <p className="ledger-text text-slate-500 dark:text-slate-400 leading-relaxed mb-8 opacity-0">
             Every transaction routed through our arbitrage vaults is audited by cryptographic Proof of Validation logs. Distributed keeper nodes log state execution on-chain, proving rates and spreads transparently.
           </p>
-          <div className="ledger-text flex gap-4 opacity-0">
-            <Link
-              href="/analytics"
-              className="px-6 py-3 border border-borderLine hover:border-slate-400 dark:hover:border-slate-600 bg-panel rounded-xl text-sm font-semibold transition-all cursor-pointer text-foreground shadow-sm"
-            >
-              Analyze Live Ledger
-            </Link>
-          </div>
+
         </div>
 
         <div className="ledger-feed bg-panel border border-borderLine p-6 rounded-3xl backdrop-blur-xl relative shadow-premium dark:shadow-premium-dark opacity-0">
