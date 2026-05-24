@@ -105,7 +105,7 @@ export default function Navbar() {
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             
-            <div className="hidden sm:block ml-1">
+            <div className="ml-1">
               <ConnectWallet />
             </div>
 

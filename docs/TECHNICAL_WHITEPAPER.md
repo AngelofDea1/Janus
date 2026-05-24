@@ -5,7 +5,7 @@
 Janus is a non-custodial, ERC-4626 standard yield vault implementing automated cross-protocol funding rate arbitrage on Arc L1. The protocol uses a decentralized keeper bot to identify and execute market-neutral positions across perpetual derivative exchanges, generating consistent returns independent of directional price movements.
 
 **Version**: 1.0
-**Date**: January 2026
+**Date**: April 2026
 **Status**: Live on Arc Testnet
 
 ---

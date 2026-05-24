@@ -49,7 +49,7 @@ export default function GovernancePage() {
         <div className="bg-panel border border-borderLine rounded-[32px] p-6 md:p-10 shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
           
           {/* Tab Navigation Menu */}
-          <div className="flex flex-wrap gap-2 mb-8 bg-black/5 dark:bg-white/5 p-2 rounded-2xl border border-borderLine overflow-x-auto">
+          <div className="flex gap-2 mb-8 bg-black/5 dark:bg-white/5 p-2 rounded-2xl border border-borderLine overflow-x-auto scrollbar-none -mx-2 px-2">
             {[
               { id: 'overview', label: 'Multi-Sig & Timelock', icon: Lock },
               { id: 'insurance', label: 'Insurance Fund', icon: Shield },

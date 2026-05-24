@@ -9,6 +9,20 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   title: "Janus",
   description: "Institutional-grade delta-neutral funding rate arbitrage on the Arc Network.",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Janus',
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -18,7 +32,7 @@ export default function RootLayout({
 }>) {
   // We use headers to derive initial theme state if possible, but the client will handle the toggle
   return (
-    <html lang="en" className="antialiased">
+    <html lang="en" className="antialiased" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col relative selection:bg-accent/20">
         <Providers>
           <Navbar />

@@ -30,6 +30,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(var(--theme-bg));
   transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Safe area padding for notched devices (iPhone X+) */
+@supports (padding: env(safe-area-inset-bottom)) {
+  footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
@@ -195,4 +210,21 @@ input[type=number] {
 }
 *:focus {
   outline: none !important;
+}
+
+/* Hide scrollbar for mobile horizontal scrolling */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile touch-friendly buttons */
+@media (max-width: 640px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
