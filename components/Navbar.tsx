@@ -71,101 +71,98 @@ export default function Navbar() {
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-[95%] max-w-6xl rounded-full ${
           scrolled 
-            ? "bg-white/90 dark:bg-[#050505]/90 backdrop-blur-xl border-b border-borderLine" 
-            : "bg-transparent border-b border-transparent"
+            ? "bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border border-borderLine shadow-lg" 
+            : "bg-white/40 dark:bg-black/40 backdrop-blur-md border border-borderLine/50"
         }`}
       >
-        <div className="w-full px-4 h-[72px] flex items-center justify-between">
+        <div className="w-full px-6 h-16 flex items-center justify-between">
           
-          {/* LEFT: Logo + Nav Links */}
-          <div className="flex items-center gap-6 xl:gap-8 flex-1">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group shrink-0">
-              <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-heading font-bold shadow-sm transition-transform group-hover:scale-105">
+          {/* LEFT: Logo */}
+          <div className="flex items-center shrink-0">
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center text-background font-heading font-bold shadow-sm transition-transform group-hover:scale-105">
                 J
               </div>
+              <span className="font-heading font-bold text-foreground text-lg hidden sm:block tracking-tight">JANUS</span>
             </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.path;
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.path}
-                    className={`px-3 py-2 rounded-xl text-[15px] font-medium transition-all ${
-                      isActive 
-                        ? "text-foreground font-semibold" 
-                        : "text-slate-500 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              })}
-
-              {/* More Dropdown */}
-              <div className="relative" ref={moreRef}>
-                <button
-                  onClick={() => setMoreOpen(!moreOpen)}
-                  className={`px-3 py-2 rounded-xl text-[15px] font-medium transition-all flex items-center gap-1 ${
-                    moreOpen
-                      ? "text-foreground bg-black/5 dark:bg-white/5"
-                      : "text-slate-500 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
-                  }`}
-                >
-                  More
-                  <MoreHorizontal className="w-4 h-4" />
-                </button>
-
-                {moreOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-[#111] border border-borderLine rounded-2xl shadow-2xl dark:shadow-black/40 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
-                    {moreLinks.map((link, idx) => {
-                      if ('divider' in link && link.divider) {
-                        return <div key={idx} className="my-2 border-t border-borderLine" />;
-                      }
-                      if (link.external) {
-                        return (
-                          <a
-                            key={link.name}
-                            href={link.path}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={() => setMoreOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                          >
-                            {link.name}
-                            <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        );
-                      }
-                      return (
-                        <Link
-                          key={link.name}
-                          href={link.path!}
-                          onClick={() => setMoreOpen(false)}
-                          className="block px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                        >
-                          {link.name}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </nav>
           </div>
 
-          {/* MIDDLE: Spacer */}
-          <div className="hidden md:flex flex-1 max-w-[480px] px-4" />
+          {/* MIDDLE: Centered Navigation */}
+          <nav className="hidden lg:flex items-center gap-1 justify-center absolute left-1/2 -translate-x-1/2">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.path;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.path}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    isActive 
+                      ? "bg-foreground text-background" 
+                      : "text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+
+            {/* More Dropdown */}
+            <div className="relative" ref={moreRef}>
+              <button
+                onClick={() => setMoreOpen(!moreOpen)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
+                  moreOpen
+                    ? "bg-black/5 dark:bg-white/10 text-foreground"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground"
+                }`}
+              >
+                More
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+
+              {moreOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-56 bg-white dark:bg-[#111] border border-borderLine rounded-2xl shadow-2xl dark:shadow-black/40 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                  {moreLinks.map((link, idx) => {
+                    if ('divider' in link && link.divider) {
+                      return <div key={idx} className="my-2 border-t border-borderLine" />;
+                    }
+                    if (link.external) {
+                      return (
+                        <a
+                          key={link.name}
+                          href={link.path}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={() => setMoreOpen(false)}
+                          className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        >
+                          {link.name}
+                          <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      );
+                    }
+                    return (
+                      <Link
+                        key={link.name}
+                        href={link.path!}
+                        onClick={() => setMoreOpen(false)}
+                        className="block px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </nav>
 
           {/* RIGHT: Actions */}
-          <div className="flex items-center justify-end gap-2 flex-1 shrink-0">
+          <div className="flex items-center justify-end gap-2 shrink-0">
             {/* Theme Toggle */}
             <button 
               onClick={toggleTheme}
