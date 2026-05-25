@@ -45,9 +45,9 @@ export default function LedgerPage() {
         const res = await fetch("/api/executions");
         const json: ExecutionLog = await res.json();
 
-        if (json.success && json.source === "keeper" && json.executions.length > 0) {
+        if (json.success && json.executions && json.executions.length > 0) {
           setData(json);
-          setKeeperOnline(true);
+          setKeeperOnline(json.source === "keeper");
         } else {
           setKeeperOnline(false);
           // Fallback: use funding rates API to show live opportunities

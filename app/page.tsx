@@ -53,7 +53,7 @@ export default function Home() {
         const execRes = await fetch("/api/executions");
         const execJson = await execRes.json();
 
-        if (execJson.success && execJson.source === "keeper" && execJson.executions?.length > 0) {
+        if (execJson.success && execJson.executions?.length > 0) {
           const top3 = execJson.executions.slice(0, 3).map((ex: any) => ({
             asset: ex.asset,
             route: ex.route,
