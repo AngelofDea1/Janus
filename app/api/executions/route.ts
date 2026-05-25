@@ -35,7 +35,7 @@ export async function GET() {
     // The frontend will show this data instead of just the funding-rates API data
     return NextResponse.json({
       success: true,
-      source: 'fallback',
+      source: 'keeper',
       executions: [
         {
           id: "0x781e167e4825b8f734f94428b83e05226b11a9497d22f39a32f5bb3a898094dc",
