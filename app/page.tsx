@@ -45,16 +45,37 @@ export default function Home() {
   const tvlRef = useRef<HTMLSpanElement>(null);
   const yieldRef = useRef<HTMLSpanElement>(null);
 
-  // Fetch live feed data
+  // Fetch live feed data — tries real keeper executions first, falls back to funding rates
   useEffect(() => {
     async function fetchFeed() {
+      try {
+        // First, try real keeper execution data
+        const execRes = await fetch("/api/executions");
+        const execJson = await execRes.json();
+
+        if (execJson.success && execJson.source === "keeper" && execJson.executions?.length > 0) {
+          const top3 = execJson.executions.slice(0, 3).map((ex: any) => ({
+            asset: ex.asset,
+            route: ex.route,
+            spread: `+${ex.spread}%`,
+            shortEx: ex.shortExchange,
+            longEx: ex.longExchange,
+            time: formatTimeDiff(ex.timestamp),
+          }));
+          setFeedItems(top3);
+          setLoading(false);
+          return;
+        }
+      } catch { /* fall through */ }
+
+      // Fallback: use live funding rate opportunities
       try {
         const res = await fetch("/api/funding-rates");
         const json = await res.json();
         if (json.success && json.data?.length > 0) {
           const top3 = json.data.slice(0, 3).map((opp: any, idx: number) => ({
             asset: opp.asset,
-            route: `${opp.shortExchange} \u2794 ${opp.longExchange}`,
+            route: `${opp.shortExchange} ➔ ${opp.longExchange}`,
             spread: `+${opp.spread}%`,
             shortEx: opp.shortExchange,
             longEx: opp.longExchange,
@@ -62,14 +83,12 @@ export default function Home() {
           }));
           setFeedItems(top3);
         }
-      } catch {
-        // fallback silently
-      } finally {
-        setLoading(false);
-      }
+      } catch { /* silent */ }
+
+      setLoading(false);
     }
     fetchFeed();
-    const interval = setInterval(fetchFeed, 30000);
+    const interval = setInterval(fetchFeed, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -412,4 +431,12 @@ export default function Home() {
       </section>
     </div>
   );
+}
+
+function formatTimeDiff(timestamp: number): string {
+  const diff = Date.now() - timestamp;
+  if (diff < 5000) return "Live";
+  if (diff < 60000) return `${Math.floor(diff / 1000)}s ago`;
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  return `${Math.floor(diff / 3600000)}h ago`;
 }

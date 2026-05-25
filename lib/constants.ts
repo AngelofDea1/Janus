@@ -129,6 +129,27 @@ export const VAULT_ABI = [
     "outputs": [{"type": "uint256"}],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {"indexed": false, "name": "asset", "type": "string"},
+      {"indexed": false, "name": "route", "type": "string"},
+      {"indexed": false, "name": "volume", "type": "uint256"},
+      {"indexed": false, "name": "spread", "type": "string"},
+      {"indexed": false, "name": "yieldHarvested", "type": "uint256"}
+    ],
+    "name": "ArbitrageExecuted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {"indexed": true, "name": "amount", "type": "uint256"},
+      {"indexed": false, "name": "totalAssetsAfter", "type": "uint256"}
+    ],
+    "name": "ArbitrageYieldHarvested",
+    "type": "event"
   }
 ] as const;
 
