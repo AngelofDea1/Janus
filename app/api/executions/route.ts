@@ -192,7 +192,13 @@ export async function GET() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
     try {
-      const res = await fetch(`${KEEPER_URL}/executions`, { signal: controller.signal });
+      const res = await fetch(`${KEEPER_URL}/executions`, { 
+        signal: controller.signal,
+        headers: {
+          'bypass-tunnel-reminder': 'true',
+          'User-Agent': 'node-fetch'
+        }
+      });
       clearTimeout(timeout);
       if (res.ok) {
         const data = await res.json();
