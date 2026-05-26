@@ -297,7 +297,7 @@ export default function Home() {
         {/* Main Hero Content */}
         <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all">
           
-          <h1 className="hero-title text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-6 opacity-0">
+          <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-6 opacity-0">
             Institutional-grade <br className="hidden md:block" /><span className="whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-accent to-violet-500">funding rate arbitrage</span>
           </h1>
 
@@ -429,67 +429,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Landing Page Exclusive Footer (New Genre Studio Style) */}
-      <footer className="relative w-full mt-32 pt-24 pb-12 overflow-hidden flex flex-col items-center bg-black dark:bg-[#050505] rounded-t-[3rem] border-t border-borderLine">
-        
-        {/* Massive 4K Image Background/Hero */}
-        <div className="relative w-full max-w-[1400px] h-[600px] md:h-[800px] rounded-[2rem] overflow-hidden mx-4 mb-24 border border-white/10 shadow-2xl group">
-          <img 
-            src="/janus-bust-4k.png" 
-            alt="Janus Bust 4K"
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-80 mix-blend-lighten transition-transform duration-1000 group-hover:scale-105"
-          />
-          {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-          
-          <div className="absolute bottom-8 left-8 md:bottom-16 md:left-16 right-8 md:right-16 flex flex-col md:flex-row items-start md:items-end justify-between gap-8 z-10">
-            <div>
-              <h2 className="text-white text-5xl md:text-8xl font-black font-heading tracking-tighter leading-[0.9] mb-4">
-                THE FUTURE<br/>IS TWO-FACED.
-              </h2>
-              <p className="text-white/60 text-lg md:text-xl max-w-md font-medium">
-                Simultaneously looking at CeFi spreads and DeFi execution to capture risk-free yield.
-              </p>
-            </div>
-            
-            <Link href="/app" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform flex items-center gap-2">
-              Launch App 
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </Link>
-          </div>
-        </div>
-
-        {/* Footer Links & Info */}
-        <div className="w-full max-w-6xl px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-12 relative z-10">
-          <div className="flex flex-col gap-2">
-            <span className="text-white font-black font-heading text-4xl tracking-tighter">JANUS</span>
-            <span className="text-white/40 text-sm font-medium">© {new Date().getFullYear()} Janus Protocol. All rights reserved.</span>
-          </div>
-
-          <div className="flex gap-12 text-white/60 font-medium">
-            <div className="flex flex-col gap-4">
-              <span className="text-white text-xs font-bold tracking-widest uppercase mb-1">Protocol</span>
-              <Link href="/app" className="hover:text-white transition-colors">Trade</Link>
-              <Link href="/portfolio" className="hover:text-white transition-colors">Portfolio</Link>
-              <Link href="/ledger" className="hover:text-white transition-colors">Ledger</Link>
-            </div>
-            <div className="flex flex-col gap-4">
-              <span className="text-white text-xs font-bold tracking-widest uppercase mb-1">Social</span>
-              <a href="https://twitter.com/JanusProtocol" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Twitter</a>
-              <a href="https://discord.gg/janus" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Discord</a>
-              <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Massive background text */}
-        <div className="absolute top-0 left-0 w-full text-center overflow-hidden pointer-events-none select-none opacity-[0.03]">
-          <h1 className="text-[25vw] font-black font-heading tracking-tighter text-white whitespace-nowrap leading-none mt-12">
-            JANUS
-          </h1>
-        </div>
-      </footer>
     </div>
   );
 }
