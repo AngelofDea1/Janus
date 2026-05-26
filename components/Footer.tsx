@@ -8,15 +8,15 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Left Links */}
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
           <Link href="/docs/overview" className="text-sm font-medium text-slate-500 hover:text-foreground transition-colors">
-            Documentation
+            Docs
           </Link>
           <Link href="/terms" className="text-sm font-medium text-slate-500 hover:text-foreground transition-colors">
-            Terms of Service
+            Terms
           </Link>
           <Link href="/privacy" className="text-sm font-medium text-slate-500 hover:text-foreground transition-colors">
-            Privacy Policy
+            Privacy
           </Link>
         </div>
 

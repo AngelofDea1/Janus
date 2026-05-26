@@ -47,6 +47,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function AnalyticsDashboard() {
   const [mounted, setMounted] = React.useState(false);
+  const [timeframe, setTimeframe] = React.useState("1M");
 
   React.useEffect(() => {
     setMounted(true);
@@ -149,9 +150,22 @@ export default function AnalyticsDashboard() {
 
         {/* Minimal Chart Section */}
         <div className="bg-panel border border-borderLine rounded-[32px] p-6 md:p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl mb-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <h3 className="font-heading font-bold text-2xl text-foreground">Compound Volume</h3>
-            <span className="bg-accent/10 text-accent font-semibold text-sm px-3 py-1 rounded-full border border-accent/20">USD Principal</span>
+            <div className="flex items-center gap-3">
+              <div className="flex bg-black/5 dark:bg-white/5 rounded-full p-1 border border-borderLine">
+                {['1W', '1M', '1Y', 'ALL'].map((tf) => (
+                  <button
+                    key={tf}
+                    onClick={() => setTimeframe(tf)}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${timeframe === tf ? 'bg-panel border border-borderLine text-foreground shadow-sm' : 'text-slate-500 hover:text-foreground'}`}
+                  >
+                    {tf}
+                  </button>
+                ))}
+              </div>
+              <span className="bg-accent/10 text-accent font-semibold text-sm px-3 py-1 rounded-full border border-accent/20 hidden sm:block">USD Principal</span>
+            </div>
           </div>
 
           <div className="h-80 w-full">

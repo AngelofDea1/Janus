@@ -98,45 +98,13 @@ export default function LedgerPage() {
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight text-foreground mb-4">
             Relayer Ledger
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed">
-            Cryptographically audited state execution logs. Every cross-exchange arbitrage trade executed by our keeper network is transparently logged here.
+            Real-time execution logs for all arbitrage trades across the network.
           </p>
-        </div>
-
-        {/* Keeper Status Banner */}
-        <div className={`mb-6 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold border ${
-          keeperOnline
-            ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-            : "bg-amber-500/10 text-amber-500 border-amber-500/20"
-        }`}>
-          <span className={`w-2 h-2 rounded-full ${keeperOnline ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
-          {keeperOnline
-            ? `Keeper Online — ${stats.successCount} executions | $${stats.totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2 })} total volume`
-            : "Keeper Offline — Displaying live funding rate opportunities"
-          }
-        </div>
-
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { label: "Network Uptime", value: keeperOnline ? "99.99%" : "—" },
-            { label: "Tx Success Rate", value: stats.successCount > 0 ? `${((stats.successCount / (stats.successCount + stats.failCount)) * 100).toFixed(0)}%` : "—" },
-            { label: "Total Executions", value: stats.successCount > 0 ? String(stats.successCount) : "—" },
-            { label: "Total Volume", value: stats.totalVolume > 0 ? `$${stats.totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "—" },
-          ].map((stat, i) => (
-            <div key={i} className="bg-panel border border-borderLine rounded-2xl p-6 shadow-sm backdrop-blur-md">
-              <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-slate-500 uppercase tracking-widest">
-                {stat.label}
-              </div>
-              <div className="text-2xl font-bold font-heading text-foreground">
-                {stat.value}
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* Table */}

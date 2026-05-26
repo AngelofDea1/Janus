@@ -294,7 +294,7 @@ export default function ArbitrageApp() {
                       placeholder="0.00"
                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
                     />
-                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
+                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
                       <div className="w-6 h-6 shrink-0">
                         <svg viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                           <circle cx="1000" cy="1000" r="1000" fill="#2775CA"/>
@@ -309,9 +309,12 @@ export default function ArbitrageApp() {
 
                {/* Center Arrow */}
                <div className="relative h-2 flex justify-center items-center z-10">
-                  <div className="absolute w-10 h-10 bg-panel border border-borderLine rounded-xl flex items-center justify-center shadow-sm">
+                  <button 
+                    onClick={() => setActiveMode(activeMode === "deposit" ? "withdraw" : "deposit")}
+                    className="absolute w-10 h-10 bg-panel border border-borderLine rounded-xl flex items-center justify-center shadow-sm hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  >
                     <ArrowDownUp className="w-4 h-4 text-slate-400" />
-                  </div>
+                  </button>
                </div>
 
                {/* Output Section */}
@@ -327,7 +330,7 @@ export default function ArbitrageApp() {
                       placeholder="0.00"
                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
                     />
-                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
+                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
                       <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
                         J
                       </div>
@@ -346,8 +349,6 @@ export default function ArbitrageApp() {
                        ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                        : activePendingState
                        ? "bg-accent/50 text-white cursor-wait"
-                       : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
-                       ? "bg-accent/10 text-accent hover:bg-accent/20"
                        : "bg-accent text-white hover:bg-accentHover shadow-premium hover:shadow-premium-hover active:scale-[0.98]"
                    }`}
                  >
@@ -387,7 +388,7 @@ export default function ArbitrageApp() {
                       placeholder="0.00"
                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
                     />
-                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm px-3 py-1.5 rounded-full border border-borderLine shrink-0">
+                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
                       <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
                         J
                       </div>
@@ -419,7 +420,7 @@ export default function ArbitrageApp() {
         <div className="mt-6 bg-panel border border-borderLine rounded-2xl p-4 text-sm shadow-sm">
           <div className="flex justify-between py-2 border-b border-borderLine/50">
             <span className="text-slate-500 flex items-center gap-1">
-              Live APY <Info className="w-3 h-3" />
+              Live APY
             </span>
             <span className="font-semibold text-emerald-500">
               {estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(2) : "32.40"}%
@@ -427,7 +428,7 @@ export default function ArbitrageApp() {
           </div>
           <div className="flex justify-between py-2 border-b border-borderLine/50">
             <span className="text-slate-500 flex items-center gap-1">
-              Network Cost <Info className="w-3 h-3" />
+              Network Cost
             </span>
             <span className="font-semibold text-foreground">~$0.01</span>
           </div>

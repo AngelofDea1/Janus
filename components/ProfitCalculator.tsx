@@ -100,7 +100,7 @@ export default function ProfitCalculator() {
           {/* Position Size */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">
-              Position Size (USD)
+              Position Size (USDC)
             </label>
             <div className="relative">
               <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />

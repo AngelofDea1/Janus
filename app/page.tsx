@@ -292,26 +292,26 @@ export default function Home() {
       <div className="relative z-10 w-full px-6 flex flex-col items-center max-w-6xl mx-auto pt-20">
         
         {/* Main Hero Content */}
-        <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all">
+        <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all px-4 sm:px-0">
           
-          <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.05] mb-8 opacity-0">
+          <h1 className="hero-title text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.1] mb-6 opacity-0">
             Institutional-grade <br className="hidden md:block" /><span className="whitespace-nowrap text-foreground">funding rate arbitrage</span>
           </h1>
 
-          <p className="hero-subtitle text-lg md:text-2xl text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed mb-12 opacity-0">
-            Automated market-neutral perpetual strategies capturing funding rate spreads across top exchanges. Consistent, risk-mitigated APY secured natively on the Arc Network.
+          <p className="hero-subtitle text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed mb-10 opacity-0">
+            Capture risk-mitigated APY from funding rate spreads across top exchanges. Secured natively on the Arc Network.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <Link 
               href="/docs/overview" 
-              className="hero-btn w-full sm:w-auto px-10 py-5 rounded-2xl bg-panel text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0 backdrop-blur-md"
+              className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-panel text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0 backdrop-blur-md"
             >
               Read Docs
             </Link>
             <Link 
               href="/app" 
-              className="hero-btn w-full sm:w-auto px-10 py-5 rounded-2xl bg-foreground text-background font-bold text-lg hover:opacity-90 shadow-premium hover:shadow-premium-hover transition-all active:scale-[0.98] flex items-center justify-center gap-3 opacity-0"
+              className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-foreground text-background font-bold text-lg hover:opacity-90 shadow-premium hover:shadow-premium-hover transition-all active:scale-[0.98] flex items-center justify-center gap-3 opacity-0"
             >
               Launch App
               <ArrowRight className="w-5 h-5" />
