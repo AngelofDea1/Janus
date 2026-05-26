@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Calculator, TrendingUp, RefreshCw, DollarSign, ChevronDown } from "lucide-react";
+import AssetLogo from "./AssetLogo";
 
 interface Opportunity {
   asset: string;
@@ -23,6 +24,7 @@ export default function ProfitCalculator() {
   const [positionSize, setPositionSize] = useState(10000);
   const [inputValue, setInputValue] = useState("10000");
   const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchRates = useCallback(async () => {
@@ -133,38 +135,69 @@ export default function ProfitCalculator() {
           </div>
 
           {/* Opportunity Selector */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">
-              Select Arbitrage Pair
-            </label>
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-xs font-bold uppercase tracking-widest text-slate-500">
+                Select Arbitrage Pair
+              </label>
+            </div>
+            
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Search assets..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white dark:bg-[#111] border border-borderLine rounded-xl text-sm font-medium text-foreground focus:outline-none focus:border-accent transition-colors"
+              />
+            </div>
+
             {loading ? (
-              <div className="h-14 bg-slate-100 dark:bg-slate-800/50 animate-pulse rounded-2xl" />
+              <div className="h-64 space-y-2 animate-pulse mt-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="w-full h-16 bg-black/5 dark:bg-white/5 rounded-xl border border-borderLine" />
+                ))}
+              </div>
             ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scroll">
-                {opportunities.map((opp) => (
+              <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1 custom-scroll mt-2 flex-1">
+                {opportunities
+                  .filter(opp => opp.asset.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map((opp) => (
                   <button
                     key={opp.asset}
                     onClick={() => setSelectedOpp(opp)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${selectedOpp?.asset === opp.asset
-                      ? "bg-accent/10 border-accent/40 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
-                      : "bg-white dark:bg-[#111] border-borderLine hover:border-accent/30"
+                    className={`w-full flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 rounded-xl border transition-all text-left gap-2 sm:gap-0 ${selectedOpp?.asset === opp.asset
+                      ? "bg-accent text-white shadow-[0_4px_0_rgb(4,120,87)] border-transparent hover:brightness-110 active:translate-y-[4px] active:shadow-none"
+                      : "bg-white dark:bg-[#111] border-borderLine hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-bold text-foreground text-sm">{opp.asset}</span>
-                      <span className="text-[10px] text-slate-400 uppercase">{opp.exB} → {opp.exA}</span>
+                      <AssetLogo asset={opp.asset} size={20} className="border border-borderLine/50 bg-slate-100 dark:bg-slate-800" />
+                      <span className={`font-bold text-sm ${selectedOpp?.asset === opp.asset ? "text-white" : "text-foreground"}`}>{opp.asset}</span>
+                      <span className={`text-[10px] uppercase font-medium px-1.5 py-0.5 rounded ${selectedOpp?.asset === opp.asset ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>{opp.exB} → {opp.exA}</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono text-slate-500">Spread: {opp.spread}%</span>
-                      <span className={`text-xs font-bold font-mono px-2 py-0.5 rounded ${selectedOpp?.asset === opp.asset
-                        ? "text-accent"
-                        : "text-slate-600 dark:text-slate-300"
-                        }`}>
-                        {opp.projectedAPY}% APY
-                      </span>
+                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                      <div className="flex flex-col sm:text-right">
+                        <span className={`text-[10px] uppercase font-semibold ${selectedOpp?.asset === opp.asset ? "text-white/70" : "text-slate-400"}`}>Spread</span>
+                        <span className={`text-xs font-mono font-bold ${selectedOpp?.asset === opp.asset ? "text-white" : "text-slate-500"}`}>{opp.spread}%</span>
+                      </div>
+                      <div className="flex flex-col text-right">
+                        <span className={`text-[10px] uppercase font-semibold ${selectedOpp?.asset === opp.asset ? "text-white/70" : "text-slate-400"}`}>APY</span>
+                        <span className={`text-xs font-bold font-mono ${selectedOpp?.asset === opp.asset
+                          ? "text-white"
+                          : "text-accent"
+                          }`}>
+                          {opp.projectedAPY}%
+                        </span>
+                      </div>
                     </div>
                   </button>
                 ))}
+                {opportunities.filter(opp => opp.asset.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                  <div className="text-center py-6 text-sm text-slate-500 border border-dashed border-borderLine rounded-xl">
+                    No matching pairs found.
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -175,7 +208,13 @@ export default function ProfitCalculator() {
           {/* Strategy Info */}
           {selectedOpp && (
             <div className="bg-white dark:bg-[#0d0d12] border border-borderLine rounded-2xl p-5 text-sm">
-              <div className="text-xs font-medium text-slate-500 mb-3">Active Strategy</div>
+              <div className="flex items-center justify-between mb-4 border-b border-borderLine pb-3">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Active Strategy</span>
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-full border border-borderLine/50">
+                  <AssetLogo asset={selectedOpp.asset} size={16} />
+                  <span className="font-bold text-xs text-foreground tracking-tight">{selectedOpp.asset}</span>
+                </div>
+              </div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600 dark:text-slate-400">Short Position</span>
@@ -233,9 +272,11 @@ export default function ProfitCalculator() {
                   on {fmt(positionSize)} at <span className="font-medium text-foreground">{selectedOpp?.projectedAPY ?? "—"}% APY</span>
                 </div>
               </div>
-              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-              </div>
+              {selectedOpp && (
+                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-borderLine/50 shadow-sm">
+                  <AssetLogo asset={selectedOpp.asset} size={28} />
+                </div>
+              )}
             </div>
             <div className="mt-5 text-xs text-slate-400 dark:text-slate-500">
               Projections assume consistent spread. Actual returns vary with market conditions, fees, and slippage.

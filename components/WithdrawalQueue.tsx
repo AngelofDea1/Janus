@@ -25,27 +25,12 @@ export default function WithdrawalQueue() {
  functionName: "withdrawalDelay",
  });
 
- // Mock initial requests for premium demo display, merging with active chain status
+ // Read live chain status (no demo mocks)
  const [requests, setRequests] = useState<WithdrawalRequest[]>([]);
 
  React.useEffect(() => {
-   const now = Math.floor(Date.now() / 1000);
-   setRequests([
-     {
-       requestId: 5012,
-       shares: BigInt("1250000000000000000000"), // 1250 shares
-       requestTime: BigInt(now - 180000), // ~2 days ago
-       timeRemaining: BigInt(0),
-       completed: false
-     },
-     {
-       requestId: 5013,
-       shares: BigInt("5000000000000000000000"), // 5000 shares
-       requestTime: BigInt(now - 36000), // 10 hours ago
-       timeRemaining: BigInt(136800), // 38 hours remaining
-       completed: false
-     }
-   ]);
+   // Frontend will eventually poll or read events for user's requests here
+   setRequests([]);
  }, []);
 
  const completeWithdrawal = (requestId: number) => {

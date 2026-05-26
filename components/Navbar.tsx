@@ -60,6 +60,7 @@ export default function Navbar() {
   ];
 
   const moreLinks = [
+    { name: "Circle Faucet", path: "https://faucet.circle.com/", external: true },
     { name: "Documentation", path: "/docs", external: false },
     { name: "Twitter", path: "https://twitter.com/JanusProtocol", external: true },
     { name: "Discord", path: "https://discord.gg/janus", external: true },
@@ -70,14 +71,15 @@ export default function Navbar() {
 
   return (
     <>
-      <header 
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-[95%] max-w-6xl rounded-full ${
-          scrolled 
-            ? "bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border border-borderLine shadow-lg" 
-            : "bg-white/40 dark:bg-black/40 backdrop-blur-md border border-borderLine/50"
-        }`}
-      >
-        <div className="w-full px-6 h-16 flex items-center justify-between">
+      <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none">
+        <header 
+          className={`pointer-events-auto w-full max-w-6xl rounded-full transition-all duration-300 ${
+            scrolled 
+              ? "bg-background/80 backdrop-blur-xl border border-borderLine shadow-sm" 
+              : "bg-background/40 backdrop-blur-md border border-transparent"
+          }`}
+        >
+          <div className="w-full px-4 sm:px-6 h-16 flex items-center justify-between">
           
           {/* LEFT: Logo */}
           <div className="flex items-center shrink-0">
@@ -187,10 +189,11 @@ export default function Navbar() {
 
         </div>
       </header>
+      </div>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white dark:bg-[#050505] pt-20 px-4 lg:hidden overflow-y-auto">
+        <div className="fixed inset-0 z-40 bg-white dark:bg-[#050505] pt-28 px-4 lg:hidden overflow-y-auto">
           <div className="flex flex-col gap-2 mt-4">
             {navLinks.map((link) => (
               <Link
@@ -211,6 +214,18 @@ export default function Navbar() {
             <div className="my-3 border-t border-borderLine" />
 
             {/* Secondary Links */}
+            <a
+              href="https://faucet.circle.com/"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-3 rounded-xl text-lg font-medium text-slate-500 hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center justify-between"
+            >
+              Circle Faucet
+              <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
             <Link
               href="/docs"
               onClick={() => setMobileMenuOpen(false)}

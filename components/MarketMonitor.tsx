@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Activity, TrendingUp, RefreshCw, AlertCircle } from "lucide-react";
+import AssetLogo from "./AssetLogo";
 
 interface Opportunity {
   asset: string;
@@ -14,31 +15,6 @@ interface Opportunity {
   exA: string;
   exB: string;
 }
-
-const CryptoLogo = ({ asset }: { asset: string }) => {
-  const symbol = asset.toLowerCase();
-  const sources = [
-    `https://assets.coincap.io/assets/icons/${symbol}@2x.png`,
-    `https://www.gate.io/images/coin_icon/64/${symbol}.png`,
-    `https://assets.kucoin.com/www/coin/pc/${asset.toUpperCase()}.png`,
-    `https://assets.coincap.io/assets/icons/generic@2x.png` // Ultimate fallback: official generic crypto coin icon
-  ];
-  const [srcIndex, setSrcIndex] = useState(0);
-
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img 
-      src={sources[srcIndex]} 
-      alt={asset}
-      className="w-full h-full object-cover z-10"
-      onError={(e) => {
-        if (srcIndex < sources.length - 1) {
-          setSrcIndex(srcIndex + 1);
-        }
-      }}
-    />
-  );
-};
 
 export default function MarketMonitor() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -136,9 +112,7 @@ export default function MarketMonitor() {
               opportunities.map((opp, idx) => (
                 <tr key={opp.asset} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
                   <td className="py-4 font-bold text-foreground flex items-center gap-2">
-                    <div className="relative w-6 h-6 rounded-full overflow-hidden shrink-0 shadow-sm border border-borderLine/50 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                      <CryptoLogo asset={opp.asset} />
-                    </div>
+                    <AssetLogo asset={opp.asset} size={24} className="border border-borderLine/50 bg-slate-100 dark:bg-slate-800" />
                     {opp.asset}
                   </td>
                   <td className="py-4 text-right">

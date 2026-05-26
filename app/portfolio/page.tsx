@@ -64,8 +64,12 @@ export default function PortfolioDashboard() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <Activity className="w-8 h-8 text-slate-800 animate-pulse" />
+      <div className="relative min-h-screen bg-background py-32 flex justify-center px-4">
+        <div className="w-full max-w-6xl space-y-8 animate-pulse mt-12">
+          <div className="h-12 w-64 bg-black/5 dark:bg-white/5 rounded-2xl" />
+          <div className="h-80 w-full bg-panel border border-borderLine rounded-3xl" />
+          <div className="h-48 w-full bg-panel border border-borderLine rounded-3xl" />
+        </div>
       </div>
     );
   }
@@ -83,7 +87,7 @@ export default function PortfolioDashboard() {
           </p>
           <Link 
             href="/app"
-            className="w-full inline-flex justify-center items-center py-4 rounded-2xl bg-accent/10 text-accent font-semibold hover:bg-accent/20 transition-colors"
+            className="w-full inline-flex justify-center items-center py-4 rounded-2xl bg-foreground text-background font-bold shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90 transition-all"
           >
             Go to Terminal
           </Link>
@@ -123,9 +127,19 @@ export default function PortfolioDashboard() {
           </div>
           <Link 
             href="/app"
-            className="px-6 py-3 rounded-xl bg-accent text-white font-semibold flex items-center gap-2 hover:bg-accentHover transition-colors shadow-premium"
+            className="hidden md:flex px-6 py-3 rounded-xl bg-foreground text-background font-bold items-center gap-2 shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90 transition-all"
           >
             Deposit / Withdraw <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Mobile Sticky CTA */}
+        <div className="fixed bottom-0 left-0 w-full p-4 bg-background/90 backdrop-blur-xl border-t border-borderLine z-50 md:hidden pb-safe">
+          <Link 
+            href="/app"
+            className="w-full px-6 py-4 rounded-2xl bg-foreground text-background font-bold flex items-center justify-center gap-2 shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90 transition-all text-lg"
+          >
+            Deposit / Withdraw <ArrowUpRight className="w-5 h-5" />
           </Link>
         </div>
 

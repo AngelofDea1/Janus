@@ -68,13 +68,6 @@ User can withdraw anytime (2-day settlement)
 - **2-Day Withdrawal Delay**: Settlement period prevents bank runs
 - **On-Chain Audit Trail**: Every action logged permanently, verifiable
 
-### Predictive ML Engine
-
-- **Funding Rate Forecasting**: ML model predicts spreads before they widen
-- **Multi-Leg Arbitrage**: Captures 3-4 protocol cascading trades, not just 2-leg
-- **Dynamic Position Sizing**: Scales with liquidity depth and gas costs
-- **Slippage Optimization**: Routes through best liquidity sources
-
 ### Real-Time Transparency
 
 - Live TVL, APY, positions on dashboard

@@ -4,6 +4,11 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import anime from "animejs";
+import AssetLogo from "@/components/AssetLogo";
+
+import { useReadContract } from "wagmi";
+import { formatUnits } from "viem";
+import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 
 // Exchange logo components for the live feed
 const BinanceLogo = () => (
@@ -44,6 +49,24 @@ export default function Home() {
   const ledgerRef = useRef<HTMLDivElement>(null);
   const tvlRef = useRef<HTMLSpanElement>(null);
   const yieldRef = useRef<HTMLSpanElement>(null);
+
+  // Fetch real-time on-chain stats
+  const { data: estimatedAPY } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "estimatedAPY",
+    chainId: 5042002,
+  });
+
+  const { data: totalAssets } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalAssets",
+    chainId: 5042002,
+  });
+
+  const tvlVal = totalAssets ? parseFloat(formatUnits(totalAssets, 6)) : 0;
+  const apyVal = estimatedAPY ? Number(estimatedAPY) / 100 : 24.5;
 
   // Fetch live feed data — tries real keeper executions first, falls back to funding rates
   useEffect(() => {
@@ -160,13 +183,20 @@ export default function Home() {
             const tvlCounter = { value: 0 };
             anime({
               targets: tvlCounter,
-              value: 4.00,
+              value: tvlVal,
               duration: 2000,
               easing: "easeOutExpo",
               round: 100,
               update: () => {
                 if (tvlRef.current) {
-                  tvlRef.current.textContent = `$${tvlCounter.value.toFixed(2)}`;
+                  const num = tvlCounter.value;
+                  if (num >= 1000000) {
+                    tvlRef.current.textContent = `$${(num / 1000000).toFixed(2)}M`;
+                  } else if (num >= 1000) {
+                    tvlRef.current.textContent = `$${(num / 1000).toFixed(2)}K`;
+                  } else {
+                    tvlRef.current.textContent = `$${num.toFixed(2)}`;
+                  }
                 }
               },
             });
@@ -175,7 +205,7 @@ export default function Home() {
             const yieldCounter = { value: 0 };
             anime({
               targets: yieldCounter,
-              value: 24.5,
+              value: apyVal,
               duration: 2200,
               easing: "easeOutExpo",
               round: 10,
@@ -208,7 +238,7 @@ export default function Home() {
 
     observer.observe(statsRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [tvlVal, apyVal]);
 
   // Features scroll reveal
   useEffect(() => {
@@ -289,16 +319,16 @@ export default function Home() {
   return (
     <div ref={heroRef} className="relative min-h-screen bg-background overflow-hidden flex flex-col justify-center">
       
-      <div className="relative z-10 w-full px-6 flex flex-col items-center max-w-6xl mx-auto pt-20">
+      <div className="relative z-10 w-full px-6 flex flex-col items-center max-w-6xl mx-auto pt-36">
         
         {/* Main Hero Content */}
         <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all px-4 sm:px-0">
           
-          <h1 className="hero-title text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.1] mb-6 opacity-0">
+          <h1 className="hero-title text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.1] mb-10 opacity-0">
             Institutional-grade <br className="hidden md:block" /><span className="whitespace-nowrap text-foreground">funding rate arbitrage</span>
           </h1>
 
-          <p className="hero-subtitle text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed mb-10 opacity-0">
+          <p className="hero-subtitle text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed mb-14 opacity-0">
             Capture risk-mitigated APY from funding rate spreads across top exchanges. Secured natively on the Arc Network.
           </p>
 
@@ -311,7 +341,7 @@ export default function Home() {
             </Link>
             <Link 
               href="/app" 
-              className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-foreground text-background font-bold text-lg hover:opacity-90 shadow-premium hover:shadow-premium-hover transition-all active:scale-[0.98] flex items-center justify-center gap-3 opacity-0"
+              className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-foreground text-background font-bold text-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-3 opacity-0"
             >
               Launch App
               <ArrowRight className="w-5 h-5" />
@@ -400,17 +430,7 @@ export default function Home() {
             ) : feedItems.length > 0 ? (
               feedItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine hover:border-accent/20 transition-colors">
-                  <div className="w-8 h-8 rounded-full shadow-sm flex items-center justify-center shrink-0 bg-white overflow-hidden border border-borderLine">
-                    <img 
-                      src={`https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${item.asset.toLowerCase()}.svg`} 
-                      alt={item.asset}
-                      className="w-5 h-5 object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                        (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-[10px] font-bold text-slate-800">${item.asset.slice(0,2)}</span>`;
-                      }}
-                    />
-                  </div>
+                  <AssetLogo asset={item.asset} size={32} />
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold font-heading text-foreground">{item.asset}: {item.route}</span>

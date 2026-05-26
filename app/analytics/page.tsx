@@ -47,11 +47,54 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function AnalyticsDashboard() {
   const [mounted, setMounted] = React.useState(false);
-  const [timeframe, setTimeframe] = React.useState("1M");
+  const [timeframe, setTimeframe] = React.useState("ALL");
+  const [allExecutions, setAllExecutions] = React.useState<any[]>([]);
+  const [chartData, setChartData] = React.useState<{ name: string; volume: number; rawTime: number }[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     setMounted(true);
+    fetch("/api/executions")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.executions) {
+          // Sort by timestamp ascending to show chronological growth
+          const sorted = [...data.executions].sort((a: any, b: any) => a.timestamp - b.timestamp);
+          setAllExecutions(sorted);
+        }
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch executions for chart", err);
+        setIsLoading(false);
+      });
   }, []);
+
+  // Recalculate the chart data when timeframe or raw data changes
+  React.useEffect(() => {
+    if (allExecutions.length === 0) return;
+
+    const now = Date.now();
+    let cutoff = 0;
+    if (timeframe === "1W") cutoff = now - 7 * 24 * 60 * 60 * 1000;
+    else if (timeframe === "1M") cutoff = now - 30 * 24 * 60 * 60 * 1000;
+    else if (timeframe === "1Y") cutoff = now - 365 * 24 * 60 * 60 * 1000;
+
+    const filtered = allExecutions.filter(ex => ex.timestamp >= cutoff);
+    
+    let cumulativeVolume = 0;
+    const points = filtered.map((ex: any) => {
+      cumulativeVolume += ex.volume || 0;
+      const date = new Date(ex.timestamp);
+      return {
+        name: date.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        volume: Math.round(cumulativeVolume),
+        rawTime: ex.timestamp,
+      };
+    });
+    
+    setChartData(points);
+  }, [timeframe, allExecutions]);
 
   const { data: estimatedAPY } = useReadContract({
     address: VAULT_ADDRESS,
@@ -168,20 +211,26 @@ export default function AnalyticsDashboard() {
             </div>
           </div>
 
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={volumeData}>
-                <defs>
-                  <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#64748b', strokeWidth: 1, strokeDasharray: '4 4' }} />
-                <Area type="monotone" dataKey="volume" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="h-80 w-full flex items-center justify-center">
+            {isLoading ? (
+              <div className="text-slate-500 font-medium animate-pulse">Loading cumulative volume...</div>
+            ) : chartData.length === 0 ? (
+              <div className="text-slate-500 font-medium">No execution history available</div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#64748b', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                  <Area type="monotone" dataKey="volume" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 

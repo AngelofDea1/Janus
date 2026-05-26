@@ -17,10 +17,11 @@ export default function GovernancePage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <div className="relative flex flex-col items-center">
-          <div className="w-8 h-8 rounded-full border-2 border-slate-200 dark:border-slate-800 border-t-accent animate-spin mb-4" />
-          <p className="text-xs font-medium text-slate-500">Loading Governance</p>
+      <div className="relative min-h-screen bg-background py-32 flex justify-center px-4">
+        <div className="w-full max-w-6xl space-y-8 animate-pulse mt-12">
+          <div className="h-12 w-64 bg-black/5 dark:bg-white/5 rounded-2xl" />
+          <div className="h-16 w-full bg-panel border border-borderLine rounded-2xl" />
+          <div className="h-96 w-full bg-panel border border-borderLine rounded-3xl" />
         </div>
       </div>
     );

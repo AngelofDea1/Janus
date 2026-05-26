@@ -344,21 +344,26 @@ export default function ArbitrageApp() {
                  <button
                    onClick={handleDeposit}
                    disabled={!depositAmount || activePendingState}
-                   className={`w-full py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
+                   className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                      !depositAmount
                        ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                        : activePendingState
-                       ? "bg-accent/50 text-white cursor-wait"
-                       : "bg-accent text-white hover:bg-accentHover shadow-premium hover:shadow-premium-hover active:scale-[0.98]"
+                       ? "bg-foreground/50 text-background cursor-wait"
+                       : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
                    }`}
                  >
-                   {activePendingState 
-                     ? "Processing..." 
-                     : (!depositAmount) 
-                     ? "Enter an amount" 
-                     : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
-                     ? "Approve USDC"
-                     : "Deposit"}
+                   {depositAmount && !activePendingState && (
+                     <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                   )}
+                   <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
+                     {activePendingState 
+                       ? "Processing..." 
+                       : (!depositAmount) 
+                       ? "Enter an amount" 
+                       : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
+                       ? "Approve USDC"
+                       : "Deposit"}
+                   </span>
                  </button>
                </div>
              </div>
@@ -401,15 +406,20 @@ export default function ArbitrageApp() {
                  <button
                    onClick={handleWithdraw}
                    disabled={!withdrawShares || activePendingState}
-                   className={`w-full py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
+                   className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                      !withdrawShares
                        ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                        : activePendingState
-                       ? "bg-accent/50 text-white cursor-wait"
-                       : "bg-accent text-white hover:bg-accentHover shadow-premium hover:shadow-premium-hover active:scale-[0.98]"
+                       ? "bg-foreground/50 text-background cursor-wait"
+                       : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
                    }`}
                  >
-                   {activePendingState ? "Processing..." : "Withdraw USDC"}
+                   {withdrawShares && !activePendingState && (
+                     <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                   )}
+                   <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
+                     {activePendingState ? "Processing..." : "Withdraw USDC"}
+                   </span>
                  </button>
                </div>
              </div>

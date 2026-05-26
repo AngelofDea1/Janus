@@ -90,10 +90,8 @@ Arc + Regulatory Clarity + Capital Searching for Yield = **Winner takes all the 
 - **On-Chain Audit Trail**: Every action verifiable
 
 #### 2. Technical Moat
-- **Predictive ML Engine**: Forecasts spreads before they widen
-- **Multi-leg Arbitrage**: Captures 3-4 protocol cascading trades
-- **Dynamic Position Sizing**: Optimizes capital allocation in real-time
-- **Gas Efficiency**: Only works profitably on Arc (99.98% cheaper than Ethereum)
+- **Dynamic Position Sizing**: Scales with liquidity depth and gas costs
+- **Slippage Optimization**: Routes through best liquidity sources profitably on Arc (99.98% cheaper than Ethereum)
 
 #### 3. Network Effects
 - **First on Arc**: 12-18 month head start before competitors

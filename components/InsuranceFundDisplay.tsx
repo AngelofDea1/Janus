@@ -31,10 +31,10 @@ export default function InsuranceFundDisplay() {
  query: { refetchInterval: 2000 },
  });
 
- // Calculate values (defaulting to mocked amounts while loading or disconnected)
- const insuredAmount = totalInsured ? Number(formatUnits(totalInsured, 6)) : 184920.50;
+ // Calculate values directly from chain without placeholders
+ const insuredAmount = totalInsured ? Number(formatUnits(totalInsured, 6)) : 0;
  const claimedAmount = totalClaimed ? Number(formatUnits(totalClaimed, 6)) : 0;
- const availableAmount = availableBalance ? Number(formatUnits(availableBalance, 6)) : 184920.50;
+ const availableAmount = availableBalance ? Number(formatUnits(availableBalance, 6)) : 0;
  
  // Calculate coverage ratio safely
  const coverageRatio = insuredAmount > 0 

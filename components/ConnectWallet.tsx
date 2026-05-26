@@ -75,11 +75,6 @@ const BaseIcon = () => (
 
 // Renders the icon using the wallet's injected EIP-6963 icon, or falls back to our high-quality SVGs.
 const WalletIcon = ({ connector }: { connector: any }) => {
-  // EIP-6963 injects a base64 encoded SVG or PNG into `connector.icon`
-  if (connector.icon) {
-    return <img src={connector.icon} alt={connector.name} className="w-8 h-8 rounded-xl object-contain shadow-sm" />;
-  }
-
   const lowerName = connector.name.toLowerCase();
   if (lowerName.includes('metamask')) return <MetamaskIcon />;
   if (lowerName.includes('walletconnect')) return <WalletConnectIcon />;
@@ -89,6 +84,11 @@ const WalletIcon = ({ connector }: { connector: any }) => {
   if (lowerName.includes('okx')) return <OkxIcon />;
   if (lowerName.includes('safe')) return <SafeIcon />;
   if (lowerName.includes('base')) return <BaseIcon />;
+
+  // EIP-6963 injects a base64 encoded SVG or PNG into `connector.icon`
+  if (connector.icon) {
+    return <img src={connector.icon} alt={connector.name} className="w-8 h-8 rounded-xl object-contain shadow-sm" />;
+  }
   
   // Generic fallback if absolutely no icon is provided
   return (
@@ -165,7 +165,7 @@ export default function ConnectWallet() {
       {!isConnected ? (
         <button
           onClick={toggleModal}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 text-sm rounded-full transition-all flex items-center gap-2 shadow-sm"
+          className="bg-foreground text-background hover:opacity-90 font-bold px-5 py-2.5 text-sm rounded-full transition-all flex items-center gap-2 shadow-sm"
         >
           Connect
         </button>

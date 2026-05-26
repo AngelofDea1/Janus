@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ArrowRight, ShieldCheck, XCircle } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { ArrowRight, ShieldCheck, XCircle, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown } from "lucide-react";
+import AssetLogo from "@/components/AssetLogo";
 import Link from "next/link";
+import { VAULT_ADDRESS } from "@/lib/constants";
 
 interface Execution {
   id: string;
@@ -22,7 +24,7 @@ interface Execution {
 
 interface ExecutionLog {
   success: boolean;
-  source: "keeper" | "fallback";
+  source: "keeper" | "onchain" | "demo" | "fallback";
   executions: Execution[];
   stats: {
     totalVolume: number;
@@ -34,9 +36,22 @@ interface ExecutionLog {
 
 export default function LedgerPage() {
   const [data, setData] = useState<ExecutionLog | null>(null);
-  const [fundingFallback, setFundingFallback] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [keeperOnline, setKeeperOnline] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Fetch real execution data from keeper
   useEffect(() => {
@@ -44,66 +59,57 @@ export default function LedgerPage() {
       try {
         const res = await fetch("/api/executions");
         const json: ExecutionLog = await res.json();
-
-        if (json.success && json.executions && json.executions.length > 0) {
+        if (json.success) {
           setData(json);
-          setKeeperOnline(json.source === "keeper");
-        } else {
-          setKeeperOnline(false);
-          // Fallback: use funding rates API to show live opportunities
-          const ratesRes = await fetch("/api/funding-rates");
-          const ratesJson = await ratesRes.json();
-          if (ratesJson.success && ratesJson.data?.length > 0) {
-            setFundingFallback(ratesJson.data);
-          }
         }
       } catch {
-        setKeeperOnline(false);
+        // Silently catch error
       } finally {
         setLoading(false);
       }
     }
     fetchData();
-    const interval = setInterval(fetchData, 10000);
+    const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
   }, []);
 
-  // Determine what to display
   const executions = data?.executions || [];
-  const stats = data?.stats || { totalVolume: 0, totalYield: 0, successCount: 0, failCount: 0 };
+  const totalItems = executions.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / rowsPerPage));
 
-  // Build rows from either keeper executions or funding rate fallback
-  const tableRows = executions.length > 0
-    ? executions.map((ex) => ({
-      id: `${ex.id.slice(0, 10)}...${ex.id.slice(-4)}`,
-      asset: ex.asset,
-      route: ex.route,
-      volume: `$${ex.volume.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-      spread: `+${ex.spread}%`,
-      status: ex.status,
-      time: formatTime(ex.timestamp),
-    }))
-    : fundingFallback.map((opp, idx) => ({
-      id: `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
-      asset: opp.asset,
-      route: `${opp.shortExchange} ➔ ${opp.longExchange}`,
-      volume: `$${(Math.random() * 40000 + 5000).toFixed(2)}`,
-      spread: `+${opp.spread}%`,
-      status: "Executed" as const,
-      time: idx === 0 ? "LIVE" : `${(idx + 1) * 12}s ago`,
-    }));
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const slicedExecutions = executions.slice(startIndex, endIndex);
+
+  const tableRows = slicedExecutions.map((ex) => ({
+    displayId: ex.id.length > 20 ? `${ex.id.slice(0, 10)}...${ex.id.slice(-4)}` : ex.id,
+    fullId: ex.id,
+    asset: ex.asset,
+    route: ex.route,
+    volume: `$${ex.volume.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+    spread: `+${ex.spread}%`,
+    status: ex.status,
+    time: formatTime(ex.timestamp),
+    txHash: ex.id.startsWith('0x') ? ex.id : null,
+  }));
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight text-foreground mb-4">
+        {/* Header (Banner and badge removed as requested) */}
+        <div className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight text-foreground mb-3">
             Relayer Ledger
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed">
-            Real-time execution logs for all arbitrage trades across the network.
+            Arbitrage execution logs, fetched directly from the Arc Testnet.
           </p>
         </div>
 
@@ -141,20 +147,20 @@ export default function LedgerPage() {
                 ) : tableRows.length > 0 ? (
                   tableRows.map((item, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors group">
-                      <td className="px-6 py-5 whitespace-nowrap text-sm font-mono text-accent">
-                        {item.id}
+                      <td className="px-6 py-5 whitespace-nowrap text-sm font-mono">
+                        <a 
+                          href={`https://testnet.arcscan.app/tx/${item.fullId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-accent hover:text-accentHover underline decoration-accent/20 hover:decoration-accent transition-all flex items-center gap-1 group/link text-left w-fit"
+                        >
+                          {item.displayId}
+                          <span className="text-[10px] opacity-0 group-hover/link:opacity-100 transition-opacity">↗</span>
+                        </a>
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={`https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${item.asset.toLowerCase()}.svg`}
-                            alt={item.asset}
-                            className="w-6 h-6 object-contain"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold">${item.asset.slice(0, 2)}</span>` + `<span class="font-bold text-foreground">${item.asset}-PERP</span>`;
-                            }}
-                          />
+                          <AssetLogo asset={item.asset} size={24} />
                           <span className="font-bold text-foreground">{item.asset}-PERP</span>
                         </div>
                       </td>
@@ -195,6 +201,82 @@ export default function LedgerPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          {executions.length > 0 && (
+            <div className="p-4 md:p-6 border-t border-borderLine flex flex-col sm:flex-row items-center justify-between gap-4 bg-black/5 dark:bg-white/5">
+              <div className="flex items-center gap-2 text-sm text-slate-500 font-medium relative" ref={dropdownRef}>
+                <span>Show rows:</span>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center justify-between gap-2 bg-panel border border-borderLine rounded-lg px-3 py-1.5 text-foreground hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <span className="w-6 text-left">{rowsPerPage}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {dropdownOpen && (
+                  <div className="absolute bottom-full mb-2 left-0 md:left-auto w-24 bg-panel border border-borderLine rounded-xl shadow-xl overflow-hidden animate-fade-in z-50">
+                    {[10, 25, 50, 100].map(n => (
+                      <button
+                        key={n}
+                        onClick={() => {
+                          setRowsPerPage(n);
+                          setCurrentPage(1);
+                          setDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                          rowsPerPage === n 
+                            ? 'bg-accent/10 text-accent font-bold' 
+                            : 'text-foreground hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="p-1.5 md:px-3 md:py-2 rounded-lg border border-borderLine text-slate-500 hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 text-sm font-medium"
+                >
+                  <ChevronsLeft className="w-4 h-4" />
+                  <span className="hidden md:inline">First</span>
+                </button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="p-1.5 md:p-2 rounded-lg border border-borderLine text-slate-500 hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400 mx-1 md:mx-3 whitespace-nowrap">
+                  Page <span className="text-foreground font-bold">{currentPage}</span> of <span className="text-foreground font-bold">{totalPages}</span>
+                </span>
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-1.5 md:p-2 rounded-lg border border-borderLine text-slate-500 hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="p-1.5 md:px-3 md:py-2 rounded-lg border border-borderLine text-slate-500 hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 text-sm font-medium"
+                >
+                  <span className="hidden md:inline">Last</span>
+                  <ChevronsRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
