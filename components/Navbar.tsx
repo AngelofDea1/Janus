@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Moon, Sun, Menu, X, MoreHorizontal } from "lucide-react";
+import { Moon, Sun, Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ConnectWallet from "./ConnectWallet";
@@ -119,7 +119,7 @@ export default function Navbar() {
                 }`}
               >
                 More
-                <MoreHorizontal className="w-4 h-4" />
+                <ChevronDown className="w-4 h-4 ml-0.5" />
               </button>
 
               {moreOpen && (
