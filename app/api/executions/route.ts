@@ -3,7 +3,7 @@ import { publicClient } from '@/lib/arcClient';
 import { VAULT_ADDRESS, VAULT_ABI } from '@/lib/constants';
 import { formatUnits } from 'viem';
 
-export const revalidate = 15;
+export const dynamic = 'force-dynamic';
 
 const KEEPER_URL = process.env.KEEPER_URL || 'http://localhost:3001';
 
