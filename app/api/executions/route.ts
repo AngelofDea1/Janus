@@ -261,7 +261,7 @@ export async function GET(req: Request) {
             // Random-ish status: mostly Executed, occasionally Failed
             const isFailed = i === 3 || i === 7;
             
-            const baseSpreadPct = parseFloat(spreadStr) || 0.05;
+            const baseSpreadPct = parseFloat(opp.spread) || 0.05;
             // Perturb the spread slightly for older executions to simulate a dynamic market
             const jitter = (Math.random() - 0.5) * 0.02; 
             const spreadPct = Math.max(0.01, baseSpreadPct + jitter);

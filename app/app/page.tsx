@@ -175,7 +175,7 @@ export default function ArbitrageApp() {
    writeContract({
      address: VAULT_ADDRESS,
      abi: VAULT_ABI,
-     functionName: "redeem",
+     functionName: "withdraw",
      args: [sharesAmount, address!, address!],
    });
  };
