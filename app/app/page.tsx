@@ -13,6 +13,7 @@ import {
  Activity
 } from "lucide-react";
 import AssetLogo from "@/components/AssetLogo";
+import ConnectWallet from "@/components/ConnectWallet";
 import { VAULT_ADDRESS, USDC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
 
 export default function ArbitrageApp() {
@@ -42,8 +43,8 @@ export default function ArbitrageApp() {
    }
  }, []);
 
- const isConnected = wagmiIsConnected || localConnected;
- const address = (wagmiAddress || localAddress) as `0x${string}` | undefined;
+ const isConnected = wagmiIsConnected;
+ const address = wagmiAddress;
 
  const { writeContract, data: hash, isPending } = useWriteContract();
  const publicClient = usePublicClient({ chainId: 5042002 });
@@ -265,9 +266,9 @@ export default function ArbitrageApp() {
                </div>
                <h3 className="font-semibold text-lg mb-2">Connect Wallet</h3>
                <p className="text-sm text-slate-500 mb-6">Connect your wallet to access the Janus terminal.</p>
-               <button className="w-full py-4 rounded-2xl bg-accent/10 text-accent font-semibold hover:bg-accent/20 transition-colors">
-                  Connect Wallet
-               </button>
+               <div className="w-full flex justify-center">
+                 <ConnectWallet />
+               </div>
              </div>
           ) : activeMode === "deposit" ? (
              <div className="p-2">
