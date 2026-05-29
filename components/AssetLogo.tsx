@@ -127,7 +127,21 @@ async function resolveLogoUrl(symbol: string): Promise<string | null> {
       }
     } catch { /* fallback */ }
 
-    // For any other token, fall back immediately to clean deterministic gradients instead of stalling the main thread with slow APIs
+    // Layer 3: CoinGecko Search API (Massive coverage, cached to prevent rate limits)
+    try {
+      const geckoRes = await fetch(`https://api.coingecko.com/api/v3/search?query=${lower}`);
+      if (geckoRes.ok) {
+        const data = await geckoRes.json();
+        // Find exact symbol match first, or take the first result
+        const coin = data.coins?.find((c: any) => c.symbol.toLowerCase() === lower) || data.coins?.[0];
+        if (coin?.large) {
+          setCachedLogo(key, coin.large);
+          return coin.large;
+        }
+      }
+    } catch { /* fallback */ }
+
+    // For any other token, fall back immediately to clean deterministic gradients
     setCachedLogo(key, null);
     return null;
   })();
