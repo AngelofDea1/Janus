@@ -1,4 +1,4 @@
-export const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.0/gn";
+export const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.1/gn";
 
 /**
  * Native fetcher for Goldsky GraphQL Subgraphs
