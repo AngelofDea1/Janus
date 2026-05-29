@@ -2,9 +2,10 @@
 
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultConfig, lightTheme, darkTheme } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider, useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
 
 // ARC TESTNET CHAIN CONFIG (FIXED GAS TOKEN)
 // Arc Testnet uses ETH as native currency for gas, NOT USDC
@@ -37,15 +38,48 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
+function RainbowThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Customized styling to blend with Janus' premium design system
+  const customLightTheme = lightTheme({
+    accentColor: '#0f172a', // Slate 900
+    accentColorForeground: '#ffffff',
+    borderRadius: 'large',
+    fontStack: 'system',
+  });
+
+  const customDarkTheme = darkTheme({
+    accentColor: '#ffffff',
+    accentColorForeground: '#0f172a',
+    borderRadius: 'large',
+    fontStack: 'system',
+  });
+
+  // Default to dark theme on server/hydration, switch dynamically on client mount
+  const activeTheme = mounted && resolvedTheme === 'light' ? customLightTheme : customDarkTheme;
+
+  return (
+    <RainbowKitProvider theme={activeTheme}>
+      {children}
+    </RainbowKitProvider>
+  );
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
  return (
  <WagmiProvider config={config}>
  <QueryClientProvider client={queryClient}>
- <RainbowKitProvider>
  <ThemeProvider attribute="class" defaultTheme="dark">
+ <RainbowThemeWrapper>
  {children}
+ </RainbowThemeWrapper>
  </ThemeProvider>
- </RainbowKitProvider>
  </QueryClientProvider>
  </WagmiProvider>
  );
