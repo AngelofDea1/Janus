@@ -17,141 +17,167 @@ import ConnectWallet from "@/components/ConnectWallet";
 import { VAULT_ADDRESS, USDC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
 
 export default function ArbitrageApp() {
- const [depositAmount, setDepositAmount] = useState("");
- const [withdrawShares, setWithdrawShares] = useState("");
- 
- const [activeMode, setActiveMode] = useState<"deposit" | "withdraw">("deposit");
- 
- const { address: wagmiAddress, isConnected: wagmiIsConnected, chainId } = useAccount();
- const [localConnected, setLocalConnected] = useState(false);
- const [localAddress, setLocalAddress] = useState("");
- const [showSettings, setShowSettings] = useState(false);
- const [slippage, setSlippage] = useState("0.5");
+  const [depositAmount, setDepositAmount] = useState("");
+  const [withdrawShares, setWithdrawShares] = useState("");
+  
+  const [activeMode, setActiveMode] = useState<"deposit" | "withdraw">("deposit");
+  const [selectedAsset, setSelectedAsset] = useState<"USDC" | "EURC">("USDC");
+  const [showAssetSelector, setShowAssetSelector] = useState(false);
+  
+  const { address: wagmiAddress, isConnected: wagmiIsConnected, chainId } = useAccount();
+  const [localConnected, setLocalConnected] = useState(false);
+  const [localAddress, setLocalAddress] = useState("");
+  const [showSettings, setShowSettings] = useState(false);
+  const [slippage, setSlippage] = useState("0.5");
 
- const [mounted, setMounted] = useState(false);
- useEffect(() => {
-   setMounted(true);
-   if (typeof window !== "undefined") {
-     if (localStorage.getItem("janus_wallet_connected") === null) {
-       localStorage.setItem("janus_wallet_connected", "true");
-       localStorage.setItem("janus_wallet_address", "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57");
-     }
-     const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
-     const savedAddress = localStorage.getItem("janus_wallet_address") || "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57";
-     setLocalConnected(savedConnected);
-     setLocalAddress(savedAddress);
-   }
- }, []);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("janus_wallet_connected") === null) {
+        localStorage.setItem("janus_wallet_connected", "true");
+        localStorage.setItem("janus_wallet_address", "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57");
+      }
+      const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
+      const savedAddress = localStorage.getItem("janus_wallet_address") || "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57";
+      setLocalConnected(savedConnected);
+      setLocalAddress(savedAddress);
+    }
+  }, []);
 
- const isConnected = wagmiIsConnected;
- const address = wagmiAddress;
+  const isConnected = wagmiIsConnected;
+  const address = wagmiAddress;
 
- const { writeContract, data: hash, isPending } = useWriteContract();
- const publicClient = usePublicClient({ chainId: 5042002 });
- const { switchChainAsync } = useSwitchChain();
- const [switchError, setSwitchError] = useState<string | null>(null);
- const [isSwitching, setIsSwitching] = useState(false);
+  const { writeContract, data: hash, isPending } = useWriteContract();
+  const publicClient = usePublicClient({ chainId: 5042002 });
+  const { switchChainAsync } = useSwitchChain();
+  const [switchError, setSwitchError] = useState<string | null>(null);
+  const [isSwitching, setIsSwitching] = useState(false);
 
- const ARC_TESTNET_CHAIN_ID = 5042002;
+  const ARC_TESTNET_CHAIN_ID = 5042002;
 
- const checkAndSwitchNetwork = async (): Promise<boolean> => {
-   if (chainId !== ARC_TESTNET_CHAIN_ID) {
-     setSwitchError(null);
-     setIsSwitching(true);
-     try {
-       if (switchChainAsync) {
-         await switchChainAsync({ chainId: ARC_TESTNET_CHAIN_ID });
-         setIsSwitching(false);
-         // After successful switch, chainId state will update reactively
-         // Return true so the caller can proceed with the transaction
-         return true;
-       }
-     } catch (err: any) {
-       setIsSwitching(false);
-       const msg = err?.shortMessage || err?.message || "Failed to switch network";
-       if (msg.includes("rejected") || msg.includes("denied")) {
-         setSwitchError("You rejected the network switch. Please try again.");
-       } else if (msg.includes("Unrecognized chain") || msg.includes("unknown chain")) {
-         setSwitchError("Arc Testnet not found in wallet. It will be added automatically — please confirm the prompts.");
-       } else {
-         setSwitchError(msg);
-       }
-       console.error("Failed to switch network:", err);
-     }
-     return false;
-   }
-   return true;
- };
+  const checkAndSwitchNetwork = async (): Promise<boolean> => {
+    if (chainId !== ARC_TESTNET_CHAIN_ID) {
+      setSwitchError(null);
+      setIsSwitching(true);
+      try {
+        if (switchChainAsync) {
+          await switchChainAsync({ chainId: ARC_TESTNET_CHAIN_ID });
+          setIsSwitching(false);
+          return true;
+        }
+      } catch (err: any) {
+        setIsSwitching(false);
+        const msg = err?.shortMessage || err?.message || "Failed to switch network";
+        if (msg.includes("rejected") || msg.includes("denied")) {
+          setSwitchError("You rejected the network switch. Please try again.");
+        } else if (msg.includes("Unrecognized chain") || msg.includes("unknown chain")) {
+          setSwitchError("Arc Testnet not found in wallet. It will be added automatically — please confirm the prompts.");
+        } else {
+          setSwitchError(msg);
+        }
+        console.error("Failed to switch network:", err);
+      }
+      return false;
+    }
+    return true;
+  };
 
- // --- Simulation Fallback State ---
- const isMockMode = (VAULT_ADDRESS as string) === "0x0000000000000000000000000000000000000000";
- const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(5000000000)); 
- const [simulationUserShares, setSimulationUserShares] = useState(BigInt(0));
- const [simulationAllowance, setSimulationAllowance] = useState(BigInt(0));
- const [simulationIsPending, setSimulationIsPending] = useState(false);
+  // --- Simulation Fallback State ---
+  const isMockMode = (VAULT_ADDRESS as string) === "0x0000000000000000000000000000000000000000";
+  
+  // USDC simulation variables
+  const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(5000000000)); 
+  const [simulationUserShares, setSimulationUserShares] = useState(BigInt(0));
+  const [simulationAllowance, setSimulationAllowance] = useState(BigInt(0));
+  
+  // EURC simulation variables (enabled by default to show EURC logic instantly without needing to deploy contract first)
+  const [simulationEurcBalance, setSimulationEurcBalance] = useState(BigInt(5000000000)); 
+  const [simulationEurcShares, setSimulationEurcShares] = useState(BigInt(0));
+  const [simulationEurcAllowance, setSimulationEurcAllowance] = useState(BigInt(0));
 
- const { data: totalAssets } = useReadContract({
-   address: VAULT_ADDRESS,
-   abi: VAULT_ABI,
-   functionName: "totalAssets",
-   chainId: 5042002,
-   query: { refetchInterval: 2000 },
- });
+  const [simulationIsPending, setSimulationIsPending] = useState(false);
 
- const { data: estimatedAPY } = useReadContract({
-   address: VAULT_ADDRESS,
-   abi: VAULT_ABI,
-   functionName: "estimatedAPY",
-   chainId: 5042002,
-   query: { refetchInterval: 2000 },
- });
+  const { data: totalAssets } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalAssets",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
- const { data: userShares } = useReadContract({
-   address: VAULT_ADDRESS,
-   abi: VAULT_ABI,
-   functionName: "balanceOf",
-   args: address ? [address] : undefined,
-   chainId: 5042002,
-   query: { refetchInterval: 2000 },
- });
+  const { data: estimatedAPY } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "estimatedAPY",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
- const { data: usdcERC20Balance } = useReadContract({
-   address: USDC_ADDRESS,
-   abi: USDC_ABI,
-   functionName: "balanceOf",
-   args: address ? [address] : undefined,
-   chainId: 5042002,
-   query: { refetchInterval: 2000 },
- });
+  const { data: userShares } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
- const { data: usdcAllowance } = useReadContract({
-   address: USDC_ADDRESS,
-   abi: USDC_ABI,
-   functionName: "allowance",
-   args: address ? [address, VAULT_ADDRESS] : undefined,
-   chainId: 5042002,
-   query: { refetchInterval: 2000 },
- });
+  const { data: usdcERC20Balance } = useReadContract({
+    address: USDC_ADDRESS,
+    abi: USDC_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
- const usdcBalance = usdcERC20Balance || BigInt(0);
+  const { data: usdcAllowance } = useReadContract({
+    address: USDC_ADDRESS,
+    abi: USDC_ABI,
+    functionName: "allowance",
+    args: address ? [address, VAULT_ADDRESS] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
- const activeUsdcBalance = isMockMode ? simulationUsdcBalance : usdcBalance;
- const activeUserShares = isMockMode ? simulationUserShares : userShares;
- const activeAllowance = isMockMode ? simulationAllowance : usdcAllowance;
- const activePendingState = isMockMode ? simulationIsPending : isPending;
+  // Dynamic variable mapping based on active token selection
+  const usdcBalance = usdcERC20Balance || BigInt(0);
 
- // Transaction Handlers
-  const approveUSDC = async () => {
+  const isRealUSDC = !isMockMode && selectedAsset === "USDC";
+  
+  const activeBalance = isRealUSDC 
+    ? usdcBalance 
+    : (selectedAsset === "USDC" ? simulationUsdcBalance : simulationEurcBalance);
+
+  const activeUserShares = isRealUSDC 
+    ? userShares 
+    : (selectedAsset === "USDC" ? simulationUserShares : simulationEurcShares);
+
+  const activeAllowance = isRealUSDC 
+    ? usdcAllowance 
+    : (selectedAsset === "USDC" ? simulationAllowance : simulationEurcAllowance);
+
+  const activePendingState = isRealUSDC ? isPending : simulationIsPending;
+
+  // Transaction Handlers
+  const approveAsset = async () => {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
-    if (isMockMode) {
+    
+    if (!isRealUSDC) {
       setSimulationIsPending(true);
       setTimeout(() => {
-        setSimulationAllowance(amount);
+        if (selectedAsset === "USDC") {
+          setSimulationAllowance(amount);
+        } else {
+          setSimulationEurcAllowance(amount);
+        }
         setSimulationIsPending(false);
       }, 1000);
       return;
     }
+    
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
     writeContract({
@@ -166,13 +192,21 @@ export default function ArbitrageApp() {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
     
-    if (isMockMode) {
+    if (!isRealUSDC) {
       setSimulationIsPending(true);
       setTimeout(() => {
-        if (simulationUsdcBalance >= amount) {
-          setSimulationUsdcBalance((prev) => prev - amount);
-          setSimulationUserShares((prev) => prev + amount); 
-          setDepositAmount("");
+        if (selectedAsset === "USDC") {
+          if (simulationUsdcBalance >= amount) {
+            setSimulationUsdcBalance((prev) => prev - amount);
+            setSimulationUserShares((prev) => prev + amount); 
+            setDepositAmount("");
+          }
+        } else {
+          if (simulationEurcBalance >= amount) {
+            setSimulationEurcBalance((prev) => prev - amount);
+            setSimulationEurcShares((prev) => prev + amount); 
+            setDepositAmount("");
+          }
         }
         setSimulationIsPending(false);
       }, 1200);
@@ -183,7 +217,7 @@ export default function ArbitrageApp() {
     if (!ready) return;
 
     if (!activeAllowance || activeAllowance < amount) {
-      approveUSDC();
+      approveAsset();
       return;
     }
 
@@ -199,13 +233,21 @@ export default function ArbitrageApp() {
     if (!withdrawShares) return;
     const sharesAmount = parseUnits(withdrawShares, 6);
 
-    if (isMockMode) {
+    if (!isRealUSDC) {
       setSimulationIsPending(true);
       setTimeout(() => {
-        if (simulationUserShares >= sharesAmount) {
-          setSimulationUserShares((prev) => prev - sharesAmount);
-          setSimulationUsdcBalance((prev) => prev + sharesAmount);
-          setWithdrawShares("");
+        if (selectedAsset === "USDC") {
+          if (simulationUserShares >= sharesAmount) {
+            setSimulationUserShares((prev) => prev - sharesAmount);
+            setSimulationUsdcBalance((prev) => prev + sharesAmount);
+            setWithdrawShares("");
+          }
+        } else {
+          if (simulationEurcShares >= sharesAmount) {
+            setSimulationEurcShares((prev) => prev - sharesAmount);
+            setSimulationEurcBalance((prev) => prev + sharesAmount);
+            setWithdrawShares("");
+          }
         }
         setSimulationIsPending(false);
       }, 1200);
@@ -223,13 +265,13 @@ export default function ArbitrageApp() {
     });
   };
 
- const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
-   if (!value) return "0.00";
-   return parseFloat(formatUnits(value, decimals)).toLocaleString("en-US", {
-     minimumFractionDigits: 2,
-     maximumFractionDigits: 6,
-   });
- };
+  const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
+    if (!value) return "0.00";
+    return parseFloat(formatUnits(value, decimals)).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    });
+  };
 
  return (
     <div className="relative min-h-screen bg-background pt-32 pb-24 flex justify-center overflow-hidden">
@@ -313,179 +355,208 @@ export default function ArbitrageApp() {
                </div>
              </div>
           ) : activeMode === "deposit" ? (
-             <div className="p-2">
-               {/* Input Section */}
-               <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
-                 <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
-                    <span>You pay</span>
-                    <span className="flex items-center gap-2">
-                      Balance: {formatNumber(activeUsdcBalance)}
-                      <button 
-                        onClick={() => {
-                           if (activeUsdcBalance) setDepositAmount(formatUnits(activeUsdcBalance, 6));
-                        }}
-                        className="text-accent hover:text-accentHover font-semibold"
-                      >
-                        Max
-                      </button>
-                    </span>
-                 </div>
-                 <div className="flex items-center justify-between">
-                    <input
-                      type="number"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      placeholder="0.00"
-                      className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
-                    />
-                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
-                      <div className="shrink-0">
-                        <AssetLogo asset="USDC" size={24} />
-                      </div>
-                      <span className="font-semibold text-sm">USDC</span>
-                    </div>
-                 </div>
-               </div>
+              <div className="p-2">
+                {/* Input Section */}
+                <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
+                  <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                     <span>You pay</span>
+                     <span className="flex items-center gap-2">
+                       Balance: {formatNumber(activeBalance)}
+                       <button 
+                         onClick={() => {
+                            if (activeBalance) setDepositAmount(formatUnits(activeBalance, 6));
+                         }}
+                         className="text-accent hover:text-accentHover font-semibold"
+                       >
+                         Max
+                       </button>
+                     </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                     <input
+                       type="number"
+                       value={depositAmount}
+                       onChange={(e) => setDepositAmount(e.target.value)}
+                       placeholder="0.00"
+                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
+                     />
+                     <div className="relative shrink-0">
+                       <button 
+                         onClick={() => setShowAssetSelector(!showAssetSelector)}
+                         className="flex items-center gap-2 bg-white hover:bg-slate-50 dark:bg-[#1a1a1a] dark:hover:bg-[#222] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine transition-all active:scale-95"
+                       >
+                         <div className="shrink-0">
+                           <AssetLogo asset={selectedAsset} size={24} />
+                         </div>
+                         <span className="font-semibold text-sm">{selectedAsset}</span>
+                         <ChevronDown className="w-4 h-4 text-slate-400" />
+                       </button>
 
-               {/* Center Arrow */}
-               <div className="relative h-2 flex justify-center items-center z-10">
-                  <button 
-                    onClick={() => setActiveMode(activeMode === "deposit" ? "withdraw" : "deposit")}
-                    className="absolute w-10 h-10 bg-panel border border-borderLine rounded-xl flex items-center justify-center shadow-sm hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                  >
-                    <ArrowDownUp className="w-4 h-4 text-slate-400" />
-                  </button>
-               </div>
+                       {showAssetSelector && (
+                         <div className="absolute right-0 top-full mt-2 w-32 bg-panel border border-borderLine rounded-2xl p-1.5 shadow-premium dark:shadow-premium-dark z-50 animate-in fade-in slide-in-from-top-2">
+                           {(["USDC", "EURC"] as const).map((asset) => (
+                             <button
+                               key={asset}
+                               onClick={() => {
+                                 setSelectedAsset(asset);
+                                 setShowAssetSelector(false);
+                                 setDepositAmount(""); // clear amount to prevent confusion
+                               }}
+                               className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-left text-sm font-semibold transition-colors ${
+                                 selectedAsset === asset 
+                                   ? "bg-black/5 dark:bg-white/5 text-foreground" 
+                                   : "text-slate-500 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
+                               }`}
+                             >
+                               <AssetLogo asset={asset} size={20} />
+                               {asset}
+                             </button>
+                           ))}
+                         </div>
+                       )}
+                     </div>
+                  </div>
+                </div>
 
-               {/* Output Section */}
-               <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 mt-2 border border-transparent">
-                 <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
-                    <span>You receive (est.)</span>
-                 </div>
-                 <div className="flex items-center justify-between opacity-80">
-                    <input
-                      type="number"
-                      value={depositAmount} // 1:1 roughly
-                      disabled
-                      placeholder="0.00"
-                      className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
-                    />
-                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
-                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
-                        J
-                      </div>
-                      <span className="font-semibold text-sm">JANUS</span>
-                    </div>
-                 </div>
-               </div>
+                {/* Center Arrow */}
+                <div className="relative h-2 flex justify-center items-center z-10">
+                   <button 
+                     onClick={() => setActiveMode(activeMode === "deposit" ? "withdraw" : "deposit")}
+                     className="absolute w-10 h-10 bg-panel border border-borderLine rounded-xl flex items-center justify-center shadow-sm hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                   >
+                     <ArrowDownUp className="w-4 h-4 text-slate-400" />
+                   </button>
+                </div>
 
-                {/* Execute Button */}
+                {/* Output Section */}
+                <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 mt-2 border border-transparent">
+                  <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                     <span>You receive (est.)</span>
+                  </div>
+                  <div className="flex items-center justify-between opacity-80">
+                     <input
+                       type="number"
+                       value={depositAmount} // 1:1 roughly
+                       disabled
+                       placeholder="0.00"
+                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
+                     />
+                     <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
+                       <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
+                         J
+                       </div>
+                       <span className="font-semibold text-sm">JANUS</span>
+                     </div>
+                  </div>
+                </div>
+
+                 {/* Execute Button */}
+                 <div className="mt-4">
+                   {switchError && (
+                     <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
+                       <Info className="w-4 h-4 mt-0.5 shrink-0" />
+                       <span>{switchError}</span>
+                     </div>
+                   )}
+                   <button
+                     onClick={handleDeposit}
+                     disabled={activePendingState || isSwitching}
+                     className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
+                       (!depositAmount && chainId === ARC_TESTNET_CHAIN_ID)
+                         ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
+                         : (activePendingState || isSwitching)
+                         ? "bg-foreground/50 text-background cursor-wait"
+                         : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
+                     }`}
+                   >
+                     {(!activePendingState && !isSwitching && (depositAmount || chainId !== ARC_TESTNET_CHAIN_ID)) && (
+                       <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                     )}
+                     <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
+                       {isSwitching
+                         ? "Switching Network..."
+                         : activePendingState 
+                         ? "Processing..." 
+                         : (chainId !== ARC_TESTNET_CHAIN_ID)
+                         ? "Switch to Arc Testnet"
+                         : (!depositAmount) 
+                         ? "Enter an amount" 
+                         : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
+                         ? `Approve ${selectedAsset}`
+                         : "Deposit"}
+                     </span>
+                   </button>
+                 </div>
+              </div>
+           ) : (
+              <div className="p-2">
+                {/* Withdraw Section */}
+                <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
+                  <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                     <span>Withdraw Shares</span>
+                     <span className="flex items-center gap-2">
+                       Available: {formatNumber(activeUserShares)}
+                       <button 
+                         onClick={() => {
+                            if (activeUserShares) setWithdrawShares(formatUnits(activeUserShares, 6));
+                         }}
+                         className="text-accent hover:text-accentHover font-semibold"
+                       >
+                         Max
+                       </button>
+                     </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                     <input
+                       type="number"
+                       value={withdrawShares}
+                       onChange={(e) => setWithdrawShares(e.target.value)}
+                       placeholder="0.00"
+                       className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
+                     />
+                     <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
+                       <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
+                         J
+                       </div>
+                       <span className="font-semibold text-sm">JANUS</span>
+                     </div>
+                  </div>
+                </div>
+
                 <div className="mt-4">
-                  {switchError && (
-                    <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
-                      <Info className="w-4 h-4 mt-0.5 shrink-0" />
-                      <span>{switchError}</span>
-                    </div>
-                  )}
+                   {switchError && (
+                     <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
+                       <Info className="w-4 h-4 mt-0.5 shrink-0" />
+                       <span>{switchError}</span>
+                     </div>
+                   )}
                   <button
-                    onClick={handleDeposit}
-                    disabled={activePendingState || isSwitching}
+                    onClick={handleWithdraw}
+                    disabled={(!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID) || activePendingState || isSwitching}
                     className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                      (!depositAmount && chainId === ARC_TESTNET_CHAIN_ID)
+                      (!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID)
                         ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                         : (activePendingState || isSwitching)
                         ? "bg-foreground/50 text-background cursor-wait"
                         : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
                     }`}
                   >
-                    {(!activePendingState && !isSwitching && (depositAmount || chainId !== ARC_TESTNET_CHAIN_ID)) && (
+                    {(withdrawShares || chainId !== ARC_TESTNET_CHAIN_ID) && !activePendingState && !isSwitching && (
                       <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                     )}
                     <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
                       {isSwitching
                         ? "Switching Network..."
-                        : activePendingState 
-                        ? "Processing..." 
+                        : activePendingState
+                        ? "Processing..."
                         : (chainId !== ARC_TESTNET_CHAIN_ID)
                         ? "Switch to Arc Testnet"
-                        : (!depositAmount) 
-                        ? "Enter an amount" 
-                        : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
-                        ? "Approve USDC"
-                        : "Deposit"}
+                        : !withdrawShares
+                        ? "Enter an amount"
+                        : `Withdraw ${selectedAsset}`}
                     </span>
                   </button>
                 </div>
-             </div>
-          ) : (
-             <div className="p-2">
-               {/* Withdraw Section */}
-               <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
-                 <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
-                    <span>Withdraw Shares</span>
-                    <span className="flex items-center gap-2">
-                      Available: {formatNumber(activeUserShares)}
-                      <button 
-                        onClick={() => {
-                           if (activeUserShares) setWithdrawShares(formatUnits(activeUserShares, 6));
-                        }}
-                        className="text-accent hover:text-accentHover font-semibold"
-                      >
-                        Max
-                      </button>
-                    </span>
-                 </div>
-                 <div className="flex items-center justify-between">
-                    <input
-                      type="number"
-                      value={withdrawShares}
-                      onChange={(e) => setWithdrawShares(e.target.value)}
-                      placeholder="0.00"
-                      className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
-                    />
-                    <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
-                      <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
-                        J
-                      </div>
-                      <span className="font-semibold text-sm">JANUS</span>
-                    </div>
-                 </div>
-               </div>
-
-               <div className="mt-4">
-                  {switchError && (
-                    <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
-                      <Info className="w-4 h-4 mt-0.5 shrink-0" />
-                      <span>{switchError}</span>
-                    </div>
-                  )}
-                 <button
-                   onClick={handleWithdraw}
-                   disabled={(!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID) || activePendingState || isSwitching}
-                   className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                     (!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID)
-                       ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
-                       : (activePendingState || isSwitching)
-                       ? "bg-foreground/50 text-background cursor-wait"
-                       : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
-                   }`}
-                 >
-                   {(withdrawShares || chainId !== ARC_TESTNET_CHAIN_ID) && !activePendingState && !isSwitching && (
-                     <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                   )}
-                   <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
-                     {isSwitching
-                       ? "Switching Network..."
-                       : activePendingState
-                       ? "Processing..."
-                       : (chainId !== ARC_TESTNET_CHAIN_ID)
-                       ? "Switch to Arc Testnet"
-                       : !withdrawShares
-                       ? "Enter an amount"
-                       : "Withdraw USDC"}
-                   </span>
-                 </button>
-               </div>
              </div>
           )}
         </div>
