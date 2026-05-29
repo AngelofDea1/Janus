@@ -74,12 +74,27 @@ const STATIC_OVERRIDES: Record<string, string> = {
   "AAVE": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/aave.png"
 };
 
+// Custom overrides for obscure tokens used by the keeper or live simulation data to prevent mismatches
+const KEEPER_OVERRIDES: Record<string, string> = {
+  "IO": "https://assets.coincap.io/assets/icons/io@2x.png",
+  "ID": "https://assets.coincap.io/assets/icons/id@2x.png",
+  "FLNC": "https://assets.coincap.io/assets/icons/flnc@2x.png",
+  "MAGMA": "https://assets.coincap.io/assets/icons/magma@2x.png",
+  "ESPORTS": "https://assets.coincap.io/assets/icons/esports@2x.png",
+  "GTC": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/gtc.png",
+  "DODO": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/dodo.png",
+};
+
 async function resolveLogoUrl(symbol: string): Promise<string | null> {
   const key = symbol.toUpperCase();
 
   // 1. Guaranteed verified static brand overrides
   if (STATIC_OVERRIDES[key]) {
     return STATIC_OVERRIDES[key];
+  }
+  
+  if (KEEPER_OVERRIDES[key]) {
+    return KEEPER_OVERRIDES[key];
   }
 
   // Check cache
@@ -110,84 +125,9 @@ async function resolveLogoUrl(symbol: string): Promise<string | null> {
         setCachedLogo(key, atomicUrl);
         return atomicUrl;
       }
-    } catch { /* next layer */ }
+    } catch { /* fallback */ }
 
-    // Layer 3: LogoKit CDN (Fast, simple, covers thousands of tokens)
-    try {
-      const logokitUrl = `https://img.logokit.com/token/${key}`;
-      const res = await fetch(logokitUrl, { method: "HEAD" });
-      if (res.ok) {
-        setCachedLogo(key, logokitUrl);
-        return logokitUrl;
-      }
-    } catch { /* next layer */ }
-
-    // Layer 4: Gate.io CDN (Excellent exchange-hosted coverage)
-    try {
-      const gateUrl = `https://www.gate.io/images/coin_icon/64/${lower}.png`;
-      const res = await fetch(gateUrl, { method: "HEAD" });
-      if (res.ok) {
-        setCachedLogo(key, gateUrl);
-        return gateUrl;
-      }
-    } catch { /* next layer */ }
-
-    // Layer 5: KuCoin CDN (Exchange-hosted coverage by standard symbol)
-    try {
-      const kucoinUrl = `https://assets.kucoin.com/www/coin/pc/${key}.png`;
-      const res = await fetch(kucoinUrl, { method: "HEAD" });
-      if (res.ok) {
-        setCachedLogo(key, kucoinUrl);
-        return kucoinUrl;
-      }
-    } catch { /* next layer */ }
-
-    // Layer 6: CryptoIcons GitHub CDN (Vibrant community SVGs)
-    try {
-      const cryptoiconsUrl = `https://cdn.jsdelivr.net/gh/Cryptofonts/cryptoicons@master/svg/color/${lower}.svg`;
-      const res = await fetch(cryptoiconsUrl, { method: "HEAD" });
-      if (res.ok) {
-        setCachedLogo(key, cryptoiconsUrl);
-        return cryptoiconsUrl;
-      }
-    } catch { /* next layer */ }
-
-    // Layer 7: CoinGecko search API (huge live coverage, rate-limited)
-    let geckoId: string | null = null;
-    try {
-      const searchRes = await fetch(
-        `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(lower)}`
-      );
-      if (searchRes.ok) {
-        const data = await searchRes.json();
-        if (data.coins?.length > 0) {
-          const exactMatch = data.coins.find(
-            (c: any) => c.symbol?.toUpperCase() === key
-          );
-          const coin = exactMatch || data.coins[0];
-          geckoId = coin.id;
-          const imgUrl = coin.large || coin.thumb;
-          if (imgUrl && !imgUrl.includes("missing_")) {
-            setCachedLogo(key, imgUrl);
-            return imgUrl;
-          }
-        }
-      }
-    } catch { /* next layer */ }
-
-    // Layer 8: Simplr Coin-Logos CDN (Powered by CoinGecko ID - over 16,000 logos)
-    if (geckoId) {
-      try {
-        const simplrUrl = `https://cdn.jsdelivr.net/gh/simplr-sh/coin-logos/images/${geckoId}/128.png`;
-        const res = await fetch(simplrUrl, { method: "HEAD" });
-        if (res.ok) {
-          setCachedLogo(key, simplrUrl);
-          return simplrUrl;
-        }
-      } catch { /* fallback */ }
-    }
-
-    // No logo found anywhere in 8 layers
+    // For any other token, fall back immediately to clean deterministic gradients instead of stalling the main thread with slow APIs
     setCachedLogo(key, null);
     return null;
   })();
