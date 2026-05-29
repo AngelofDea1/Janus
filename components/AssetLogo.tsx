@@ -177,7 +177,18 @@ async function resolveLogoUrl(symbol: string): Promise<string | null> {
 // ─── Component ───────────────────────────────────────────────────
 
 export default function AssetLogo({ asset, size = 24, className = "" }: AssetLogoProps) {
-  const cleanAsset = asset.toUpperCase().replace(/-PERP$/i, "");
+  // Strip common exchange suffixes and prefixes to ensure clean symbol matching
+  let cleanAsset = asset.toUpperCase()
+    .replace(/-PERP$/i, "")
+    .replace(/^1000/i, "");
+
+  if (cleanAsset.endsWith("USDT") && cleanAsset !== "USDT") {
+    cleanAsset = cleanAsset.replace(/_?USDT$/i, "");
+  }
+  if (cleanAsset.endsWith("USDC") && cleanAsset !== "USDC") {
+    cleanAsset = cleanAsset.replace(/_?USDC$/i, "");
+  }
+
   
   const [logoUrl, setLogoUrl] = useState<string | null>(() => {
     const cached = getCachedLogo(cleanAsset);

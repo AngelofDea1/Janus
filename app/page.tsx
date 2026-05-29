@@ -13,21 +13,21 @@ import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 // Exchange logo components for the live feed
 const BinanceLogo = () => (
   <svg viewBox="0 0 126.61 126.61" className="w-4 h-4">
-    <path fill="#F3BA2F" d="M38.73 53.2l24.59-24.58 24.6 24.6 14.3-14.31L63.32 0l-38.9 38.9zM0 63.31L14.3 49l14.31 14.31L14.31 77.6zM38.73 73.41l24.59 24.59 24.6-24.6 14.31 14.29-38.9 38.91-38.91-38.88zM97.99 63.31l14.3-14.31 14.32 14.31-14.31 14.3z"/>
-    <path fill="#F3BA2F" d="M77.83 63.3L63.32 48.78 52.59 59.51l-1.24 1.23-2.54 2.54 14.51 14.5 14.51-14.51z"/>
+    <path fill="#F3BA2F" d="M38.73 53.2l24.59-24.58 24.6 24.6 14.3-14.31L63.32 0l-38.9 38.9zM0 63.31L14.3 49l14.31 14.31L14.31 77.6zM38.73 73.41l24.59 24.59 24.6-24.6 14.31 14.29-38.9 38.91-38.91-38.88zM97.99 63.31l14.3-14.31 14.32 14.31-14.31 14.3z" />
+    <path fill="#F3BA2F" d="M77.83 63.3L63.32 48.78 52.59 59.51l-1.24 1.23-2.54 2.54 14.51 14.5 14.51-14.51z" />
   </svg>
 );
 
 const HyperliquidLogo = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4">
-    <circle cx="12" cy="12" r="12" fill="#00D395"/>
+    <circle cx="12" cy="12" r="12" fill="#00D395" />
     <text x="12" y="16" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="sans-serif">H</text>
   </svg>
 );
 
 const BybitLogo = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4">
-    <circle cx="12" cy="12" r="12" fill="#F7A600"/>
+    <circle cx="12" cy="12" r="12" fill="#F7A600" />
     <text x="12" y="16" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">B</text>
   </svg>
 );
@@ -318,29 +318,29 @@ export default function Home() {
 
   return (
     <div ref={heroRef} className="relative min-h-screen bg-background overflow-hidden flex flex-col justify-center">
-      
+
       <div className="relative z-10 w-full px-6 flex flex-col items-center max-w-6xl mx-auto pt-36">
-        
+
         {/* Main Hero Content */}
         <div className="w-full max-w-4xl text-center flex flex-col items-center transition-all px-4 sm:px-0">
-          
+
           <h1 className="hero-title text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-extrabold tracking-tighter text-foreground leading-[1.1] mb-10 opacity-0">
-            Institutional-grade <br className="hidden md:block" /><span className="whitespace-nowrap text-foreground">funding rate arbitrage</span>
+            Institutional-grade <br className="hidden md:block" /><span className="whitespace-nowrap text-foreground">Funding Rate Arbitrage</span>
           </h1>
 
           <p className="hero-subtitle text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed mb-14 opacity-0">
-            Capture risk-mitigated APY from funding rate spreads across top exchanges. Secured natively on the Arc Network.
+            Capture risk-mitigated APY from funding rate spreads across top exchanges.<br></br> Secured natively on the Arc Network.
           </p>
 
           <div className="flex flex-col-reverse sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-            <Link 
-              href="/docs/overview" 
+            <Link
+              href="/docs/overview"
               className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-panel text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0 backdrop-blur-md"
             >
               Read Docs
             </Link>
-            <Link 
-              href="/app" 
+            <Link
+              href="/app"
               className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-foreground text-background font-bold text-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-3 opacity-0"
             >
               Launch App
@@ -357,7 +357,7 @@ export default function Home() {
               <span ref={tvlRef}>$0.0M</span>
             </div>
           </div>
-          
+
           <div className="stat-card bg-panel border border-borderLine rounded-3xl p-8 shadow-sm backdrop-blur-md opacity-0">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-1">30D Yield</div>
             <div className="text-3xl font-heading font-bold text-emerald-500">
@@ -406,7 +406,14 @@ export default function Home() {
           <p className="ledger-text text-slate-500 dark:text-slate-400 leading-relaxed mb-8 opacity-0">
             Every transaction routed through our arbitrage vaults is audited by cryptographic Proof of Validation logs. Distributed keeper nodes log state execution on-chain, proving rates and spreads transparently.
           </p>
-
+          <div className="ledger-text opacity-0">
+            <Link 
+              href="/ledger"
+              className="inline-flex px-6 py-3 rounded-xl bg-foreground text-background font-bold items-center gap-2 shadow-sm hover:opacity-90 transition-all"
+            >
+              View Full Ledger <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
         <div className="ledger-feed bg-panel border border-borderLine p-6 rounded-3xl backdrop-blur-xl relative shadow-premium dark:shadow-premium-dark opacity-0">

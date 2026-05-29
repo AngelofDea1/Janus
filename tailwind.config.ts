@@ -10,9 +10,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-        sans: ['"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        heading: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['var(--font-inter-tight)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter-tight)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-sora)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         background: 'rgb(var(--theme-bg))',

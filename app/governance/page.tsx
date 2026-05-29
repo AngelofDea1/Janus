@@ -49,39 +49,13 @@ export default function GovernancePage() {
         {/* Floating Glassmorphic Container */}
         <div className="bg-panel border border-borderLine rounded-[32px] p-6 md:p-10 shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
           
-          {/* Tab Navigation Menu */}
-          <div className="flex gap-2 mb-8 bg-black/5 dark:bg-white/5 p-2 rounded-2xl border border-borderLine overflow-x-auto scrollbar-none -mx-2 px-2">
-            {[
-              { id: 'overview', label: 'Multi-Sig & Timelock', icon: Lock },
-              { id: 'insurance', label: 'Insurance Fund', icon: Shield },
-              { id: 'withdrawals', label: 'Withdrawal Queue', icon: Clock },
-              { id: 'audit', label: 'Audit Trail', icon: FileSpreadsheet },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${
-                    isActive
-                      ? 'bg-white dark:bg-[#1a1a1a] text-foreground shadow-sm border border-borderLine'
-                      : 'text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Dynamic Tab Rendering Content */}
-          <div className="transition-all duration-300">
-            {activeTab === 'overview' && <GovernancePanel />}
-            {activeTab === 'insurance' && <InsuranceFundDisplay />}
-            {activeTab === 'withdrawals' && <WithdrawalQueue />}
-            {activeTab === 'audit' && <AuditTrail />}
+          {/* Coming Soon Message */}
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <Lock className="w-16 h-16 text-slate-700 dark:text-slate-300 mb-6" />
+            <h2 className="text-3xl font-heading font-bold text-foreground mb-4">Governance is Coming Soon</h2>
+            <p className="text-slate-500 max-w-md">
+              Full decentralization and governance controls will be activated following the official launch on the Arc Mainnet.
+            </p>
           </div>
 
         </div>

@@ -1,5 +1,5 @@
 // Contract addresses (update after deployment)
-export const VAULT_ADDRESS = '0x4eaB29997D332A666c3C366217Ab177cF9A7C436' as const;
+export const VAULT_ADDRESS = '0x764bd84928249ead3ce79e164bd94531841b3c2a' as const;
 export const USDC_ADDRESS = '0x3600000000000000000000000000000000000000' as const;
 export const MULTISIG_ADDRESS = '0x8ac5eE52F70AE01dB914bE459D8B3d50126fd6aE' as const;
 export const TIMELOCK_ADDRESS = '0x892a0bcf87baee1e390c9b88a8d11cfa98b0f22d' as const;
