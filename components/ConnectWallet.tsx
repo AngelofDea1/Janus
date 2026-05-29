@@ -43,13 +43,13 @@ const WalletIcon = ({ connector }: { connector: any }) => {
 export default function ConnectWallet() {
   const [isOpen, setIsOpen] = useState(false);
   const [showOtherWallets, setShowOtherWallets] = useState(false);
-  
+
   const { connectors, connect } = useConnect();
   const { address, isConnected, connector: activeConnector } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const [mounted, setMounted] = useState(false);
-  
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function ConnectWallet() {
 
   // Define prominent wallets that should be shown in the main list
   const prominentNames = ['metamask', 'okx wallet', 'rabby wallet', 'phantom', 'coinbase wallet', 'walletconnect'];
-  
+
   const prominentConnectors = uniqueConnectors.filter(c => prominentNames.some(name => c.name.toLowerCase().includes(name)));
   const otherConnectors = uniqueConnectors.filter(c => !prominentNames.some(name => c.name.toLowerCase().includes(name)) && c.id !== 'injected');
 
@@ -124,7 +124,7 @@ export default function ConnectWallet() {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/20 dark:bg-black/40 backdrop-blur-sm transition-opacity">
-          <div 
+          <div
             ref={modalRef}
             className="w-full sm:w-[400px] bg-panel dark:bg-[#131313] h-full sm:h-[calc(100vh-32px)] sm:my-4 sm:mr-4 sm:rounded-[32px] shadow-premium-dark border border-borderLine flex flex-col overflow-hidden animate-in slide-in-from-right-8 duration-300"
           >
@@ -133,7 +133,7 @@ export default function ConnectWallet() {
               <h3 className="font-heading font-semibold text-lg">
                 {isConnected ? "Account" : "Connect a wallet"}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-slate-400 hover:text-foreground transition-colors p-1"
               >
@@ -157,7 +157,7 @@ export default function ConnectWallet() {
                       </div>
                     )}
                   </div>
-                  
+
                   <button
                     onClick={() => {
                       disconnect();
@@ -177,7 +177,7 @@ export default function ConnectWallet() {
                       const isRecent = connector.id === 'metaMask';
                       // Only show 'Detected' if we actively received an icon injection from the browser extension
                       const isDetected = !isRecent && !!connector.icon;
-                      
+
                       return (
                         <button
                           key={connector.uid}
@@ -193,7 +193,7 @@ export default function ConnectWallet() {
                             </div>
                             <span className="font-medium text-[15px]">{connector.name}</span>
                           </div>
-                          
+
                           <div className="flex items-center gap-2">
                             {isRecent && (
                               <span className="text-[11px] font-medium text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-md">
@@ -214,7 +214,7 @@ export default function ConnectWallet() {
                   {/* "Other Wallets" Dropdown Accordion */}
                   {otherConnectors.length > 0 && (
                     <div className="pt-2">
-                      <button 
+                      <button
                         onClick={() => setShowOtherWallets(!showOtherWallets)}
                         className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
                       >
@@ -257,7 +257,7 @@ export default function ConnectWallet() {
                       )}
                     </div>
                   )}
-                  
+
                   {/* Disclaimer */}
                   <div className="pt-6 px-4 text-center">
                     <p className="text-[11px] leading-relaxed text-slate-500">
