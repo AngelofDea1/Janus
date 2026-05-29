@@ -48,19 +48,35 @@ export default function ArbitrageApp() {
 
  const { writeContract, data: hash, isPending } = useWriteContract();
  const publicClient = usePublicClient({ chainId: 5042002 });
- const { switchChain } = useSwitchChain();
+ const { switchChainAsync } = useSwitchChain();
+ const [switchError, setSwitchError] = useState<string | null>(null);
+ const [isSwitching, setIsSwitching] = useState(false);
 
  const ARC_TESTNET_CHAIN_ID = 5042002;
 
  const checkAndSwitchNetwork = async (): Promise<boolean> => {
    if (chainId !== ARC_TESTNET_CHAIN_ID) {
+     setSwitchError(null);
+     setIsSwitching(true);
      try {
-       if (switchChain) {
-         switchChain({ chainId: ARC_TESTNET_CHAIN_ID });
-         return false;
+       if (switchChainAsync) {
+         await switchChainAsync({ chainId: ARC_TESTNET_CHAIN_ID });
+         setIsSwitching(false);
+         // After successful switch, chainId state will update reactively
+         // Return true so the caller can proceed with the transaction
+         return true;
        }
-     } catch (err) {
-       console.error("Failed to switch network", err);
+     } catch (err: any) {
+       setIsSwitching(false);
+       const msg = err?.shortMessage || err?.message || "Failed to switch network";
+       if (msg.includes("rejected") || msg.includes("denied")) {
+         setSwitchError("You rejected the network switch. Please try again.");
+       } else if (msg.includes("Unrecognized chain") || msg.includes("unknown chain")) {
+         setSwitchError("Arc Testnet not found in wallet. It will be added automatically — please confirm the prompts.");
+       } else {
+         setSwitchError(msg);
+       }
+       console.error("Failed to switch network:", err);
      }
      return false;
    }
@@ -365,22 +381,30 @@ export default function ArbitrageApp() {
 
                 {/* Execute Button */}
                 <div className="mt-4">
+                  {switchError && (
+                    <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
+                      <Info className="w-4 h-4 mt-0.5 shrink-0" />
+                      <span>{switchError}</span>
+                    </div>
+                  )}
                   <button
                     onClick={handleDeposit}
-                    disabled={activePendingState}
+                    disabled={activePendingState || isSwitching}
                     className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                       (!depositAmount && chainId === ARC_TESTNET_CHAIN_ID)
                         ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
-                        : activePendingState
+                        : (activePendingState || isSwitching)
                         ? "bg-foreground/50 text-background cursor-wait"
                         : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
                     }`}
                   >
-                    {(!activePendingState && (depositAmount || chainId !== ARC_TESTNET_CHAIN_ID)) && (
+                    {(!activePendingState && !isSwitching && (depositAmount || chainId !== ARC_TESTNET_CHAIN_ID)) && (
                       <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                     )}
                     <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
-                      {activePendingState 
+                      {isSwitching
+                        ? "Switching Network..."
+                        : activePendingState 
                         ? "Processing..." 
                         : (chainId !== ARC_TESTNET_CHAIN_ID)
                         ? "Switch to Arc Testnet"
@@ -429,22 +453,36 @@ export default function ArbitrageApp() {
                </div>
 
                <div className="mt-4">
+                  {switchError && (
+                    <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
+                      <Info className="w-4 h-4 mt-0.5 shrink-0" />
+                      <span>{switchError}</span>
+                    </div>
+                  )}
                  <button
                    onClick={handleWithdraw}
-                   disabled={!withdrawShares || activePendingState}
+                   disabled={(!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID) || activePendingState || isSwitching}
                    className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                     !withdrawShares
+                     (!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID)
                        ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
-                       : activePendingState
+                       : (activePendingState || isSwitching)
                        ? "bg-foreground/50 text-background cursor-wait"
                        : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
                    }`}
                  >
-                   {withdrawShares && !activePendingState && (
+                   {(withdrawShares || chainId !== ARC_TESTNET_CHAIN_ID) && !activePendingState && !isSwitching && (
                      <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                    )}
                    <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
-                     {activePendingState ? "Processing..." : "Withdraw USDC"}
+                     {isSwitching
+                       ? "Switching Network..."
+                       : activePendingState
+                       ? "Processing..."
+                       : (chainId !== ARC_TESTNET_CHAIN_ID)
+                       ? "Switch to Arc Testnet"
+                       : !withdrawShares
+                       ? "Enter an amount"
+                       : "Withdraw USDC"}
                    </span>
                  </button>
                </div>
