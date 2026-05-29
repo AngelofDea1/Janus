@@ -15,12 +15,25 @@ import {
 } from "lucide-react";
 import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 import Link from "next/link";
+import { fetchGraphQL, GET_USER_ACTIVITY } from "@/lib/graphql";
+
+interface TransactionActivity {
+  id: string;
+  type: "Deposit" | "Withdraw";
+  assets: string;
+  shares: string;
+  timestamp: string;
+  transactionHash: string;
+}
 
 export default function PortfolioDashboard() {
   const { address: wagmiAddress, isConnected: wagmiIsConnected } = useAccount();
   const [localConnected, setLocalConnected] = useState(false);
   const [localAddress, setLocalAddress] = useState("");
   const [mounted, setMounted] = useState(false);
+  
+  const [history, setHistory] = useState<TransactionActivity[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -34,6 +47,41 @@ export default function PortfolioDashboard() {
 
   const isConnected = wagmiIsConnected || localConnected;
   const address = (wagmiAddress || localAddress) as `0x${string}` | undefined;
+
+  useEffect(() => {
+    if (!isConnected || !address) {
+      setHistory([]);
+      setLoadingHistory(false);
+      return;
+    }
+
+    async function loadHistory() {
+      setLoadingHistory(true);
+      try {
+        const data = await fetchGraphQL<{
+          deposits: Omit<TransactionActivity, "type">[];
+          withdraws: Omit<TransactionActivity, "type">[];
+        }>(GET_USER_ACTIVITY, { owner: address!.toLowerCase() });
+
+        if (data) {
+          const merged: TransactionActivity[] = [
+            ...(data.deposits || []).map(d => ({ ...d, type: "Deposit" as const })),
+            ...(data.withdraws || []).map(w => ({ ...w, type: "Withdraw" as const }))
+          ];
+          
+          // Sort by timestamp descending
+          merged.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+          setHistory(merged);
+        }
+      } catch (err) {
+        console.error("Error fetching user history from Goldsky:", err);
+      } finally {
+        setLoadingHistory(false);
+      }
+    }
+
+    loadHistory();
+  }, [isConnected, address]);
 
   // Real Contract Data
   const { data: userShares } = useReadContract({
@@ -210,7 +258,7 @@ export default function PortfolioDashboard() {
           </div>
         </div>
 
-        {/* Transaction History Placeholder */}
+        {/* Transaction History */}
         <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-sm backdrop-blur-xl">
           <div className="flex items-center justify-between mb-6">
             <div className="text-lg font-bold font-heading flex items-center gap-2">
@@ -219,7 +267,12 @@ export default function PortfolioDashboard() {
             </div>
           </div>
           
-          {userShares && userShares > BigInt(0) ? (
+          {loadingHistory ? (
+            <div className="text-center py-12 animate-pulse flex flex-col items-center">
+              <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin mb-4" />
+              <p className="text-slate-500 text-sm">Syncing with Arc Testnet...</p>
+            </div>
+          ) : history.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
@@ -227,18 +280,35 @@ export default function PortfolioDashboard() {
                     <th className="pb-3 font-semibold">Action</th>
                     <th className="pb-3 font-semibold">Amount</th>
                     <th className="pb-3 font-semibold">Shares</th>
-                    <th className="pb-3 font-semibold text-right">Status</th>
+                    <th className="pb-3 font-semibold text-right">Time</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-borderLine/50">
-                  <tr>
-                    <td className="py-4 font-medium text-foreground">Deposit</td>
-                    <td className="py-4 font-mono text-slate-500">${formatNumber(userValue)}</td>
-                    <td className="py-4 font-mono text-slate-500">{formatNumber(userShares)}</td>
-                    <td className="py-4 text-right">
-                      <span className="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-xs font-bold">Confirmed</span>
-                    </td>
-                  </tr>
+                  {history.map((tx) => (
+                    <tr key={tx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="py-4 font-medium">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                          tx.type === "Deposit" 
+                            ? "bg-emerald-500/10 text-emerald-500" 
+                            : "bg-amber-500/10 text-amber-500"
+                        }`}>
+                          {tx.type}
+                        </span>
+                      </td>
+                      <td className="py-4 font-mono text-foreground">${formatNumber(BigInt(tx.assets))}</td>
+                      <td className="py-4 font-mono text-slate-500">{formatNumber(BigInt(tx.shares))}</td>
+                      <td className="py-4 text-right">
+                        <a 
+                          href={`https://testnet.arcscan.app/tx/${tx.transactionHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-slate-500 hover:text-accent transition-colors underline decoration-transparent hover:decoration-accent"
+                        >
+                          {new Date(Number(tx.timestamp) * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
