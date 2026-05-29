@@ -4,38 +4,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight, ShieldCheck, XCircle, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown } from "lucide-react";
 import AssetLogo from "@/components/AssetLogo";
 import Link from "next/link";
-import { VAULT_ADDRESS } from "@/lib/constants";
+import { fetchGraphQL, GET_LATEST_ARBITRAGE_EXECUTIONS } from "@/lib/graphql";
+import { formatUnits } from "viem";
 
-interface Execution {
+interface ArbitrageExecution {
   id: string;
-  circleTxId: string | null;
   asset: string;
   route: string;
-  shortExchange: string;
-  longExchange: string;
+  volume: string;
   spread: string;
-  volume: number;
-  yieldAmount: number;
-  status: "Executed" | "Failed";
-  error?: string;
-  timestamp: number;
-  blockTime: string;
-}
-
-interface ExecutionLog {
-  success: boolean;
-  source: "keeper" | "onchain" | "demo" | "fallback";
-  executions: Execution[];
-  stats: {
-    totalVolume: number;
-    totalYield: number;
-    successCount: number;
-    failCount: number;
-  };
+  yieldHarvested: string;
+  timestamp: string;
+  transactionHash: string;
 }
 
 export default function LedgerPage() {
-  const [data, setData] = useState<ExecutionLog | null>(null);
+  const [executions, setExecutions] = useState<ArbitrageExecution[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -53,27 +37,28 @@ export default function LedgerPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch real execution data from keeper
+  // Fetch real execution data from Goldsky
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/executions");
-        const json: ExecutionLog = await res.json();
-        if (json.success) {
-          setData(json);
+        const data = await fetchGraphQL<{ arbitrageExecutions: ArbitrageExecution[] }>(
+          GET_LATEST_ARBITRAGE_EXECUTIONS,
+          { first: 100 }
+        );
+        if (data?.arbitrageExecutions) {
+          setExecutions(data.arbitrageExecutions);
         }
-      } catch {
-        // Silently catch error
+      } catch (err) {
+        console.error("Failed to fetch Goldsky data:", err);
       } finally {
         setLoading(false);
       }
     }
     fetchData();
-    const interval = setInterval(fetchData, 15000);
+    const interval = setInterval(fetchData, 10000); // refresh every 10s
     return () => clearInterval(interval);
   }, []);
 
-  const executions = data?.executions || [];
   const totalItems = executions.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / rowsPerPage));
 
@@ -88,15 +73,15 @@ export default function LedgerPage() {
   const slicedExecutions = executions.slice(startIndex, endIndex);
 
   const tableRows = slicedExecutions.map((ex) => ({
-    displayId: ex.id.length > 20 ? `${ex.id.slice(0, 10)}...${ex.id.slice(-4)}` : ex.id,
-    fullId: ex.id,
+    displayId: ex.transactionHash.length > 20 ? `${ex.transactionHash.slice(0, 10)}...${ex.transactionHash.slice(-4)}` : ex.transactionHash,
+    fullId: ex.transactionHash,
     asset: ex.asset,
     route: ex.route,
-    volume: `$${ex.volume.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+    volume: `$${parseFloat(formatUnits(BigInt(ex.volume), 6)).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
     spread: `+${ex.spread}%`,
-    status: ex.status,
-    time: formatTime(ex.timestamp),
-    txHash: ex.id.startsWith('0x') ? ex.id : null,
+    status: "Executed", // Since it's on-chain in subgraph, it's executed
+    time: formatTime(Number(ex.timestamp) * 1000), // convert subgraph seconds to MS
+    txHash: ex.transactionHash,
   }));
 
   return (
