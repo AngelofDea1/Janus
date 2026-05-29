@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAccount, useReadContract, useWriteContract, useBalance, usePublicClient } from "wagmi";
+import { useAccount, useReadContract, useWriteContract, useBalance, usePublicClient, useSwitchChain } from "wagmi";
 import { parseUnits, formatUnits, parseAbiItem } from "viem";
 import { 
  Shield, 
@@ -22,7 +22,7 @@ export default function ArbitrageApp() {
  
  const [activeMode, setActiveMode] = useState<"deposit" | "withdraw">("deposit");
  
- const { address: wagmiAddress, isConnected: wagmiIsConnected } = useAccount();
+ const { address: wagmiAddress, isConnected: wagmiIsConnected, chainId } = useAccount();
  const [localConnected, setLocalConnected] = useState(false);
  const [localAddress, setLocalAddress] = useState("");
  const [showSettings, setShowSettings] = useState(false);
@@ -48,6 +48,24 @@ export default function ArbitrageApp() {
 
  const { writeContract, data: hash, isPending } = useWriteContract();
  const publicClient = usePublicClient({ chainId: 5042002 });
+ const { switchChain } = useSwitchChain();
+
+ const ARC_TESTNET_CHAIN_ID = 5042002;
+
+ const checkAndSwitchNetwork = async (): Promise<boolean> => {
+   if (chainId !== ARC_TESTNET_CHAIN_ID) {
+     try {
+       if (switchChain) {
+         switchChain({ chainId: ARC_TESTNET_CHAIN_ID });
+         return false;
+       }
+     } catch (err) {
+       console.error("Failed to switch network", err);
+     }
+     return false;
+   }
+   return true;
+ };
 
  // --- Simulation Fallback State ---
  const isMockMode = (VAULT_ADDRESS as string) === "0x0000000000000000000000000000000000000000";
@@ -107,79 +125,87 @@ export default function ArbitrageApp() {
  const activePendingState = isMockMode ? simulationIsPending : isPending;
 
  // Transaction Handlers
- const approveUSDC = () => {
-   if (!depositAmount) return;
-   const amount = parseUnits(depositAmount, 6);
-   if (isMockMode) {
-     setSimulationIsPending(true);
-     setTimeout(() => {
-       setSimulationAllowance(amount);
-       setSimulationIsPending(false);
-     }, 1000);
-     return;
-   }
-   writeContract({
-     address: USDC_ADDRESS,
-     abi: USDC_ABI,
-     functionName: "approve",
-     args: [VAULT_ADDRESS, amount],
-   });
- };
+  const approveUSDC = async () => {
+    if (!depositAmount) return;
+    const amount = parseUnits(depositAmount, 6);
+    if (isMockMode) {
+      setSimulationIsPending(true);
+      setTimeout(() => {
+        setSimulationAllowance(amount);
+        setSimulationIsPending(false);
+      }, 1000);
+      return;
+    }
+    const ready = await checkAndSwitchNetwork();
+    if (!ready) return;
+    writeContract({
+      address: USDC_ADDRESS,
+      abi: USDC_ABI,
+      functionName: "approve",
+      args: [VAULT_ADDRESS, amount],
+    });
+  };
 
- const handleDeposit = async () => {
-   if (!depositAmount) return;
-   const amount = parseUnits(depositAmount, 6);
-   
-   if (!activeAllowance || activeAllowance < amount) {
-     approveUSDC();
-     return;
-   }
-   
-   if (isMockMode) {
-     setSimulationIsPending(true);
-     setTimeout(() => {
-       if (simulationUsdcBalance >= amount) {
-         setSimulationUsdcBalance((prev) => prev - amount);
-         setSimulationUserShares((prev) => prev + amount); 
-         setDepositAmount("");
-       }
-       setSimulationIsPending(false);
-     }, 1200);
-     return;
-   }
+  const handleDeposit = async () => {
+    if (!depositAmount) return;
+    const amount = parseUnits(depositAmount, 6);
+    
+    if (isMockMode) {
+      setSimulationIsPending(true);
+      setTimeout(() => {
+        if (simulationUsdcBalance >= amount) {
+          setSimulationUsdcBalance((prev) => prev - amount);
+          setSimulationUserShares((prev) => prev + amount); 
+          setDepositAmount("");
+        }
+        setSimulationIsPending(false);
+      }, 1200);
+      return;
+    }
 
-   writeContract({
-     address: VAULT_ADDRESS,
-     abi: VAULT_ABI,
-     functionName: "deposit",
-     args: [amount, address!],
-   });
- };
+    const ready = await checkAndSwitchNetwork();
+    if (!ready) return;
 
- const handleWithdraw = async () => {
-   if (!withdrawShares) return;
-   const sharesAmount = parseUnits(withdrawShares, 6);
+    if (!activeAllowance || activeAllowance < amount) {
+      approveUSDC();
+      return;
+    }
 
-   if (isMockMode) {
-     setSimulationIsPending(true);
-     setTimeout(() => {
-       if (simulationUserShares >= sharesAmount) {
-         setSimulationUserShares((prev) => prev - sharesAmount);
-         setSimulationUsdcBalance((prev) => prev + sharesAmount);
-         setWithdrawShares("");
-       }
-       setSimulationIsPending(false);
-     }, 1200);
-     return;
-   }
+    writeContract({
+      address: VAULT_ADDRESS,
+      abi: VAULT_ABI,
+      functionName: "deposit",
+      args: [amount, address!],
+    });
+  };
 
-   writeContract({
-     address: VAULT_ADDRESS,
-     abi: VAULT_ABI,
-     functionName: "withdraw",
-     args: [sharesAmount, address!, address!],
-   });
- };
+  const handleWithdraw = async () => {
+    if (!withdrawShares) return;
+    const sharesAmount = parseUnits(withdrawShares, 6);
+
+    if (isMockMode) {
+      setSimulationIsPending(true);
+      setTimeout(() => {
+        if (simulationUserShares >= sharesAmount) {
+          setSimulationUserShares((prev) => prev - sharesAmount);
+          setSimulationUsdcBalance((prev) => prev + sharesAmount);
+          setWithdrawShares("");
+        }
+        setSimulationIsPending(false);
+      }, 1200);
+      return;
+    }
+
+    const ready = await checkAndSwitchNetwork();
+    if (!ready) return;
+
+    writeContract({
+      address: VAULT_ADDRESS,
+      abi: VAULT_ABI,
+      functionName: "withdraw",
+      args: [sharesAmount, address!, address!],
+    });
+  };
 
  const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
    if (!value) return "0.00";
@@ -337,33 +363,35 @@ export default function ArbitrageApp() {
                  </div>
                </div>
 
-               {/* Execute Button */}
-               <div className="mt-4">
-                 <button
-                   onClick={handleDeposit}
-                   disabled={!depositAmount || activePendingState}
-                   className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                     !depositAmount
-                       ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
-                       : activePendingState
-                       ? "bg-foreground/50 text-background cursor-wait"
-                       : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
-                   }`}
-                 >
-                   {depositAmount && !activePendingState && (
-                     <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                   )}
-                   <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
-                     {activePendingState 
-                       ? "Processing..." 
-                       : (!depositAmount) 
-                       ? "Enter an amount" 
-                       : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
-                       ? "Approve USDC"
-                       : "Deposit"}
-                   </span>
-                 </button>
-               </div>
+                {/* Execute Button */}
+                <div className="mt-4">
+                  <button
+                    onClick={handleDeposit}
+                    disabled={activePendingState}
+                    className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
+                      (!depositAmount && chainId === ARC_TESTNET_CHAIN_ID)
+                        ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
+                        : activePendingState
+                        ? "bg-foreground/50 text-background cursor-wait"
+                        : "border-2 border-foreground bg-transparent text-foreground shadow-sm active:scale-[0.98]"
+                    }`}
+                  >
+                    {(!activePendingState && (depositAmount || chainId !== ARC_TESTNET_CHAIN_ID)) && (
+                      <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                    )}
+                    <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
+                      {activePendingState 
+                        ? "Processing..." 
+                        : (chainId !== ARC_TESTNET_CHAIN_ID)
+                        ? "Switch to Arc Testnet"
+                        : (!depositAmount) 
+                        ? "Enter an amount" 
+                        : (!activeAllowance || activeAllowance < parseUnits(depositAmount || "0", 6))
+                        ? "Approve USDC"
+                        : "Deposit"}
+                    </span>
+                  </button>
+                </div>
              </div>
           ) : (
              <div className="p-2">
