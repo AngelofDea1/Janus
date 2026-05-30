@@ -1,4 +1,4 @@
-export const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.1/gn";
+export const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.2/gn";
 
 /**
  * Native fetcher for Goldsky GraphQL Subgraphs
@@ -65,6 +65,7 @@ export const GET_USER_ACTIVITY = `
       shares
       timestamp
       transactionHash
+      vault
     }
     withdraws(where: { owner: $owner }, orderBy: timestamp, orderDirection: desc, first: 50) {
       id
@@ -72,6 +73,7 @@ export const GET_USER_ACTIVITY = `
       shares
       timestamp
       transactionHash
+      vault
     }
   }
 `;

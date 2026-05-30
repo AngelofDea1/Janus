@@ -13,7 +13,7 @@ import {
   ArrowUpRight,
   ExternalLink
 } from "lucide-react";
-import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
+import { VAULT_ADDRESS, EURC_VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 import Link from "next/link";
 import { fetchGraphQL, GET_USER_ACTIVITY } from "@/lib/graphql";
 
@@ -24,6 +24,7 @@ interface TransactionActivity {
   shares: string;
   timestamp: string;
   transactionHash: string;
+  vault: string;
 }
 
 export default function PortfolioDashboard() {
@@ -83,8 +84,8 @@ export default function PortfolioDashboard() {
     loadHistory();
   }, [isConnected, address]);
 
-  // Real Contract Data
-  const { data: userShares } = useReadContract({
+  // Real USDC Contract Data
+  const { data: userSharesUsdc } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "balanceOf",
@@ -93,7 +94,7 @@ export default function PortfolioDashboard() {
     query: { refetchInterval: 5000 },
   });
 
-  const { data: userValue } = useReadContract({
+  const { data: userValueUsdc } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "userValue",
@@ -102,8 +103,35 @@ export default function PortfolioDashboard() {
     query: { refetchInterval: 5000 },
   });
 
-  const { data: estimatedAPY } = useReadContract({
+  const { data: estimatedAPYUsdc } = useReadContract({
     address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "estimatedAPY",
+    chainId: 5042002,
+    query: { refetchInterval: 10000 },
+  });
+
+  // Real EURC Contract Data
+  const { data: userSharesEurc } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 5000 },
+  });
+
+  const { data: userValueEurc } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "userValue",
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 5000 },
+  });
+
+  const { data: estimatedAPYEurc } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "estimatedAPY",
     chainId: 5042002,
@@ -152,10 +180,29 @@ export default function PortfolioDashboard() {
     });
   };
 
-  const apy = estimatedAPY ? Number(estimatedAPY) / 100 : 0;
-  const valueFloat = userValue ? parseFloat(formatUnits(userValue, 6)) : 0;
-  const dailyYield = (valueFloat * (apy / 100)) / 365;
-  const monthlyYield = dailyYield * 30;
+  const getUSDFloat = (value: bigint | undefined) => {
+    if (!value) return 0;
+    return parseFloat(formatUnits(value, 6));
+  };
+
+  // APY calculations
+  const apyUsdc = estimatedAPYUsdc ? Number(estimatedAPYUsdc) / 100 : 0;
+  const apyEurc = estimatedAPYEurc ? Number(estimatedAPYEurc) / 100 : 0;
+
+  // Values
+  const valueUsdcFloat = getUSDFloat(userValueUsdc);
+  const valueEurcFloat = getUSDFloat(userValueEurc);
+
+  // EUR to USD conversion rate
+  const EUR_USD_RATE = 1.08;
+  const totalValueInUSD = valueUsdcFloat + (valueEurcFloat * EUR_USD_RATE);
+
+  // Yield calculations
+  const dailyYieldUsdc = (valueUsdcFloat * (apyUsdc / 100)) / 365;
+  const monthlyYieldUsdc = dailyYieldUsdc * 30;
+
+  const dailyYieldEurc = (valueEurcFloat * (apyEurc / 100)) / 365;
+  const monthlyYieldEurc = dailyYieldEurc * 30;
 
   return (
     <div className="relative min-h-screen bg-background text-foreground transition-colors py-32 overflow-hidden flex justify-center">
@@ -191,70 +238,129 @@ export default function PortfolioDashboard() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Total Value Locked Header */}
+        <div className="bg-panel border border-borderLine rounded-3xl p-8 mb-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -z-10" />
+          <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+            <PieChart className="w-4 h-4" />
+            Total Portfolio Value (USD)
+          </div>
+          <div className="text-5xl md:text-6xl font-heading font-bold text-foreground tracking-tight">
+            ${totalValueInUSD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <div className="text-slate-500 mt-2 font-medium flex flex-wrap gap-x-4 gap-y-1">
+            <span>USDC Position: <strong className="text-foreground font-mono">${formatNumber(userValueUsdc)}</strong></span>
+            <span className="hidden md:inline text-slate-400">|</span>
+            <span>EURC Position: <strong className="text-foreground font-mono">€{formatNumber(userValueEurc)}</strong> <span className="text-xs text-slate-500 font-normal">(~${(valueEurcFloat * EUR_USD_RATE).toFixed(2)})</span></span>
+          </div>
+        </div>
+
+        {/* Dual Vault Positions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           
-          {/* Main TVL Card */}
-          <div className="lg:col-span-2 bg-panel border border-borderLine rounded-3xl p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -z-10" />
-            <div className="flex justify-between items-start mb-12">
-              <div>
-                <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <PieChart className="w-4 h-4" />
-                  Your Total Value Locked
+          {/* USDC Vault Card */}
+          <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center font-bold text-emerald-500 text-lg">
+                  $
                 </div>
-                <div className="text-5xl md:text-6xl font-heading font-bold text-foreground tracking-tight">
-                  ${formatNumber(userValue)}
+                <div>
+                  <h3 className="font-bold text-lg leading-tight">USDC Savings Vault</h3>
+                  <p className="text-xs text-slate-500 font-semibold font-mono">{VAULT_ADDRESS.slice(0, 6)}...{VAULT_ADDRESS.slice(-4)}</p>
                 </div>
-                <div className="text-slate-500 mt-2 font-medium flex items-center gap-2">
-                  Representing <span className="text-foreground font-mono font-bold">{formatNumber(userShares)}</span> Vault Shares
-                </div>
+              </div>
+              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full">Active</span>
+            </div>
+
+            <div className="mb-6">
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Your Balance</div>
+              <div className="text-3xl font-bold font-mono text-foreground">${formatNumber(userValueUsdc)}</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">
+                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesUsdc)}</span> USV
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-borderLine/50">
+            <div className="grid grid-cols-3 gap-2 pt-6 border-t border-borderLine/50">
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Current APY</div>
-                <div className="text-xl font-bold text-emerald-500">{apy.toFixed(2)}%</div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">APY</div>
+                <div className="text-lg font-bold text-emerald-500">{apyUsdc.toFixed(2)}%</div>
               </div>
               <div>
                 <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Daily</div>
-                <div className="text-xl font-bold text-foreground">+${dailyYield.toFixed(2)}</div>
+                <div className="text-lg font-bold text-foreground">+${dailyYieldUsdc.toFixed(2)}</div>
               </div>
               <div>
                 <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Monthly</div>
-                <div className="text-xl font-bold text-foreground">+${monthlyYield.toFixed(2)}</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Status</div>
-                <div className="text-sm font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full inline-block mt-1">Earning</div>
+                <div className="text-lg font-bold text-foreground">+${monthlyYieldUsdc.toFixed(2)}</div>
               </div>
             </div>
           </div>
 
-          {/* Side Info Cards */}
-          <div className="space-y-6">
-            <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-xl">
-              <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Performance Strategy
+          {/* EURC Vault Card */}
+          <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center font-bold text-blue-500 text-lg">
+                  €
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg leading-tight">EURC Savings Vault</h3>
+                  <p className="text-xs text-slate-500 font-semibold font-mono">{EURC_VAULT_ADDRESS.slice(0, 6)}...{EURC_VAULT_ADDRESS.slice(-4)}</p>
+                </div>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                Your deposit is currently allocated across hyper-optimized delta-neutral funding rate arbitrage positions, capturing yield from continuous funding rounds.
-              </p>
-              <Link href="/analytics" className="text-sm font-semibold text-accent flex items-center gap-1 hover:underline">
-                View Active Positions <ExternalLink className="w-3 h-3" />
-              </Link>
+              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full">Active</span>
             </div>
 
-            <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-xl">
-              <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4" />
-                Security & Insurance
+            <div className="mb-6">
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Your Balance</div>
+              <div className="text-3xl font-bold font-mono text-foreground">€{formatNumber(userValueEurc)}</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">
+                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesEurc)}</span> ESV
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                Your funds are protected by the Janus Protocol's automated risk management systems and a decentralized insurance fund backing all core vault assets.
-              </p>
             </div>
+
+            <div className="grid grid-cols-3 gap-2 pt-6 border-t border-borderLine/50">
+              <div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">APY</div>
+                <div className="text-lg font-bold text-emerald-500">{apyEurc.toFixed(2)}%</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Daily</div>
+                <div className="text-lg font-bold text-foreground">+€{dailyYieldEurc.toFixed(4)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Monthly</div>
+                <div className="text-lg font-bold text-foreground">+€{monthlyYieldEurc.toFixed(2)}</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Side Info / Protection Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-xl">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Delta-Neutral Arbitrage
+            </div>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Your deposits in both USDC and EURC vaults are actively deployed into delta-neutral funding rate arbitrage loops. This optimizes yields under all market conditions while eliminating asset price exposure.
+            </p>
+            <Link href="/analytics" className="text-sm font-semibold text-accent flex items-center gap-1 hover:underline">
+              View Active Positions <ExternalLink className="w-3 h-3" />
+            </Link>
+          </div>
+
+          <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-xl">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4" />
+              Security & Insurance
+            </div>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Both vaults utilize strict smart contract parameters, automated slippage checks, and access to a shared protocol insurance fund backing all deposit-related executions.
+            </p>
           </div>
         </div>
 
@@ -278,37 +384,49 @@ export default function PortfolioDashboard() {
                 <thead>
                   <tr className="border-b border-borderLine text-slate-500">
                     <th className="pb-3 font-semibold">Action</th>
+                    <th className="pb-3 font-semibold">Asset</th>
                     <th className="pb-3 font-semibold">Amount</th>
                     <th className="pb-3 font-semibold">Shares</th>
                     <th className="pb-3 font-semibold text-right">Time</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-borderLine/50">
-                  {history.map((tx) => (
-                    <tr key={tx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="py-4 font-medium">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                          tx.type === "Deposit" 
-                            ? "bg-emerald-500/10 text-emerald-500" 
-                            : "bg-amber-500/10 text-amber-500"
-                        }`}>
-                          {tx.type}
-                        </span>
-                      </td>
-                      <td className="py-4 font-mono text-foreground">${formatNumber(BigInt(tx.assets))}</td>
-                      <td className="py-4 font-mono text-slate-500">{formatNumber(BigInt(tx.shares))}</td>
-                      <td className="py-4 text-right">
-                        <a 
-                          href={`https://testnet.arcscan.app/tx/${tx.transactionHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-slate-500 hover:text-accent transition-colors underline decoration-transparent hover:decoration-accent"
-                        >
-                          {new Date(Number(tx.timestamp) * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
+                  {history.map((tx) => {
+                    const isEurc = tx.vault.toLowerCase() === EURC_VAULT_ADDRESS.toLowerCase();
+                    const currencySymbol = isEurc ? "€" : "$";
+                    const assetLabel = isEurc ? "EURC" : "USDC";
+
+                    return (
+                      <tr key={tx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="py-4 font-medium">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                            tx.type === "Deposit" 
+                              ? "bg-emerald-500/10 text-emerald-500" 
+                              : "bg-amber-500/10 text-amber-500"
+                          }`}>
+                            {tx.type}
+                          </span>
+                        </td>
+                        <td className="py-4 font-semibold text-slate-500">{assetLabel}</td>
+                        <td className="py-4 font-mono text-foreground">
+                          {currencySymbol}{formatNumber(BigInt(tx.assets))}
+                        </td>
+                        <td className="py-4 font-mono text-slate-500">
+                          {formatNumber(BigInt(tx.shares))}
+                        </td>
+                        <td className="py-4 text-right">
+                          <a 
+                            href={`https://testnet.arcscan.app/tx/${tx.transactionHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-slate-500 hover:text-accent transition-colors underline decoration-transparent hover:decoration-accent"
+                          >
+                            {new Date(Number(tx.timestamp) * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

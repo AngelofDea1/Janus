@@ -24,6 +24,7 @@ export default function LedgerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<"ALL" | "USDC" | "EURC">("ALL");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -59,7 +60,13 @@ export default function LedgerPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const totalItems = executions.length;
+  // Filter executions based on selected tab
+  const filteredExecutions = executions.filter((ex) => {
+    if (selectedTab === "ALL") return true;
+    return ex.asset.toUpperCase() === selectedTab;
+  });
+
+  const totalItems = filteredExecutions.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / rowsPerPage));
 
   useEffect(() => {
@@ -70,25 +77,31 @@ export default function LedgerPage() {
 
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const slicedExecutions = executions.slice(startIndex, endIndex);
+  const slicedExecutions = filteredExecutions.slice(startIndex, endIndex);
 
-  const tableRows = slicedExecutions.map((ex) => ({
-    displayId: ex.transactionHash.length > 20 ? `${ex.transactionHash.slice(0, 10)}...${ex.transactionHash.slice(-4)}` : ex.transactionHash,
-    fullId: ex.transactionHash,
-    asset: ex.asset,
-    route: ex.route,
-    volume: `$${parseFloat(formatUnits(BigInt(ex.volume), 6)).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-    spread: `+${ex.spread}%`,
-    status: "Executed", // Since it's on-chain in subgraph, it's executed
-    time: formatTime(Number(ex.timestamp) * 1000), // convert subgraph seconds to MS
-    txHash: ex.transactionHash,
-  }));
+  const tableRows = slicedExecutions.map((ex) => {
+    const isEurc = ex.asset.toUpperCase() === "EURC";
+    const currencySymbol = isEurc ? "€" : "$";
+    const formattedVolume = parseFloat(formatUnits(BigInt(ex.volume), 6)).toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+    return {
+      displayId: ex.transactionHash.length > 20 ? `${ex.transactionHash.slice(0, 10)}...${ex.transactionHash.slice(-4)}` : ex.transactionHash,
+      fullId: ex.transactionHash,
+      asset: ex.asset,
+      route: ex.route,
+      volume: `${currencySymbol}${formattedVolume}`,
+      spread: `+${ex.spread}%`,
+      status: "Executed", // Since it's on-chain in subgraph, it's executed
+      time: formatTime(Number(ex.timestamp) * 1000), // convert subgraph seconds to MS
+      txHash: ex.transactionHash,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
 
-        {/* Header (Banner and badge removed as requested) */}
+        {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight text-foreground mb-3">
             Relayer Ledger
@@ -96,6 +109,26 @@ export default function LedgerPage() {
           <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed">
             Arbitrage execution logs, fetched directly from the Arc Testnet.
           </p>
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex gap-2 mb-6 bg-panel border border-borderLine p-1.5 rounded-2xl w-fit backdrop-blur-xl">
+          {(["ALL", "USDC", "EURC"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => {
+                setSelectedTab(tab);
+                setCurrentPage(1);
+              }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                selectedTab === tab
+                  ? "bg-foreground text-background shadow-sm"
+                  : "text-slate-500 hover:text-foreground hover:bg-slate-50/5 dark:hover:bg-white/5"
+              }`}
+            >
+              {tab === "ALL" ? "All Executions" : `${tab} Vault`}
+            </button>
+          ))}
         </div>
 
         {/* Table */}
@@ -134,7 +167,7 @@ export default function LedgerPage() {
                     <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors group">
                       <td className="px-6 py-5 whitespace-nowrap text-sm font-mono">
                         <a 
-                          href={`https://testnet.arcscan.app/tx/${item.fullId}`}
+                          href={`https://testnet.arcscan.app/tx/${item.txHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-accent hover:text-accentHover underline decoration-accent/20 hover:decoration-accent transition-all flex items-center gap-1 group/link text-left w-fit"
@@ -179,7 +212,7 @@ export default function LedgerPage() {
                 ) : (
                   <tr>
                     <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
-                      No recent executions found. Start the keeper with <code className="text-accent bg-accent/10 px-2 py-0.5 rounded font-mono text-xs">node keeper.js</code> to begin.
+                      No recent {selectedTab !== "ALL" ? selectedTab : ""} executions found.
                     </td>
                   </tr>
                 )}
@@ -188,7 +221,7 @@ export default function LedgerPage() {
           </div>
 
           {/* Pagination Controls */}
-          {executions.length > 0 && (
+          {filteredExecutions.length > 0 && (
             <div className="p-4 md:p-6 border-t border-borderLine flex flex-col sm:flex-row items-center justify-between gap-4 bg-black/5 dark:bg-white/5">
               <div className="flex items-center gap-2 text-sm text-slate-500 font-medium relative" ref={dropdownRef}>
                 <span>Show rows:</span>
