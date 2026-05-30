@@ -189,22 +189,23 @@ export default function ArbitrageApp() {
 
   // Active mapping based on selection
   const isUSDC = selectedAsset === "USDC";
+  const useSim = localConnected && !wagmiIsConnected;
 
   const activeBalance = isUSDC 
-    ? (localConnected ? simulationUsdcBalance : (usdcERC20Balance || BigInt(0))) 
-    : (localConnected ? simulationEurcBalance : (eurcERC20Balance || BigInt(0)));
+    ? (useSim ? simulationUsdcBalance : (usdcERC20Balance || BigInt(0))) 
+    : (useSim ? simulationEurcBalance : (eurcERC20Balance || BigInt(0)));
 
   const activeUserShares = isUSDC 
-    ? (localConnected ? simulationUserShares : (usdcUserShares || BigInt(0))) 
-    : (localConnected ? simulationEurcShares : (eurcUserShares || BigInt(0)));
+    ? (useSim ? simulationUserShares : (usdcUserShares || BigInt(0))) 
+    : (useSim ? simulationEurcShares : (eurcUserShares || BigInt(0)));
 
   const activeAllowance = isUSDC 
-    ? (localConnected ? simulationAllowance : (usdcAllowance || BigInt(0))) 
-    : (localConnected ? simulationEurcAllowance : (eurcAllowance || BigInt(0)));
+    ? (useSim ? simulationAllowance : (usdcAllowance || BigInt(0))) 
+    : (useSim ? simulationEurcAllowance : (eurcAllowance || BigInt(0)));
 
   const activeVaultAddress = isUSDC ? VAULT_ADDRESS : EURC_VAULT_ADDRESS;
   const activeAssetAddress = isUSDC ? USDC_ADDRESS : EURC_ADDRESS;
-  const activePendingState = localConnected ? simulationPending : isPending;
+  const activePendingState = useSim ? simulationPending : isPending;
 
   const needsApproval = depositAmount && (activeAllowance < parseUnits(depositAmount, 6));
 
@@ -213,7 +214,7 @@ export default function ArbitrageApp() {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
     
-    if (localConnected) {
+    if (useSim) {
       setSimulationPending(true);
       setTimeout(() => {
         if (isUSDC) setSimulationAllowance(amount);
@@ -237,7 +238,7 @@ export default function ArbitrageApp() {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
     
-    if (localConnected) {
+    if (useSim) {
       if (needsApproval) {
         await approveAsset();
         return;
@@ -279,7 +280,7 @@ export default function ArbitrageApp() {
     if (!withdrawShares) return;
     const sharesAmount = parseUnits(withdrawShares, 6);
 
-    if (localConnected) {
+    if (useSim) {
       setSimulationPending(true);
       setTimeout(() => {
         if (isUSDC) {
