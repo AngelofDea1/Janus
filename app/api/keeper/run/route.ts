@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { initiateDeveloperControlledWalletsClient } from "@circle-fin/developer-controlled-wallets";
 
 const PROFIT_THRESHOLD = 0.0005; // 0.05% minimum spread to execute
+const ARC_USDC = "0x3600000000000000000000000000000000000000";
 const ARC_EURC = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a";
 const EURC_VAULT = "0xb8d81f1874fe9679a5512ad3acfc22755498b153";
 
