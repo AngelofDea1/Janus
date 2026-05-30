@@ -54,12 +54,29 @@ function RainbowThemeWrapper({ children }: { children: React.ReactNode }) {
     fontStack: 'system',
   });
 
-  const customDarkTheme = darkTheme({
-    accentColor: '#ffffff',
-    accentColorForeground: '#0f172a',
-    borderRadius: 'large',
-    fontStack: 'system',
-  });
+  const customDarkTheme = {
+    ...darkTheme({
+      accentColor: '#ffffff',
+      accentColorForeground: '#0f172a',
+      borderRadius: 'large',
+      fontStack: 'system',
+    }),
+    colors: {
+      ...darkTheme().colors,
+      modalText: '#ffffff',
+      modalTextSecondary: '#94a3b8',
+      closeButton: '#ffffff',
+      closeButtonBackground: 'rgba(255,255,255,0.1)',
+      actionButtonText: '#ffffff',
+      actionButtonSecondaryText: '#e2e8f0',
+      modalBackground: '#1a1a2e',
+      modalBorder: 'rgba(255,255,255,0.08)',
+      generalBorder: 'rgba(255,255,255,0.08)',
+      menuItemBackground: 'rgba(255,255,255,0.06)',
+      connectButtonText: '#ffffff',
+      connectButtonBackground: '#1a1a2e',
+    },
+  };
 
   // Default to dark theme on server/hydration, switch dynamically on client mount
   const activeTheme = mounted && resolvedTheme === 'light' ? customLightTheme : customDarkTheme;
