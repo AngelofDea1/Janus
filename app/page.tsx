@@ -8,7 +8,7 @@ import AssetLogo from "@/components/AssetLogo";
 
 import { useReadContract } from "wagmi";
 import { formatUnits } from "viem";
-import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
+import { VAULT_ADDRESS, EURC_VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 
 // Exchange logo components for the live feed
 const BinanceLogo = () => (
@@ -58,14 +58,24 @@ export default function Home() {
     chainId: 5042002,
   });
 
-  const { data: totalAssets } = useReadContract({
+  const { data: totalAssetsUsdc } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "totalAssets",
     chainId: 5042002,
   });
 
-  const tvlVal = totalAssets ? parseFloat(formatUnits(totalAssets, 6)) : 0;
+  const { data: totalAssetsEurc } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalAssets",
+    chainId: 5042002,
+  });
+
+  const EUR_USD_RATE = 1.08;
+  const usdcVal = totalAssetsUsdc ? parseFloat(formatUnits(totalAssetsUsdc, 6)) : 0;
+  const eurcVal = totalAssetsEurc ? parseFloat(formatUnits(totalAssetsEurc, 6)) : 0;
+  const tvlVal = usdcVal + (eurcVal * EUR_USD_RATE);
   const apyVal = estimatedAPY ? Number(estimatedAPY) / 100 : 24.5;
 
   // Fetch live feed data — tries real keeper executions first, falls back to funding rates

@@ -12,7 +12,7 @@ import {
   ResponsiveContainer 
 } from "recharts";
 import { Activity } from "lucide-react";
-import { VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
+import { VAULT_ADDRESS, EURC_VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 import ProfitCalculator from "@/components/ProfitCalculator";
 import MarketMonitor from "@/components/MarketMonitor";
 
@@ -60,7 +60,7 @@ export default function AnalyticsDashboard() {
     query: { refetchInterval: 2000 },
   });
 
-  const { data: totalAssets } = useReadContract({
+  const { data: totalAssetsUsdc } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "totalAssets",
@@ -68,7 +68,15 @@ export default function AnalyticsDashboard() {
     query: { refetchInterval: 2000 },
   });
 
-  const { data: totalSupply } = useReadContract({
+  const { data: totalAssetsEurc } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalAssets",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
+
+  const { data: totalSupplyUsdc } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "totalSupply",
@@ -76,9 +84,24 @@ export default function AnalyticsDashboard() {
     query: { refetchInterval: 2000 },
   });
 
-  const formatLargeNumber = (value: bigint | undefined) => {
-    if (!value || value === BigInt(0)) return "4.00"; // Fallback to initial deposit
-    const num = parseFloat(formatUnits(value, 6));
+  const { data: totalSupplyEurc } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalSupply",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
+
+  const EUR_USD_RATE = 1.08;
+  const usdcVal = totalAssetsUsdc ? parseFloat(formatUnits(totalAssetsUsdc, 6)) : 0;
+  const eurcVal = totalAssetsEurc ? parseFloat(formatUnits(totalAssetsEurc, 6)) : 0;
+  const combinedAssetsVal = usdcVal + (eurcVal * EUR_USD_RATE);
+
+  const combinedSharesVal = (totalSupplyUsdc ? parseFloat(formatUnits(totalSupplyUsdc, 6)) : 0) + 
+                            (totalSupplyEurc ? parseFloat(formatUnits(totalSupplyEurc, 6)) : 0);
+
+  const formatLargeFloat = (num: number) => {
+    if (!num || num === 0) return "0.00";
     if (num >= 1000000) return (num / 1000000).toFixed(2) + "M";
     if (num >= 1000) return (num / 1000).toFixed(2) + "K";
     return num.toFixed(2);
@@ -126,7 +149,7 @@ export default function AnalyticsDashboard() {
               Total TVL
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
-              ${formatLargeNumber(totalAssets as bigint | undefined)}
+              ${formatLargeFloat(combinedAssetsVal)}
             </div>
           </div>
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
@@ -134,7 +157,7 @@ export default function AnalyticsDashboard() {
               Active Keepers
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
-              {totalAssets && totalAssets > BigInt(0) ? "24" : "24"}
+              {combinedAssetsVal > 0 ? "24" : "24"}
             </div>
           </div>
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
@@ -142,7 +165,7 @@ export default function AnalyticsDashboard() {
               Vault Shares
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
-              {formatLargeNumber(totalSupply as bigint | undefined)}
+              {formatLargeFloat(combinedSharesVal)}
             </div>
           </div>
         </div>
