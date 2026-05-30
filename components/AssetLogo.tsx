@@ -71,7 +71,9 @@ const STATIC_OVERRIDES: Record<string, string> = {
   "LINK": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/link.png",
   "UNI": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/uni.png",
   "LDO": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/ldo.png",
-  "AAVE": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/aave.png"
+  "AAVE": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/aave.png",
+  "EURC": "https://assets.coingecko.com/coins/images/28169/large/eurc.png",
+  "EUR": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/eur.png"
 };
 
 // Custom overrides for obscure tokens used by the keeper or live simulation data to prevent mismatches

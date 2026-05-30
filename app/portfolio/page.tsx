@@ -16,6 +16,7 @@ import {
 import { VAULT_ADDRESS, EURC_VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 import Link from "next/link";
 import { fetchGraphQL, GET_USER_ACTIVITY } from "@/lib/graphql";
+import AssetLogo from "@/components/AssetLogo";
 
 interface TransactionActivity {
   id: string;
@@ -262,9 +263,7 @@ export default function PortfolioDashboard() {
           <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center font-bold text-emerald-500 text-lg">
-                  $
-                </div>
+                <AssetLogo asset="USDC" size={40} className="w-10 h-10 rounded-full shadow-sm" />
                 <div>
                   <h3 className="font-bold text-lg leading-tight">USDC Savings Vault</h3>
                   <p className="text-xs text-slate-500 font-semibold font-mono">{VAULT_ADDRESS.slice(0, 6)}...{VAULT_ADDRESS.slice(-4)}</p>
@@ -300,9 +299,7 @@ export default function PortfolioDashboard() {
           <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center font-bold text-blue-500 text-lg">
-                  €
-                </div>
+                <AssetLogo asset="EURC" size={40} className="w-10 h-10 rounded-full shadow-sm" />
                 <div>
                   <h3 className="font-bold text-lg leading-tight">EURC Savings Vault</h3>
                   <p className="text-xs text-slate-500 font-semibold font-mono">{EURC_VAULT_ADDRESS.slice(0, 6)}...{EURC_VAULT_ADDRESS.slice(-4)}</p>
