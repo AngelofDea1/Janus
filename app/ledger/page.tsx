@@ -16,6 +16,7 @@ interface ArbitrageExecution {
   yieldHarvested: string;
   timestamp: string;
   transactionHash: string;
+  status?: string;
 }
 
 export default function LedgerPage() {
@@ -38,19 +39,28 @@ export default function LedgerPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch real execution data from Goldsky
+  // Fetch real execution data from our local API route (which handles keeper database, RPC logs, and simulators)
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await fetchGraphQL<{ arbitrageExecutions: ArbitrageExecution[] }>(
-          GET_LATEST_ARBITRAGE_EXECUTIONS,
-          { first: 100 }
-        );
-        if (data?.arbitrageExecutions) {
-          setExecutions(data.arbitrageExecutions);
+        const res = await fetch("/api/executions");
+        const json = await res.json();
+        if (json.success && json.executions) {
+          const mapped = json.executions.map((ex: any) => ({
+            id: ex.id,
+            asset: ex.asset,
+            route: ex.route,
+            volume: String(ex.volume),
+            spread: String(ex.spread).replace("+", "").replace("%", ""),
+            yieldHarvested: String(ex.yieldAmount || 0),
+            timestamp: String(Math.floor(ex.timestamp / 1000)), // convert milliseconds to seconds
+            transactionHash: ex.id,
+            status: ex.status,
+          }));
+          setExecutions(mapped);
         }
       } catch (err) {
-        console.error("Failed to fetch Goldsky data:", err);
+        console.error("Failed to fetch executions:", err);
       } finally {
         setLoading(false);
       }
@@ -90,7 +100,7 @@ export default function LedgerPage() {
     const assetName = getAssetDisplayName(ex.asset);
     const isEurc = assetName === "EURC";
     const currencySymbol = isEurc ? "€" : "$";
-    const formattedVolume = parseFloat(formatUnits(BigInt(ex.volume), 6)).toLocaleString(undefined, { minimumFractionDigits: 2 });
+    const formattedVolume = (parseFloat(ex.volume) || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
     return {
       displayId: ex.transactionHash.length > 20 ? `${ex.transactionHash.slice(0, 10)}...${ex.transactionHash.slice(-4)}` : ex.transactionHash,
@@ -99,8 +109,8 @@ export default function LedgerPage() {
       route: ex.route,
       volume: `${currencySymbol}${formattedVolume}`,
       spread: `+${ex.spread}%`,
-      status: "Executed", // Since it's on-chain in subgraph, it's executed
-      time: formatTime(Number(ex.timestamp) * 1000), // convert subgraph seconds to MS
+      status: ex.status || "Executed", 
+      time: formatTime(Number(ex.timestamp) * 1000), 
       txHash: ex.transactionHash,
     };
   });
