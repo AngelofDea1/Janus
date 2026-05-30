@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import AssetLogo from "@/components/AssetLogo";
 import ConnectWallet from "@/components/ConnectWallet";
-import { VAULT_ADDRESS, USDC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
+import { VAULT_ADDRESS, USDC_ADDRESS, EURC_VAULT_ADDRESS, EURC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
 
 export default function ArbitrageApp() {
   const [depositAmount, setDepositAmount] = useState("");
@@ -98,7 +98,8 @@ export default function ArbitrageApp() {
 
   const [simulationIsPending, setSimulationIsPending] = useState(false);
 
-  const { data: totalAssets } = useReadContract({
+  // USDC contract reads
+  const { data: usdcTotalAssets } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "totalAssets",
@@ -106,7 +107,7 @@ export default function ArbitrageApp() {
     query: { refetchInterval: 2000 },
   });
 
-  const { data: estimatedAPY } = useReadContract({
+  const { data: usdcEstimatedAPY } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "estimatedAPY",
@@ -114,7 +115,7 @@ export default function ArbitrageApp() {
     query: { refetchInterval: 2000 },
   });
 
-  const { data: userShares } = useReadContract({
+  const { data: usdcUserShares } = useReadContract({
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "balanceOf",
@@ -141,50 +142,81 @@ export default function ArbitrageApp() {
     query: { refetchInterval: 2000 },
   });
 
-  // Dynamic variable mapping based on active token selection
-  const usdcBalance = usdcERC20Balance || BigInt(0);
+  // EURC contract reads
+  const { data: eurcTotalAssets } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "totalAssets",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
-  const isRealUSDC = !isMockMode && selectedAsset === "USDC";
-  
-  const activeBalance = isRealUSDC 
-    ? usdcBalance 
-    : (selectedAsset === "USDC" ? simulationUsdcBalance : simulationEurcBalance);
+  const { data: eurcEstimatedAPY } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "estimatedAPY",
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
-  const activeUserShares = isRealUSDC 
-    ? userShares 
-    : (selectedAsset === "USDC" ? simulationUserShares : simulationEurcShares);
+  const { data: eurcUserShares } = useReadContract({
+    address: EURC_VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
-  const activeAllowance = isRealUSDC 
-    ? usdcAllowance 
-    : (selectedAsset === "USDC" ? simulationAllowance : simulationEurcAllowance);
+  const { data: eurcERC20Balance } = useReadContract({
+    address: EURC_ADDRESS,
+    abi: USDC_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
 
-  const activePendingState = isRealUSDC ? isPending : simulationIsPending;
+  const { data: eurcAllowance } = useReadContract({
+    address: EURC_ADDRESS,
+    abi: USDC_ABI,
+    functionName: "allowance",
+    args: address ? [address, EURC_VAULT_ADDRESS] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 2000 },
+  });
+
+  // Active mapping based on selection
+  const isUSDC = selectedAsset === "USDC";
+
+  const activeBalance = isUSDC 
+    ? (usdcERC20Balance || BigInt(0)) 
+    : (eurcERC20Balance || BigInt(0));
+
+  const activeUserShares = isUSDC 
+    ? (usdcUserShares || BigInt(0)) 
+    : (eurcUserShares || BigInt(0));
+
+  const activeAllowance = isUSDC 
+    ? (usdcAllowance || BigInt(0)) 
+    : (eurcAllowance || BigInt(0));
+
+  const activeVaultAddress = isUSDC ? VAULT_ADDRESS : EURC_VAULT_ADDRESS;
+  const activeAssetAddress = isUSDC ? USDC_ADDRESS : EURC_ADDRESS;
+  const activePendingState = isPending;
 
   // Transaction Handlers
   const approveAsset = async () => {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
     
-    if (!isRealUSDC) {
-      setSimulationIsPending(true);
-      setTimeout(() => {
-        if (selectedAsset === "USDC") {
-          setSimulationAllowance(amount);
-        } else {
-          setSimulationEurcAllowance(amount);
-        }
-        setSimulationIsPending(false);
-      }, 1000);
-      return;
-    }
-    
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
     writeContract({
-      address: USDC_ADDRESS,
+      address: activeAssetAddress,
       abi: USDC_ABI,
       functionName: "approve",
-      args: [VAULT_ADDRESS, amount],
+      args: [activeVaultAddress, amount],
     });
   };
 
@@ -192,27 +224,6 @@ export default function ArbitrageApp() {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
     
-    if (!isRealUSDC) {
-      setSimulationIsPending(true);
-      setTimeout(() => {
-        if (selectedAsset === "USDC") {
-          if (simulationUsdcBalance >= amount) {
-            setSimulationUsdcBalance((prev) => prev - amount);
-            setSimulationUserShares((prev) => prev + amount); 
-            setDepositAmount("");
-          }
-        } else {
-          if (simulationEurcBalance >= amount) {
-            setSimulationEurcBalance((prev) => prev - amount);
-            setSimulationEurcShares((prev) => prev + amount); 
-            setDepositAmount("");
-          }
-        }
-        setSimulationIsPending(false);
-      }, 1200);
-      return;
-    }
-
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
 
@@ -222,7 +233,7 @@ export default function ArbitrageApp() {
     }
 
     writeContract({
-      address: VAULT_ADDRESS,
+      address: activeVaultAddress,
       abi: VAULT_ABI,
       functionName: "deposit",
       args: [amount, address!],
@@ -233,32 +244,11 @@ export default function ArbitrageApp() {
     if (!withdrawShares) return;
     const sharesAmount = parseUnits(withdrawShares, 6);
 
-    if (!isRealUSDC) {
-      setSimulationIsPending(true);
-      setTimeout(() => {
-        if (selectedAsset === "USDC") {
-          if (simulationUserShares >= sharesAmount) {
-            setSimulationUserShares((prev) => prev - sharesAmount);
-            setSimulationUsdcBalance((prev) => prev + sharesAmount);
-            setWithdrawShares("");
-          }
-        } else {
-          if (simulationEurcShares >= sharesAmount) {
-            setSimulationEurcShares((prev) => prev - sharesAmount);
-            setSimulationEurcBalance((prev) => prev + sharesAmount);
-            setWithdrawShares("");
-          }
-        }
-        setSimulationIsPending(false);
-      }, 1200);
-      return;
-    }
-
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
 
     writeContract({
-      address: VAULT_ADDRESS,
+      address: activeVaultAddress,
       abi: VAULT_ABI,
       functionName: "withdraw",
       args: [sharesAmount, address!, address!],
@@ -568,7 +558,9 @@ export default function ArbitrageApp() {
               Live APY
             </span>
             <span className="font-semibold text-emerald-500">
-              {estimatedAPY ? (Number(estimatedAPY) / 100).toFixed(2) : "32.40"}%
+              {isUSDC 
+                ? (usdcEstimatedAPY ? (Number(usdcEstimatedAPY) / 100).toFixed(2) : "32.40")
+                : (eurcEstimatedAPY ? (Number(eurcEstimatedAPY) / 100).toFixed(2) : "28.60")}%
             </span>
           </div>
           <div className="flex justify-between py-2 border-b border-borderLine/50">
@@ -581,7 +573,9 @@ export default function ArbitrageApp() {
             <span className="text-slate-500 flex items-center gap-1">
               Contract Validated <Shield className="w-3 h-3" />
             </span>
-            <span className="font-mono text-xs text-foreground bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">0x8004...BD9e</span>
+            <span className="font-mono text-xs text-foreground bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">
+              {activeVaultAddress.slice(0, 6)}...{activeVaultAddress.slice(-4)}
+            </span>
           </div>
         </div>
 

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { initiateDeveloperControlledWalletsClient } from "@circle-fin/developer-controlled-wallets";
 
 const PROFIT_THRESHOLD = 0.0005; // 0.05% minimum spread to execute
-const ARC_USDC = "0x3600000000000000000000000000000000000000";
+const ARC_EURC = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a";
+const EURC_VAULT = "0xb8d81f1874fe9679a5512ad3acfc22755498b153";
 
 const REAL_TX_HASHES = [
   "0xf18d23bf41f392b2019bc779576d4ccdbc44339752676a8db82b9624155e4387",
@@ -146,10 +147,9 @@ export async function POST(req: Request) {
     const apiKey = process.env.CIRCLE_API_KEY;
     const entitySecret = process.env.CIRCLE_ENTITY_SECRET;
     const walletId = process.env.WALLET_ID;
-    const walletAddress = process.env.WALLET_ADDRESS;
-    const contractAddress = process.env.CONTRACT_ADDRESS;
+    const usdcVault = process.env.CONTRACT_ADDRESS;
 
-    if (!apiKey || !entitySecret || !walletId || !contractAddress) {
+    if (!apiKey || !entitySecret || !walletId || !usdcVault) {
       return NextResponse.json({ error: "Missing keeper configurations in server environment." }, { status: 500 });
     }
 
@@ -208,50 +208,109 @@ export async function POST(req: Request) {
     opportunities.sort((a, b) => b.spread - a.spread);
     const bestOpp = opportunities[0];
 
-    // 4. Initialize Circle SDK and Execute Arbitrage
+    // 4. Initialize Circle SDK
     const circleClient = initiateDeveloperControlledWalletsClient({ apiKey, entitySecret });
-    const tvl = await fetchVaultTotalAssets(contractAddress);
-    const estimatedVolume = tvl;
-    const spreadFraction = parseFloat(bestOpp.spread) / 100;
-    const yieldAmountFloat = estimatedVolume * spreadFraction;
-    const arbitrageYieldAmount = String(Math.max(1, Math.floor(yieldAmountFloat * 1e6)));
+    const results: any[] = [];
 
-    // Approve TX
-    const approveTx = await circleClient.createContractExecutionTransaction({
-      walletId,
-      abiFunctionSignature: "approve(address,uint256)",
-      abiParameters: [contractAddress, arbitrageYieldAmount],
-      contractAddress: ARC_USDC,
-      fee: { type: "level", config: { feeLevel: "MEDIUM" } }
-    });
+    // --- USDC Vault Arbitrage Execution ---
+    try {
+      const usdcTvl = await fetchVaultTotalAssets(usdcVault);
+      const usdcVolume = usdcTvl;
+      const usdcSpreadFraction = parseFloat(bestOpp.spread) / 100;
+      const usdcYieldFloat = usdcVolume * usdcSpreadFraction;
+      const usdcYieldWei = String(Math.max(1, Math.floor(usdcYieldFloat * 1e6)));
 
-    // Wait a brief period for approve to process before dispatching harvest
-    await new Promise(r => setTimeout(r, 4000));
+      // Approve USDC
+      const approveUsdc = await circleClient.createContractExecutionTransaction({
+        walletId,
+        abiFunctionSignature: "approve(address,uint256)",
+        abiParameters: [usdcVault, usdcYieldWei],
+        contractAddress: ARC_USDC,
+        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+      });
 
-    // Harvest TX
-    const harvestTx = await circleClient.createContractExecutionTransaction({
-      walletId,
-      abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
-      abiParameters: [
-        arbitrageYieldAmount,
-        bestOpp.asset,
-        bestOpp.route,
-        String(Math.floor(estimatedVolume * 1e6)),
-        bestOpp.spreadPct
-      ],
-      contractAddress,
-      fee: { type: "level", config: { feeLevel: "MEDIUM" } }
-    });
+      // Harvest USDC Vault Yield
+      const harvestUsdc = await circleClient.createContractExecutionTransaction({
+        walletId,
+        abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
+        abiParameters: [
+          usdcYieldWei,
+          bestOpp.asset,
+          bestOpp.route,
+          String(Math.floor(usdcVolume * 1e6)),
+          bestOpp.spreadPct
+        ],
+        contractAddress: usdcVault,
+        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+      });
+
+      results.push({
+        vault: "USDC",
+        opportunity: bestOpp.asset,
+        route: bestOpp.route,
+        spread: `${bestOpp.spreadPct}%`,
+        approveTxId: approveUsdc.data?.id,
+        harvestTxId: harvestUsdc.data?.id,
+        volume: usdcVolume,
+        yieldAmount: parseFloat((Number(usdcYieldWei) / 1e6).toFixed(6))
+      });
+    } catch (e: any) {
+      results.push({ vault: "USDC", status: "failed", error: e.message });
+    }
+
+    // Delay 3 seconds between the vault harvests to avoid nonce collisions in Circle Wallet client
+    await new Promise(r => setTimeout(r, 3000));
+
+    // --- EURC Vault Arbitrage Execution ---
+    try {
+      const eurcTvl = await fetchVaultTotalAssets(EURC_VAULT);
+      const eurcVolume = eurcTvl;
+      const eurcSpreadFraction = parseFloat(bestOpp.spread) / 100;
+      const eurcYieldFloat = eurcVolume * eurcSpreadFraction;
+      const eurcYieldWei = String(Math.max(1, Math.floor(eurcYieldFloat * 1e6)));
+
+      // Approve EURC
+      const approveEurc = await circleClient.createContractExecutionTransaction({
+        walletId,
+        abiFunctionSignature: "approve(address,uint256)",
+        abiParameters: [EURC_VAULT, eurcYieldWei],
+        contractAddress: ARC_EURC,
+        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+      });
+
+      // Harvest EURC Vault Yield
+      const harvestEurc = await circleClient.createContractExecutionTransaction({
+        walletId,
+        abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
+        abiParameters: [
+          eurcYieldWei,
+          bestOpp.asset,
+          bestOpp.route,
+          String(Math.floor(eurcVolume * 1e6)),
+          bestOpp.spreadPct
+        ],
+        contractAddress: EURC_VAULT,
+        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+      });
+
+      results.push({
+        vault: "EURC",
+        opportunity: bestOpp.asset,
+        route: bestOpp.route,
+        spread: `${bestOpp.spreadPct}%`,
+        approveTxId: approveEurc.data?.id,
+        harvestTxId: harvestEurc.data?.id,
+        volume: eurcVolume,
+        yieldAmount: parseFloat((Number(eurcYieldWei) / 1e6).toFixed(6))
+      });
+    } catch (e: any) {
+      results.push({ vault: "EURC", status: "failed", error: e.message });
+    }
 
     return NextResponse.json({
       status: "success",
-      opportunity: bestOpp.asset,
-      route: bestOpp.route,
-      spread: `${bestOpp.spreadPct}%`,
-      approveTxId: approveTx.data?.id,
-      harvestTxId: harvestTx.data?.id,
-      volume: estimatedVolume,
-      yieldAmount: parseFloat((Number(arbitrageYieldAmount) / 1e6).toFixed(6))
+      timestamp: Date.now(),
+      results
     });
 
   } catch (error: any) {
