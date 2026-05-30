@@ -40,10 +40,10 @@ export default function PortfolioDashboard() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
-      const savedAddress = localStorage.getItem("janus_wallet_address") || "";
-      setLocalConnected(savedConnected);
-      setLocalAddress(savedAddress);
+      localStorage.setItem("janus_wallet_connected", "false");
+      localStorage.setItem("janus_wallet_address", "");
+      setLocalConnected(false);
+      setLocalAddress("");
     }
   }, []);
 

@@ -34,19 +34,15 @@ export default function ArbitrageApp() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      if (localStorage.getItem("janus_wallet_connected") === null) {
-        localStorage.setItem("janus_wallet_connected", "true");
-        localStorage.setItem("janus_wallet_address", "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57");
-      }
-      const savedConnected = localStorage.getItem("janus_wallet_connected") === "true";
-      const savedAddress = localStorage.getItem("janus_wallet_address") || "0x9c65798e4d3f57ab7904e5784f185c798e4d3f57";
-      setLocalConnected(savedConnected);
-      setLocalAddress(savedAddress);
+      localStorage.setItem("janus_wallet_connected", "false");
+      localStorage.setItem("janus_wallet_address", "");
+      setLocalConnected(false);
+      setLocalAddress("");
     }
   }, []);
 
   const isConnected = wagmiIsConnected || localConnected;
-  const address = wagmiAddress || (localAddress as `0x${string}`);
+  const address = wagmiAddress || (localAddress ? (localAddress as `0x${string}`) : undefined);
 
   const [simulationPending, setSimulationPending] = useState(false);
   const { writeContract, data: hash, isPending } = useWriteContract();

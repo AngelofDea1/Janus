@@ -161,6 +161,10 @@ export default function ConnectWallet() {
                   <button
                     onClick={() => {
                       disconnect();
+                      if (typeof window !== "undefined") {
+                        localStorage.setItem("janus_wallet_connected", "false");
+                        localStorage.setItem("janus_wallet_address", "");
+                      }
                       setIsOpen(false);
                     }}
                     className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium py-4 rounded-2xl transition-colors"
