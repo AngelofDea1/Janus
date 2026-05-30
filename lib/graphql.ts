@@ -56,3 +56,22 @@ export const GET_VAULT_METRICS = `
     }
   }
 `;
+
+export const GET_USER_ACTIVITY = `
+  query GetUserActivity($owner: Bytes!) {
+    deposits(where: { owner: $owner }, orderBy: timestamp, orderDirection: desc, first: 50) {
+      id
+      assets
+      shares
+      timestamp
+      transactionHash
+    }
+    withdraws(where: { owner: $owner }, orderBy: timestamp, orderDirection: desc, first: 50) {
+      id
+      assets
+      shares
+      timestamp
+      transactionHash
+    }
+  }
+`;
