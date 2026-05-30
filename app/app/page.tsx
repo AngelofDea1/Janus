@@ -45,9 +45,10 @@ export default function ArbitrageApp() {
     }
   }, []);
 
-  const isConnected = wagmiIsConnected;
-  const address = wagmiAddress;
+  const isConnected = wagmiIsConnected || localConnected;
+  const address = wagmiAddress || (localAddress as `0x${string}`);
 
+  const [simulationPending, setSimulationPending] = useState(false);
   const { writeContract, data: hash, isPending } = useWriteContract();
   const publicClient = usePublicClient({ chainId: 5042002 });
   const { switchChainAsync } = useSwitchChain();
@@ -190,25 +191,37 @@ export default function ArbitrageApp() {
   const isUSDC = selectedAsset === "USDC";
 
   const activeBalance = isUSDC 
-    ? (usdcERC20Balance || BigInt(0)) 
-    : (eurcERC20Balance || BigInt(0));
+    ? (localConnected ? simulationUsdcBalance : (usdcERC20Balance || BigInt(0))) 
+    : (localConnected ? simulationEurcBalance : (eurcERC20Balance || BigInt(0)));
 
   const activeUserShares = isUSDC 
-    ? (usdcUserShares || BigInt(0)) 
-    : (eurcUserShares || BigInt(0));
+    ? (localConnected ? simulationUserShares : (usdcUserShares || BigInt(0))) 
+    : (localConnected ? simulationEurcShares : (eurcUserShares || BigInt(0)));
 
   const activeAllowance = isUSDC 
-    ? (usdcAllowance || BigInt(0)) 
-    : (eurcAllowance || BigInt(0));
+    ? (localConnected ? simulationAllowance : (usdcAllowance || BigInt(0))) 
+    : (localConnected ? simulationEurcAllowance : (eurcAllowance || BigInt(0)));
 
   const activeVaultAddress = isUSDC ? VAULT_ADDRESS : EURC_VAULT_ADDRESS;
   const activeAssetAddress = isUSDC ? USDC_ADDRESS : EURC_ADDRESS;
-  const activePendingState = isPending;
+  const activePendingState = localConnected ? simulationPending : isPending;
+
+  const needsApproval = depositAmount && (activeAllowance < parseUnits(depositAmount, 6));
 
   // Transaction Handlers
   const approveAsset = async () => {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
+    
+    if (localConnected) {
+      setSimulationPending(true);
+      setTimeout(() => {
+        if (isUSDC) setSimulationAllowance(amount);
+        else setSimulationEurcAllowance(amount);
+        setSimulationPending(false);
+      }, 1000);
+      return;
+    }
     
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
@@ -224,6 +237,28 @@ export default function ArbitrageApp() {
     if (!depositAmount) return;
     const amount = parseUnits(depositAmount, 6);
     
+    if (localConnected) {
+      if (needsApproval) {
+        await approveAsset();
+        return;
+      }
+      setSimulationPending(true);
+      setTimeout(() => {
+        if (isUSDC) {
+          setSimulationUsdcBalance(prev => prev - amount);
+          setSimulationUserShares(prev => prev + amount);
+          setSimulationAllowance(BigInt(0));
+        } else {
+          setSimulationEurcBalance(prev => prev - amount);
+          setSimulationEurcShares(prev => prev + amount);
+          setSimulationEurcAllowance(BigInt(0));
+        }
+        setDepositAmount("");
+        setSimulationPending(false);
+      }, 1500);
+      return;
+    }
+
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
 
@@ -243,6 +278,22 @@ export default function ArbitrageApp() {
   const handleWithdraw = async () => {
     if (!withdrawShares) return;
     const sharesAmount = parseUnits(withdrawShares, 6);
+
+    if (localConnected) {
+      setSimulationPending(true);
+      setTimeout(() => {
+        if (isUSDC) {
+          setSimulationUsdcBalance(prev => prev + sharesAmount);
+          setSimulationUserShares(prev => prev - sharesAmount);
+        } else {
+          setSimulationEurcBalance(prev => prev + sharesAmount);
+          setSimulationEurcShares(prev => prev - sharesAmount);
+        }
+        setWithdrawShares("");
+        setSimulationPending(false);
+      }, 1500);
+      return;
+    }
 
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;

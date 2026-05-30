@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
-import { 
-  Wallet, 
-  Activity, 
+import {
+  Wallet,
+  Activity,
   TrendingUp,
   PieChart,
   History,
@@ -32,7 +32,7 @@ export default function PortfolioDashboard() {
   const [localConnected, setLocalConnected] = useState(false);
   const [localAddress, setLocalAddress] = useState("");
   const [mounted, setMounted] = useState(false);
-  
+
   const [history, setHistory] = useState<TransactionActivity[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
@@ -69,7 +69,7 @@ export default function PortfolioDashboard() {
             ...(data.deposits || []).map(d => ({ ...d, type: "Deposit" as const })),
             ...(data.withdraws || []).map(w => ({ ...w, type: "Withdraw" as const }))
           ];
-          
+
           // Sort by timestamp descending
           merged.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
           setHistory(merged);
@@ -161,7 +161,7 @@ export default function PortfolioDashboard() {
           <p className="text-slate-500 mb-8">
             Connect your wallet to view your personalized Janus portfolio, current TVL, and yield projections.
           </p>
-          <Link 
+          <Link
             href="/app"
             className="w-full inline-flex justify-center items-center py-4 rounded-2xl bg-foreground text-background font-bold shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90 transition-all"
           >
@@ -206,13 +206,13 @@ export default function PortfolioDashboard() {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground transition-colors py-32 overflow-hidden flex justify-center">
-      
+
       {/* Background Mesh */}
       <div className="absolute top-[10%] left-[10%] w-[30%] h-[40%] rounded-full bg-emerald-500/5 dark:bg-emerald-500/10 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[10%] w-[40%] h-[30%] rounded-full bg-accent/5 dark:bg-accent/10 blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-6xl px-4 md:px-6">
-        
+
         {/* Header */}
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
@@ -220,7 +220,7 @@ export default function PortfolioDashboard() {
               Your Portfolio
             </h1>
           </div>
-          <Link 
+          <Link
             href="/app"
             className="hidden md:flex px-6 py-3 rounded-xl bg-foreground text-background font-bold items-center gap-2 shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90 transition-all"
           >
@@ -230,7 +230,7 @@ export default function PortfolioDashboard() {
 
         {/* Mobile Sticky CTA */}
         <div className="fixed bottom-0 left-0 w-full p-4 bg-background/90 backdrop-blur-xl border-t border-borderLine z-50 md:hidden pb-safe">
-          <Link 
+          <Link
             href="/app"
             className="w-full px-6 py-4 rounded-2xl bg-foreground text-background font-bold flex items-center justify-center gap-2 shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90 transition-all text-lg"
           >
@@ -257,7 +257,7 @@ export default function PortfolioDashboard() {
 
         {/* Dual Vault Positions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          
+
           {/* USDC Vault Card */}
           <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
             <div className="flex justify-between items-center mb-6">
@@ -270,14 +270,13 @@ export default function PortfolioDashboard() {
                   <p className="text-xs text-slate-500 font-semibold font-mono">{VAULT_ADDRESS.slice(0, 6)}...{VAULT_ADDRESS.slice(-4)}</p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full">Active</span>
             </div>
 
             <div className="mb-6">
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Your Balance</div>
               <div className="text-3xl font-bold font-mono text-foreground">${formatNumber(userValueUsdc)}</div>
               <div className="text-xs text-slate-500 font-medium mt-1">
-                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesUsdc)}</span> USV
+                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesUsdc)}</span> Janus USDC Shares
               </div>
             </div>
 
@@ -309,14 +308,13 @@ export default function PortfolioDashboard() {
                   <p className="text-xs text-slate-500 font-semibold font-mono">{EURC_VAULT_ADDRESS.slice(0, 6)}...{EURC_VAULT_ADDRESS.slice(-4)}</p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full">Active</span>
             </div>
 
             <div className="mb-6">
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Your Balance</div>
               <div className="text-3xl font-bold font-mono text-foreground">€{formatNumber(userValueEurc)}</div>
               <div className="text-xs text-slate-500 font-medium mt-1">
-                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesEurc)}</span> ESV
+                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesEurc)}</span> Janus EURC Shares
               </div>
             </div>
 
@@ -372,7 +370,7 @@ export default function PortfolioDashboard() {
               Recent Activity
             </div>
           </div>
-          
+
           {loadingHistory ? (
             <div className="text-center py-12 animate-pulse flex flex-col items-center">
               <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin mb-4" />
@@ -399,11 +397,10 @@ export default function PortfolioDashboard() {
                     return (
                       <tr key={tx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
                         <td className="py-4 font-medium">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                            tx.type === "Deposit" 
-                              ? "bg-emerald-500/10 text-emerald-500" 
-                              : "bg-amber-500/10 text-amber-500"
-                          }`}>
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${tx.type === "Deposit"
+                            ? "bg-emerald-500/10 text-emerald-500"
+                            : "bg-amber-500/10 text-amber-500"
+                            }`}>
                             {tx.type}
                           </span>
                         </td>
@@ -415,7 +412,7 @@ export default function PortfolioDashboard() {
                           {formatNumber(BigInt(tx.shares))}
                         </td>
                         <td className="py-4 text-right">
-                          <a 
+                          <a
                             href={`https://testnet.arcscan.app/tx/${tx.transactionHash}`}
                             target="_blank"
                             rel="noopener noreferrer"

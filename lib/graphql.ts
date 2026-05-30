@@ -1,4 +1,4 @@
-export const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.2/gn";
+export const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.3/gn";
 
 /**
  * Native fetcher for Goldsky GraphQL Subgraphs
@@ -42,6 +42,7 @@ export const GET_LATEST_ARBITRAGE_EXECUTIONS = `
       yieldHarvested
       timestamp
       transactionHash
+      vault
     }
   }
 `;

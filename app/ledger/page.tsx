@@ -60,10 +60,17 @@ export default function LedgerPage() {
     return () => clearInterval(interval);
   }, []);
 
+  const getAssetDisplayName = (asset: string) => {
+    const upper = asset.toUpperCase();
+    if (upper === 'USV') return 'USDC';
+    if (upper === 'ESV') return 'EURC';
+    return upper;
+  };
+
   // Filter executions based on selected tab
   const filteredExecutions = executions.filter((ex) => {
     if (selectedTab === "ALL") return true;
-    return ex.asset.toUpperCase() === selectedTab;
+    return getAssetDisplayName(ex.asset) === selectedTab;
   });
 
   const totalItems = filteredExecutions.length;
@@ -80,14 +87,15 @@ export default function LedgerPage() {
   const slicedExecutions = filteredExecutions.slice(startIndex, endIndex);
 
   const tableRows = slicedExecutions.map((ex) => {
-    const isEurc = ex.asset.toUpperCase() === "EURC";
+    const assetName = getAssetDisplayName(ex.asset);
+    const isEurc = assetName === "EURC";
     const currencySymbol = isEurc ? "€" : "$";
     const formattedVolume = parseFloat(formatUnits(BigInt(ex.volume), 6)).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
     return {
       displayId: ex.transactionHash.length > 20 ? `${ex.transactionHash.slice(0, 10)}...${ex.transactionHash.slice(-4)}` : ex.transactionHash,
       fullId: ex.transactionHash,
-      asset: ex.asset,
+      asset: assetName,
       route: ex.route,
       volume: `${currencySymbol}${formattedVolume}`,
       spread: `+${ex.spread}%`,

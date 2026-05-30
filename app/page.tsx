@@ -332,19 +332,19 @@ export default function Home() {
             Capture risk-mitigated APY from funding rate spreads across top exchanges.<br></br> Secured natively on the Arc Network.
           </p>
 
-          <div className="flex flex-col-reverse sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-            <Link
-              href="/docs/overview"
-              className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-panel text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0 backdrop-blur-md"
-            >
-              Read Docs
-            </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <Link
               href="/app"
-              className="hero-btn w-full sm:w-auto px-10 py-4 rounded-2xl bg-foreground text-background font-bold text-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-3 opacity-0"
+              className="hero-btn order-2 sm:order-1 w-full sm:w-auto px-10 py-4 rounded-2xl bg-foreground text-background font-bold text-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-3 opacity-0"
             >
               Launch App
               <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/docs/overview"
+              className="hero-btn order-1 sm:order-2 w-full sm:w-auto px-10 py-4 rounded-2xl bg-panel text-foreground font-semibold text-lg border border-borderLine hover:border-slate-300 dark:hover:border-slate-700 transition-all text-center opacity-0 backdrop-blur-md"
+            >
+              Read Docs
             </Link>
           </div>
         </div>
