@@ -175,27 +175,28 @@ export default function AssetLogo({ asset, size = 24, className = "" }: AssetLog
     return cached === undefined ? null : cached;
   });
   
-  const [resolved, setResolved] = useState<boolean>(() => {
-    return getCachedLogo(cleanAsset) !== undefined;
-  });
-  
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     let cancelled = false;
 
-    if (!resolved) {
-      resolveLogoUrl(cleanAsset).then((url) => {
-        if (!cancelled) {
-          setLogoUrl(url);
-          setResolved(true);
-        }
-      });
+    const cached = getCachedLogo(cleanAsset);
+    if (cached !== undefined) {
+      setLogoUrl(cached);
+      return;
     }
 
+    setLogoUrl(null); // Reset while loading new asset
+
+    resolveLogoUrl(cleanAsset).then((url) => {
+      if (!cancelled) {
+        setLogoUrl(url);
+      }
+    });
+
     return () => { cancelled = true; };
-  }, [cleanAsset, resolved]);
+  }, [cleanAsset]);
 
   // Suppress hydration mismatch by returning a placeholder matching SSR size before mount if needed,
   // but for logos, we just render it directly to prevent flash.

@@ -129,25 +129,7 @@ export default function LedgerPage() {
           </p>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex gap-2 mb-6 bg-panel border border-borderLine p-1.5 rounded-2xl w-fit backdrop-blur-xl">
-          {(["ALL", "USDC", "EURC"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => {
-                setSelectedTab(tab);
-                setCurrentPage(1);
-              }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                selectedTab === tab
-                  ? "bg-foreground text-background shadow-sm"
-                  : "text-slate-500 hover:text-foreground hover:bg-slate-50/5 dark:hover:bg-white/5"
-              }`}
-            >
-              {tab === "ALL" ? "All Executions" : `${tab} Vault`}
-            </button>
-          ))}
-        </div>
+        {/* Filter Tabs Removed */}
 
         {/* Table */}
         <div className="bg-panel border border-borderLine rounded-[32px] overflow-hidden shadow-premium dark:shadow-premium-dark backdrop-blur-xl">
@@ -229,8 +211,8 @@ export default function LedgerPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
-                      No recent {selectedTab !== "ALL" ? selectedTab : ""} executions found.
+                    <td colSpan={7} className="text-center py-16 text-slate-500 dark:text-slate-400">
+                      No recent executions found.
                     </td>
                   </tr>
                 )}

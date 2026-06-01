@@ -37,9 +37,9 @@ function parseVolume(raw: unknown): number {
 }
 
 async function fetchOnChainEvents() {
-  // Get latest block to define a look-back window (last ~5000 blocks ≈ ~2.5 hrs on Arc)
+  // Get latest block to define a look-back window (last ~50000 blocks)
   const latestBlock = await publicClient.getBlockNumber();
-  const fromBlock = latestBlock > BigInt(5000) ? latestBlock - BigInt(5000) : BigInt(0);
+  const fromBlock = latestBlock > BigInt(50000) ? latestBlock - BigInt(50000) : BigInt(0);
 
   const logs = await publicClient.getLogs({
     address: VAULT_ADDRESS,

@@ -5,6 +5,7 @@ import { Moon, Sun, Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ConnectWallet from "./ConnectWallet";
+import JanusLogo from "./JanusLogo";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -83,11 +84,8 @@ export default function Navbar() {
           
           {/* LEFT: Logo */}
           <div className="flex items-center shrink-0">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center text-background font-heading font-bold shadow-sm transition-transform group-hover:scale-105">
-                J
-              </div>
-              <span className="font-heading font-bold text-foreground text-lg hidden sm:block tracking-tight">JANUS</span>
+            <Link href="/" className="flex items-center group transition-transform hover:scale-105">
+              <JanusLogo className="h-6 w-auto" />
             </Link>
           </div>
 
