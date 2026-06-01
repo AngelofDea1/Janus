@@ -84,12 +84,12 @@ export default function ArbitrageApp() {
   const isMockMode = (VAULT_ADDRESS as string) === "0x0000000000000000000000000000000000000000";
   
   // USDC simulation variables
-  const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(5000000000)); 
+  const [simulationUsdcBalance, setSimulationUsdcBalance] = useState(BigInt(0)); 
   const [simulationUserShares, setSimulationUserShares] = useState(BigInt(0));
   const [simulationAllowance, setSimulationAllowance] = useState(BigInt(0));
   
   // EURC simulation variables (enabled by default to show EURC logic instantly without needing to deploy contract first)
-  const [simulationEurcBalance, setSimulationEurcBalance] = useState(BigInt(5000000000)); 
+  const [simulationEurcBalance, setSimulationEurcBalance] = useState(BigInt(0)); 
   const [simulationEurcShares, setSimulationEurcShares] = useState(BigInt(0));
   const [simulationEurcAllowance, setSimulationEurcAllowance] = useState(BigInt(0));
 
@@ -185,7 +185,7 @@ export default function ArbitrageApp() {
 
   // Active mapping based on selection
   const isUSDC = selectedAsset === "USDC";
-  const useSim = localConnected && !wagmiIsConnected;
+  const useSim = isMockMode && localConnected && !wagmiIsConnected;
 
   const activeBalance = isUSDC 
     ? (useSim ? simulationUsdcBalance : (usdcERC20Balance || BigInt(0))) 
