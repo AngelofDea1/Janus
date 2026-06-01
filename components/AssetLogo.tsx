@@ -72,7 +72,7 @@ const STATIC_OVERRIDES: Record<string, string> = {
   "UNI": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/uni.png",
   "LDO": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/ldo.png",
   "AAVE": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/aave.png",
-  "EURC": "https://assets.coingecko.com/coins/images/28169/large/eurc.png",
+  "EURC": "https://s2.coinmarketcap.com/static/img/coins/128x128/20641.png",
   "EUR": "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/eur.png"
 };
 
