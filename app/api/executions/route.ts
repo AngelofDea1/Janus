@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { publicClient } from '@/lib/arcClient';
-import { VAULT_ADDRESS, VAULT_ABI } from '@/lib/constants';
+import { VAULT_ADDRESS, EURC_VAULT_ADDRESS, VAULT_ABI } from '@/lib/constants';
 import { formatUnits } from 'viem';
 
 // Cache the response for 10 seconds to prevent RPC rate-limiting under heavy user load
@@ -37,46 +37,67 @@ function parseVolume(raw: unknown): number {
 }
 
 async function fetchOnChainEvents() {
-  // Get latest block to define a look-back window (last ~50000 blocks)
   const latestBlock = await publicClient.getBlockNumber();
-  const fromBlock = latestBlock > BigInt(50000) ? latestBlock - BigInt(50000) : BigInt(0);
 
-  const logs = await publicClient.getLogs({
-    address: VAULT_ADDRESS,
-    event: {
-      anonymous: false,
-      inputs: [
-        { indexed: false, name: 'asset', type: 'string' },
-        { indexed: false, name: 'route', type: 'string' },
-        { indexed: false, name: 'volume', type: 'uint256' },
-        { indexed: false, name: 'spread', type: 'string' },
-        { indexed: false, name: 'yieldHarvested', type: 'uint256' },
-      ],
-      name: 'ArbitrageExecuted',
-      type: 'event',
-    },
-    fromBlock,
-    toBlock: latestBlock,
+  const eventAbi = {
+    anonymous: false,
+    inputs: [
+      { indexed: false, name: 'asset', type: 'string' },
+      { indexed: false, name: 'route', type: 'string' },
+      { indexed: false, name: 'volume', type: 'uint256' },
+      { indexed: false, name: 'spread', type: 'string' },
+      { indexed: false, name: 'yieldHarvested', type: 'uint256' },
+    ],
+    name: 'ArbitrageExecuted',
+    type: 'event',
+  } as const;
+
+  // Query BOTH vaults from block 0 to capture ALL executions ever
+  const [usdcLogs, eurcLogs] = await Promise.all([
+    publicClient.getLogs({
+      address: VAULT_ADDRESS,
+      event: eventAbi,
+      fromBlock: BigInt(0),
+      toBlock: latestBlock,
+    }),
+    publicClient.getLogs({
+      address: EURC_VAULT_ADDRESS,
+      event: eventAbi,
+      fromBlock: BigInt(0),
+      toBlock: latestBlock,
+    }),
+  ]);
+
+  // Tag each log with its vault source
+  const taggedUsdc = (usdcLogs || []).map(l => ({ ...l, vault: 'USDC' as const }));
+  const taggedEurc = (eurcLogs || []).map(l => ({ ...l, vault: 'EURC' as const }));
+  const allLogs = [...taggedUsdc, ...taggedEurc];
+
+  if (allLogs.length === 0) return null;
+
+  // Sort by block number (ascending), then reverse for newest-first
+  allLogs.sort((a, b) => {
+    const blockA = a.blockNumber ?? BigInt(0);
+    const blockB = b.blockNumber ?? BigInt(0);
+    return blockA < blockB ? -1 : blockA > blockB ? 1 : 0;
   });
-
-  if (!logs || logs.length === 0) return null;
 
   // Enrich with block timestamps in parallel
   const blockTimestamps = await Promise.all(
-    logs.map((log) =>
+    allLogs.map((log) =>
       log.blockNumber
         ? publicClient.getBlock({ blockNumber: log.blockNumber }).then((b) => Number(b.timestamp) * 1000)
         : Promise.resolve(Date.now())
     )
   );
 
-  const executions = logs.reverse().map((log, idx) => {
+  const executions = allLogs.reverse().map((log, idx) => {
     const args = log.args as Record<string, unknown>;
     const volume = parseVolume(args.volume);
     const yieldAmt = parseVolume(args.yieldHarvested);
     const route = String(args.route ?? '');
     const [shortExchange, longExchange] = route.split('➔').map((s) => s.trim());
-    const timestamp = blockTimestamps[logs.length - 1 - idx];
+    const timestamp = blockTimestamps[allLogs.length - 1 - idx];
 
     return {
       id: log.transactionHash ?? REAL_TX_HASHES[Math.floor(Math.random() * REAL_TX_HASHES.length)],
@@ -89,6 +110,7 @@ async function fetchOnChainEvents() {
       volume,
       yieldAmount: yieldAmt,
       status: 'Executed' as const,
+      vault: log.vault,
       timestamp,
       blockTime: new Date(timestamp).toISOString(),
     };
