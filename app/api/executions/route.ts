@@ -212,35 +212,57 @@ function getDemoData() {
 const GOLDSKY_API_URL = "https://api.goldsky.com/api/public/project_cmpr6wyix9tip01x3bubibwp8/subgraphs/janus-vault/1.0.3/gn";
 
 async function fetchGoldskySubgraphs() {
-  const query = `
-    query GetLatestArbitrages {
-      arbitrageExecutions(first: 1000, orderBy: timestamp, orderDirection: desc) {
-        id
-        asset
-        route
-        volume
-        spread
-        yieldHarvested
-        timestamp
-        transactionHash
-        vault
+  let rawExecutions: any[] = [];
+  let skip = 0;
+  const limit = 1000;
+  let hasMore = true;
+
+  while (hasMore) {
+    const query = `
+      query GetLatestArbitrages($first: Int!, $skip: Int!) {
+        arbitrageExecutions(first: $first, skip: $skip, orderBy: timestamp, orderDirection: desc) {
+          id
+          asset
+          route
+          volume
+          spread
+          yieldHarvested
+          timestamp
+          transactionHash
+          vault
+        }
+      }
+    `;
+    const response = await fetch(GOLDSKY_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        variables: { first: limit, skip }
+      }),
+      next: { revalidate: 10 }
+    });
+
+    if (!response.ok) throw new Error('Goldsky Subgraph returned non-200');
+    const json = await response.json();
+    if (json.errors || !json.data?.arbitrageExecutions) {
+      throw new Error('Goldsky GraphQL query error');
+    }
+
+    const page = json.data.arbitrageExecutions;
+    rawExecutions = [...rawExecutions, ...page];
+
+    if (page.length < limit) {
+      hasMore = false;
+    } else {
+      skip += limit;
+      if (skip >= 20000) {
+        hasMore = false;
       }
     }
-  `;
-  const response = await fetch(GOLDSKY_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query }),
-    next: { revalidate: 10 }
-  });
-  if (!response.ok) throw new Error('Goldsky Subgraph returned non-200');
-  const json = await response.json();
-  if (json.errors || !json.data?.arbitrageExecutions) {
-    throw new Error('Goldsky GraphQL query error');
   }
 
-  const raw = json.data.arbitrageExecutions;
-  const executions = raw.map((item: any) => {
+  const executions = rawExecutions.map((item: any) => {
     const volume = Number(item.volume) / 1e6;
     const yieldAmount = Number(item.yieldHarvested) / 1e6;
     const timestamp = Number(item.timestamp) * 1000;
@@ -276,6 +298,7 @@ async function fetchGoldskySubgraphs() {
 
   return { executions, stats };
 }
+
 
 export async function GET(req: Request) {
   try {
