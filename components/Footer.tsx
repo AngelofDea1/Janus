@@ -23,7 +23,7 @@ export default function Footer() {
         {/* Right Socials/App */}
         <div className="flex items-center gap-6">
           <a 
-            href="https://twitter.com/JanusProtocol" 
+            href="https://x.com/janusprotocol_" 
             target="_blank" 
             rel="noreferrer"
             className="text-slate-500 hover:text-foreground transition-colors"
@@ -34,7 +34,7 @@ export default function Footer() {
             </svg>
           </a>
           <a 
-            href="https://discord.gg/janus" 
+            href="https://discord.gg/JVtMFnaq4A" 
             target="_blank" 
             rel="noreferrer"
             className="text-slate-500 hover:text-foreground transition-colors flex items-center justify-center w-4 h-4"
