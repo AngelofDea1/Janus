@@ -178,9 +178,18 @@ export default function ConnectWallet() {
                   {/* Main List of Prominent Wallets */}
                   <div className="space-y-1">
                     {mainListConnectors.map((connector) => {
-                      const isRecent = connector.id === 'metaMask';
-                      // Only show 'Detected' if we actively received an icon injection from the browser extension
-                      const isDetected = !isRecent && !!connector.icon;
+                      const isMetaMaskDetected = typeof window !== 'undefined' && (
+                        !!(window as any).ethereum?.isMetaMask || 
+                        !!(window as any).ethereum?.providers?.some((p: any) => p.isMetaMask)
+                      );
+                      const isCoinbaseDetected = typeof window !== 'undefined' && (
+                        !!(window as any).ethereum?.isCoinbaseWallet || 
+                        !!(window as any).ethereum?.providers?.some((p: any) => p.isCoinbaseWallet)
+                      );
+                      
+                      const isDetected = !!connector.icon || 
+                        (connector.name.toLowerCase().includes('metamask') && isMetaMaskDetected) ||
+                        (connector.name.toLowerCase().includes('coinbase') && isCoinbaseDetected);
 
                       return (
                         <button
@@ -199,13 +208,8 @@ export default function ConnectWallet() {
                           </div>
 
                           <div className="flex items-center gap-2">
-                            {isRecent && (
-                              <span className="text-[11px] font-medium text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-md">
-                                Recent
-                              </span>
-                            )}
-                            {isDetected && !isRecent && (
-                              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                            {isDetected && (
+                              <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">
                                 Detected
                               </span>
                             )}

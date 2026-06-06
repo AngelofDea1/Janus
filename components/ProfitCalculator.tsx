@@ -84,16 +84,6 @@ export default function ProfitCalculator() {
             Real earnings based on live funding rate spreads, no estimates, no guessing.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-full border border-borderLine">
-          {loading ? (
-            <span className="flex items-center gap-2"><RefreshCw className="w-3 h-3 animate-spin" /> Loading live data...</span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              Live · {lastUpdated?.toLocaleTimeString()}
-            </span>
-          )}
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

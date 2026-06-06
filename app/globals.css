@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --theme-bg: 252, 252, 252; /* Very faint gray/white */
+    --theme-bg: 255, 255, 255; /* Pure white — matches WebGL canvas bg */
     --theme-foreground: 15, 23, 42; /* Slate 900 */
     --theme-panel: 255, 255, 255; /* Pure white */
     --theme-accent: 79, 70, 229; /* Indigo 600 */
@@ -15,7 +15,7 @@
   }
 
   .dark {
-    --theme-bg: 5, 5, 5; /* Ultra deep gray/black */
+    --theme-bg: 0, 0, 0; /* Pure black */
     --theme-foreground: 248, 250, 252; /* Slate 50 */
     --theme-panel: 14, 14, 14; /* Slightly elevated dark */
     --theme-accent: 99, 102, 241; /* Indigo 500 */
@@ -237,4 +237,20 @@ input[type=number] {
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+/* WebGL Canvas — fixed behind everything */
+#webgl {
+  top: 0;
+  left: 0;
+  position: fixed;
+  height: 100svh;
+  width: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#webgl canvas {
+  width: 100%;
+  height: 100%;
 }

@@ -42,7 +42,7 @@ export default function GovernancePage() {
             Governance & Risk
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl leading-relaxed">
-            Depositor protection is built natively into our contract pipeline. Janus enforces automated timelocked multi-sigs, withdrawal delays, capital caps, and exploit insurance funds to achieve institutional resilience.
+            Institutional-grade depositor protection. Powered by timelocked multi-sigs, withdrawal delays, capital caps, and dedicated insurance funds.
           </p>
         </div>
 

@@ -57,7 +57,8 @@ export default function Navbar() {
     { name: "Portfolio", path: "/portfolio" },
     { name: "Analytics", path: "/analytics" },
     { name: "Ledger", path: "/ledger" },
-    { name: "Governance", path: "/governance" }
+    { name: "Governance", path: "/governance" },
+    { name: "Blog", path: "/blog" }
   ];
 
   const moreLinks = [

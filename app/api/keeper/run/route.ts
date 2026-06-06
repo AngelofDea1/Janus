@@ -135,6 +135,54 @@ async function fetchVaultTotalAssets(contractAddress: string) {
   return 10;
 }
 
+async function fetchAllowance(tokenAddress: string, ownerAddress: string, spenderAddress: string) {
+  try {
+    const ownerHex = ownerAddress.toLowerCase().replace("0x", "").padStart(64, "0");
+    const spenderHex = spenderAddress.toLowerCase().replace("0x", "").padStart(64, "0");
+    const data = "0xdd62ed3e" + ownerHex + spenderHex;
+
+    const res = await fetch("https://rpc.testnet.arc.network", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "eth_call",
+        params: [{ to: tokenAddress, data }, "latest"]
+      })
+    });
+    if (!res.ok) return BigInt(0);
+    const json = await res.json();
+    if (json.result && json.result !== "0x") {
+      return BigInt(json.result);
+    }
+  } catch {}
+  return BigInt(0);
+}
+
+async function fetchTokenBalance(tokenAddress: string, walletAddress: string) {
+  try {
+    const cleanAddress = walletAddress.toLowerCase().replace("0x", "");
+    const data = "0x70a08231" + cleanAddress.padStart(64, "0");
+    const res = await fetch("https://rpc.testnet.arc.network", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "eth_call",
+        params: [{ to: tokenAddress, data }, "latest"]
+      })
+    });
+    if (!res.ok) return BigInt(0);
+    const json = await res.json();
+    if (json.result && json.result !== "0x") {
+      return BigInt(json.result);
+    }
+  } catch {}
+  return BigInt(0);
+}
+
 export async function POST(req: Request) {
   try {
     // 1. Authorization Check
@@ -149,8 +197,9 @@ export async function POST(req: Request) {
     const entitySecret = process.env.CIRCLE_ENTITY_SECRET;
     const walletId = process.env.WALLET_ID;
     const usdcVault = process.env.CONTRACT_ADDRESS;
+    const walletAddress = process.env.WALLET_ADDRESS;
 
-    if (!apiKey || !entitySecret || !walletId || !usdcVault) {
+    if (!apiKey || !entitySecret || !walletId || !usdcVault || !walletAddress) {
       return NextResponse.json({ error: "Missing keeper configurations in server environment." }, { status: 500 });
     }
 
@@ -202,12 +251,14 @@ export async function POST(req: Request) {
     });
 
     if (opportunities.length === 0) {
+      console.log("CRON RESULT: no_opportunities (all spreads below threshold)");
       return NextResponse.json({ status: "no_opportunities", message: "All spreads below threshold" });
     }
 
     // Sort to execute top opportunity
     opportunities.sort((a, b) => b.spread - a.spread);
     const bestOpp = opportunities[0];
+    console.log(`CRON BEST OPP: ${bestOpp.asset} Spread: ${bestOpp.spreadPct}%`);
 
     // 4. Initialize Circle SDK
     const circleClient = initiateDeveloperControlledWalletsClient({ apiKey, entitySecret });
@@ -217,97 +268,148 @@ export async function POST(req: Request) {
     try {
       const usdcTvl = await fetchVaultTotalAssets(usdcVault);
       const usdcVolume = usdcTvl;
-      const usdcSpreadFraction = parseFloat(bestOpp.spread) / 100;
+      const usdcSpreadFraction = parseFloat(bestOpp.spreadPct) / 100;
       const usdcYieldFloat = usdcVolume * usdcSpreadFraction;
-      const usdcYieldWei = String(Math.max(1, Math.floor(usdcYieldFloat * 1e6)));
+      let usdcYieldWei = String(Math.max(1, Math.floor(usdcYieldFloat * 1e6)));
 
-      // Approve USDC
-      const approveUsdc = await circleClient.createContractExecutionTransaction({
-        walletId,
-        abiFunctionSignature: "approve(address,uint256)",
-        abiParameters: [usdcVault, usdcYieldWei],
-        contractAddress: ARC_USDC,
-        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
-      });
+      // Balance-aware check
+      const tokenBalance = await fetchTokenBalance(ARC_USDC, walletAddress);
+      if (tokenBalance === BigInt(0)) {
+        throw new Error("INSUFFICIENT_TOKEN (USDC balance is zero)");
+      }
+      if (tokenBalance < BigInt(usdcYieldWei)) {
+        console.log(`⚠️ Keeper balance too low. Capping harvest yield to keeper balance: ${Number(tokenBalance) / 1e6} USDC`);
+        usdcYieldWei = String(tokenBalance);
+      }
 
-      // Harvest USDC Vault Yield
-      const harvestUsdc = await circleClient.createContractExecutionTransaction({
-        walletId,
-        abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
-        abiParameters: [
-          usdcYieldWei,
-          bestOpp.asset,
-          bestOpp.route,
-          String(Math.floor(usdcVolume * 1e6)),
-          bestOpp.spreadPct
-        ],
-        contractAddress: usdcVault,
-        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
-      });
+      // Check USDC allowance first to avoid redundant transactions and nonce collisions
+      const allowance = await fetchAllowance(ARC_USDC, walletAddress, usdcVault);
+      const required = BigInt(usdcYieldWei);
+      let approveTxId = null;
 
-      results.push({
-        vault: "USDC",
-        opportunity: bestOpp.asset,
-        route: bestOpp.route,
-        spread: `${bestOpp.spreadPct}%`,
-        approveTxId: approveUsdc.data?.id,
-        harvestTxId: harvestUsdc.data?.id,
-        volume: usdcVolume,
-        yieldAmount: parseFloat((Number(usdcYieldWei) / 1e6).toFixed(6))
-      });
+      if (allowance < required) {
+        const massiveApproval = "100000000000000"; // 100M USDC
+        const approveUsdc = await circleClient.createContractExecutionTransaction({
+          walletId,
+          abiFunctionSignature: "approve(address,uint256)",
+          abiParameters: [usdcVault, massiveApproval],
+          contractAddress: ARC_USDC,
+          fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+        });
+        
+        results.push({
+          vault: "USDC",
+          status: "approving",
+          opportunity: bestOpp.asset,
+          approveTxId: approveUsdc.data?.id,
+          message: "Approval transaction broadcasted. Will harvest on the next cron cycle."
+        });
+      } else {
+        // Harvest USDC Vault Yield
+        const harvestUsdc = await circleClient.createContractExecutionTransaction({
+          walletId,
+          abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
+          abiParameters: [
+            usdcYieldWei,
+            bestOpp.asset,
+            bestOpp.route,
+            String(Math.floor(usdcVolume * 1e6)),
+            bestOpp.spreadPct
+          ],
+          contractAddress: usdcVault,
+          fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+        });
+
+        results.push({
+          vault: "USDC",
+          status: "harvested",
+          opportunity: bestOpp.asset,
+          route: bestOpp.route,
+          spread: `${bestOpp.spreadPct}%`,
+          harvestTxId: harvestUsdc.data?.id,
+          volume: usdcVolume,
+          yieldAmount: parseFloat((Number(usdcYieldWei) / 1e6).toFixed(6))
+        });
+      }
     } catch (e: any) {
       results.push({ vault: "USDC", status: "failed", error: e.message });
     }
 
-    // Delay 3 seconds between the vault harvests to avoid nonce collisions in Circle Wallet client
-    await new Promise(r => setTimeout(r, 3000));
+    // Delay 2 seconds between the vaults to avoid nonce collisions if both need approvals
+    await new Promise(r => setTimeout(r, 2000));
 
     // --- EURC Vault Arbitrage Execution ---
     try {
       const eurcTvl = await fetchVaultTotalAssets(EURC_VAULT);
       const eurcVolume = eurcTvl;
-      const eurcSpreadFraction = parseFloat(bestOpp.spread) / 100;
+      const eurcSpreadFraction = parseFloat(bestOpp.spreadPct) / 100;
       const eurcYieldFloat = eurcVolume * eurcSpreadFraction;
-      const eurcYieldWei = String(Math.max(1, Math.floor(eurcYieldFloat * 1e6)));
+      let eurcYieldWei = String(Math.max(1, Math.floor(eurcYieldFloat * 1e6)));
 
-      // Approve EURC
-      const approveEurc = await circleClient.createContractExecutionTransaction({
-        walletId,
-        abiFunctionSignature: "approve(address,uint256)",
-        abiParameters: [EURC_VAULT, eurcYieldWei],
-        contractAddress: ARC_EURC,
-        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
-      });
+      // Balance-aware check
+      const tokenBalance = await fetchTokenBalance(ARC_EURC, walletAddress);
+      if (tokenBalance === BigInt(0)) {
+        throw new Error("INSUFFICIENT_TOKEN (EURC balance is zero)");
+      }
+      if (tokenBalance < BigInt(eurcYieldWei)) {
+        console.log(`⚠️ Keeper balance too low. Capping harvest yield to keeper balance: ${Number(tokenBalance) / 1e6} EURC`);
+        eurcYieldWei = String(tokenBalance);
+      }
 
-      // Harvest EURC Vault Yield
-      const harvestEurc = await circleClient.createContractExecutionTransaction({
-        walletId,
-        abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
-        abiParameters: [
-          eurcYieldWei,
-          bestOpp.asset,
-          bestOpp.route,
-          String(Math.floor(eurcVolume * 1e6)),
-          bestOpp.spreadPct
-        ],
-        contractAddress: EURC_VAULT,
-        fee: { type: "level", config: { feeLevel: "MEDIUM" } }
-      });
+      // Check EURC allowance first to avoid redundant transactions and nonce collisions
+      const allowance = await fetchAllowance(ARC_EURC, walletAddress, EURC_VAULT);
+      const required = BigInt(eurcYieldWei);
+      let approveTxId = null;
 
-      results.push({
-        vault: "EURC",
-        opportunity: bestOpp.asset,
-        route: bestOpp.route,
-        spread: `${bestOpp.spreadPct}%`,
-        approveTxId: approveEurc.data?.id,
-        harvestTxId: harvestEurc.data?.id,
-        volume: eurcVolume,
-        yieldAmount: parseFloat((Number(eurcYieldWei) / 1e6).toFixed(6))
-      });
+      if (allowance < required) {
+        const massiveApproval = "100000000000000"; // 100M EURC
+        const approveEurc = await circleClient.createContractExecutionTransaction({
+          walletId,
+          abiFunctionSignature: "approve(address,uint256)",
+          abiParameters: [EURC_VAULT, massiveApproval],
+          contractAddress: ARC_EURC,
+          fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+        });
+        
+        results.push({
+          vault: "EURC",
+          status: "approving",
+          opportunity: bestOpp.asset,
+          approveTxId: approveEurc.data?.id,
+          message: "Approval transaction broadcasted. Will harvest on the next cron cycle."
+        });
+      } else {
+        // Harvest EURC Vault Yield
+        const harvestEurc = await circleClient.createContractExecutionTransaction({
+          walletId,
+          abiFunctionSignature: "harvestYield(uint256,string,string,uint256,string)",
+          abiParameters: [
+            eurcYieldWei,
+            bestOpp.asset,
+            bestOpp.route,
+            String(Math.floor(eurcVolume * 1e6)),
+            bestOpp.spreadPct
+          ],
+          contractAddress: EURC_VAULT,
+          fee: { type: "level", config: { feeLevel: "MEDIUM" } }
+        });
+
+        results.push({
+          vault: "EURC",
+          status: "harvested",
+          opportunity: bestOpp.asset,
+          route: bestOpp.route,
+          spread: `${bestOpp.spreadPct}%`,
+          harvestTxId: harvestEurc.data?.id,
+          volume: eurcVolume,
+          yieldAmount: parseFloat((Number(eurcYieldWei) / 1e6).toFixed(6))
+        });
+      }
     } catch (e: any) {
       results.push({ vault: "EURC", status: "failed", error: e.message });
     }
 
+    console.log("CRON EXECUTION COMPLETED. Results:", JSON.stringify(results, null, 2));
     return NextResponse.json({
       status: "success",
       timestamp: Date.now(),
@@ -315,6 +417,7 @@ export async function POST(req: Request) {
     });
 
   } catch (error: any) {
+    console.error("CRON ERROR:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

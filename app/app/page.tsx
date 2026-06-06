@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import AssetLogo from "@/components/AssetLogo";
 import JanusLogo from "@/components/JanusLogo";
+import JanusCoinLogo from "@/components/JanusCoinLogo";
 import ConnectWallet from "@/components/ConnectWallet";
 import { VAULT_ADDRESS, USDC_ADDRESS, EURC_VAULT_ADDRESS, EURC_ADDRESS, VAULT_ABI, USDC_ABI } from "@/lib/constants";
 
@@ -481,9 +482,9 @@ export default function ArbitrageApp() {
                        className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
                      />
                      <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
-                       <div className="w-6 h-6 flex items-center justify-center">
-                         <JanusLogo className="w-4 h-4" />
-                       </div>
+                        <div className="w-6 h-6 flex items-center justify-center">
+                          <JanusCoinLogo className="w-5 h-5 object-contain" />
+                        </div>
                        <span className="font-semibold text-sm">JANUS</span>
                      </div>
                   </div>
@@ -554,9 +555,9 @@ export default function ArbitrageApp() {
                        className="bg-transparent text-4xl font-semibold text-foreground focus:outline-none w-full min-w-0"
                      />
                      <div className="flex items-center gap-2 bg-white dark:bg-[#1a1a1a] shadow-sm pr-3 pl-2 py-1.5 rounded-full border border-borderLine shrink-0">
-                       <div className="w-6 h-6 flex items-center justify-center">
-                         <JanusLogo className="w-4 h-4" />
-                       </div>
+                        <div className="w-6 h-6 flex items-center justify-center">
+                          <JanusCoinLogo className="w-5 h-5 object-contain" />
+                        </div>
                        <span className="font-semibold text-sm">JANUS</span>
                      </div>
                   </div>

@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { headers } from 'next/headers';
 import "./globals.css";
 
-import { Sora, Inter_Tight } from 'next/font/google';
+import { Sora, Inter_Tight, Cormorant_Garamond } from 'next/font/google';
 
 const sora = Sora({ subsets: ['latin'], variable: '--font-sora' });
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-inter-tight' });
+const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'], variable: '--font-cormorant' });
 
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
@@ -37,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
-      <body className={`min-h-screen flex flex-col relative selection:bg-accent/20 ${interTight.variable} ${sora.variable} font-sans`}>
+      <body className={`min-h-screen flex flex-col relative selection:bg-accent/20 ${interTight.variable} ${sora.variable} ${cormorant.variable} font-sans`} suppressHydrationWarning>
         <Providers>
           <Navbar />
           <main className="flex-1 w-full flex flex-col relative z-0">

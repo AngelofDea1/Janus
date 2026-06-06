@@ -179,7 +179,14 @@ export default function LedgerPage() {
                       <td className="px-6 py-5 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <AssetLogo asset={item.asset} size={24} />
-                          <span className="font-bold text-foreground">{item.asset}-PERP</span>
+                          <span className="font-bold text-foreground">
+                            {item.asset.includes(" (EURC)") 
+                              ? `${item.asset.replace(" (EURC)", "")}-PERP (EURC)` 
+                              : item.asset.includes(" (USDC)") 
+                              ? `${item.asset.replace(" (USDC)", "")}-PERP (USDC)` 
+                              : `${item.asset}-PERP`
+                            }
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-slate-500">

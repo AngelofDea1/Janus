@@ -243,7 +243,6 @@ export default function PortfolioDashboard() {
         <div className="bg-panel border border-borderLine rounded-3xl p-8 mb-8 shadow-premium dark:shadow-premium-dark backdrop-blur-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -z-10" />
           <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-            <PieChart className="w-4 h-4" />
             Total Portfolio Value (USD)
           </div>
           <div className="text-5xl md:text-6xl font-heading font-bold text-foreground tracking-tight">
@@ -337,7 +336,6 @@ export default function PortfolioDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-xl">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
               Delta-Neutral Arbitrage
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
@@ -350,7 +348,6 @@ export default function PortfolioDashboard() {
 
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-xl">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4" />
               Security & Insurance
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
@@ -363,7 +360,6 @@ export default function PortfolioDashboard() {
         <div className="bg-panel border border-borderLine rounded-3xl p-8 shadow-sm backdrop-blur-xl">
           <div className="flex items-center justify-between mb-6">
             <div className="text-lg font-bold font-heading flex items-center gap-2">
-              <History className="w-5 h-5 text-slate-400" />
               Recent Activity
             </div>
           </div>

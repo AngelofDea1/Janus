@@ -13,6 +13,7 @@ const config: Config = {
         mono: ['var(--font-inter-tight)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         sans: ['var(--font-inter-tight)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         heading: ['var(--font-sora)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-cormorant)', 'Georgia', 'Cambria', 'serif'],
       },
       colors: {
         background: 'rgb(var(--theme-bg))',
@@ -27,6 +28,7 @@ const config: Config = {
         'premium-hover': '0 12px 40px rgba(0, 0, 0, 0.12)',
         'premium-dark': '0 8px 30px rgba(0, 0, 0, 0.4)',
         'premium-dark-hover': '0 12px 40px rgba(0, 0, 0, 0.6)',
+        'glow': '0 0 8px 2px var(--tw-shadow-color)',
       }
     },
   },

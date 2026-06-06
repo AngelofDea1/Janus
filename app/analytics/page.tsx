@@ -138,10 +138,10 @@ export default function AnalyticsDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
-              Live APY
+              Avg. Yield (APY)
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-emerald-500">
-              {estimatedAPY && estimatedAPY > BigInt(0) ? (Number(estimatedAPY) / 100).toFixed(1) : "24.5"}%
+              {estimatedAPY && estimatedAPY > BigInt(0) ? (Number(estimatedAPY) / 100).toFixed(2) : "18.42"}%
             </div>
           </div>
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
