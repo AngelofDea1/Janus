@@ -80,9 +80,9 @@ export default function MarketMonitor() {
         </div>
       )}
 
-      {/* Desktop Table (Hidden on Mobile) */}
-      <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+      {/* Live Market Monitor Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[600px] md:min-w-0">
           <thead>
             <tr className="border-b border-borderLine text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
               <th className="py-4 font-semibold">Asset</th>
@@ -135,60 +135,6 @@ export default function MarketMonitor() {
             )}
           </tbody>
         </table>
-      </div>
-
-      {/* Mobile Structured List (Hidden on Desktop) */}
-      <div className="block md:hidden space-y-4">
-        {loading && opportunities.length === 0 ? (
-          Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-slate-50 dark:bg-slate-900/40 border border-borderLine rounded-2xl p-4 animate-pulse space-y-3">
-              <div className="flex justify-between items-center">
-                <div className="h-5 w-24 bg-slate-200 dark:bg-slate-800 rounded"></div>
-                <div className="h-6 w-16 bg-slate-200 dark:bg-slate-800 rounded"></div>
-              </div>
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-borderLine">
-                <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded"></div>
-                <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded"></div>
-                <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded"></div>
-              </div>
-            </div>
-          ))
-        ) : opportunities.length === 0 && !loading ? (
-          <div className="py-8 text-center text-slate-500 text-sm">
-            No active spreads found meeting minimum threshold.
-          </div>
-        ) : (
-          opportunities.map((opp) => (
-            <div key={opp.asset} className="bg-slate-50/50 dark:bg-slate-900/20 border border-borderLine rounded-2xl p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-foreground">
-                  <AssetLogo asset={opp.asset} size={20} className="border border-borderLine/50 bg-slate-100 dark:bg-slate-800" />
-                  <span>{opp.asset}</span>
-                </div>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-accent/10 text-accent font-bold font-mono text-xs border border-accent/20">
-                  {opp.projectedAPY}% APY
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-borderLine/50 text-xs text-center">
-                <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-semibold">Short</div>
-                  <div className="font-mono font-bold text-foreground mt-0.5">{opp.exchangeARate}%</div>
-                  <div className="text-[9px] text-slate-400 uppercase tracking-wide">{opp.exA}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-semibold">Long</div>
-                  <div className="font-mono font-bold text-foreground mt-0.5">{opp.exchangeBRate}%</div>
-                  <div className="text-[9px] text-slate-400 uppercase tracking-wide">{opp.exB}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-semibold">Spread</div>
-                  <div className="font-mono font-bold text-emerald-500 mt-1">{opp.spread}%</div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );
