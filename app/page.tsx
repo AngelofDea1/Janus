@@ -180,11 +180,8 @@ export default function Home() {
       {/* WebGL Particle Background */}
       <GL hovering={hovering} isDark={isDark} />
 
-      {/* ══════════════════════════════════════════════════ */}
-      {/*  HERO — Full viewport, content at bottom center  */}
-      {/* ══════════════════════════════════════════════════ */}
-      <section className="relative z-10 flex flex-col h-svh justify-end items-center">
-        <div className="pb-16 md:pb-20 text-center px-6 max-w-3xl mx-auto">
+      <section className="relative z-10 flex flex-col h-svh justify-center items-center pt-16">
+        <div className="text-center px-6 max-w-3xl mx-auto">
           {/* Pill Badge */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -241,12 +238,12 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator - Absolutely Positioned at bottom */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.6 }}
-          className="pb-8 flex flex-col items-center gap-1"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
         >
           <span className="text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500">Scroll</span>
           <motion.div
