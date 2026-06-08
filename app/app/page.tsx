@@ -43,6 +43,13 @@ export default function ArbitrageApp() {
     }
   }, []);
 
+  useEffect(() => {
+    if (chainId === ARC_TESTNET_CHAIN_ID) {
+      setSwitchError(null);
+      setIsSwitching(false);
+    }
+  }, [chainId]);
+
   const isConnected = wagmiIsConnected || localConnected;
   const address = wagmiAddress || (localAddress ? (localAddress as `0x${string}`) : undefined);
 
@@ -67,6 +74,20 @@ export default function ArbitrageApp() {
         }
       } catch (err: any) {
         setIsSwitching(false);
+        
+        // If the wallet successfully switched in the background despite promise rejection, proceed
+        if (typeof window !== "undefined" && (window as any).ethereum) {
+          const providerChainId = (window as any).ethereum.chainId;
+          if (
+            chainId === ARC_TESTNET_CHAIN_ID || 
+            providerChainId === `0x${ARC_TESTNET_CHAIN_ID.toString(16)}` || 
+            Number(providerChainId) === ARC_TESTNET_CHAIN_ID
+          ) {
+            setSwitchError(null);
+            return true;
+          }
+        }
+
         const msg = err?.shortMessage || err?.message || "Failed to switch network";
         if (msg.includes("rejected") || msg.includes("denied")) {
           setSwitchError("You rejected the network switch. Please try again.");
