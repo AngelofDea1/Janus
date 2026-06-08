@@ -66,15 +66,51 @@ export default function ArbitrageApp() {
           return true;
         }
       } catch (err: any) {
-        setIsSwitching(false);
-        const msg = err?.shortMessage || err?.message || "Failed to switch network";
-        if (msg.includes("rejected") || msg.includes("denied")) {
-          setSwitchError("You rejected the network switch. Please try again.");
-        } else if (msg.includes("Unrecognized chain") || msg.includes("unknown chain")) {
-          setSwitchError("Arc Testnet not found in wallet. It will be added automatically — please confirm the prompts.");
+        // Try to add the chain if it's unrecognized (typical for MetaMask / Rabby custom networks)
+        const isUnrecognized = 
+          err?.code === 4902 || 
+          err?.data?.originalError?.code === 4902 ||
+          err?.message?.includes("4902") || 
+          err?.message?.toLowerCase().includes("unrecognized") ||
+          err?.message?.toLowerCase().includes("unknown chain");
+
+        if (isUnrecognized && typeof window !== "undefined" && (window as any).ethereum) {
+          try {
+            await (window as any).ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: `0x${ARC_TESTNET_CHAIN_ID.toString(16)}`,
+                  chainName: "Arc Testnet",
+                  nativeCurrency: {
+                    name: "Ethereum",
+                    symbol: "ETH",
+                    decimals: 18,
+                  },
+                  rpcUrls: ["https://rpc.testnet.arc.network"],
+                  blockExplorerUrls: ["https://testnet.arcscan.app"],
+                },
+              ],
+            });
+            // Try switching again after adding
+            if (switchChainAsync) {
+              await switchChainAsync({ chainId: ARC_TESTNET_CHAIN_ID });
+              setIsSwitching(false);
+              return true;
+            }
+          } catch (addErr: any) {
+            console.error("Failed to add network:", addErr);
+            setSwitchError(addErr?.message || "Failed to add Arc Testnet to your wallet.");
+          }
         } else {
-          setSwitchError(msg);
+          const msg = err?.shortMessage || err?.message || "Failed to switch network";
+          if (msg.includes("rejected") || msg.includes("denied")) {
+            setSwitchError("You rejected the network switch. Please try again.");
+          } else {
+            setSwitchError(msg);
+          }
         }
+        setIsSwitching(false);
         console.error("Failed to switch network:", err);
       }
       return false;
