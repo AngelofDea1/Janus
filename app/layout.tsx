@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from 'next/headers';
 import "./globals.css";
 
@@ -11,16 +11,18 @@ const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400'
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import DebugConsole from "@/components/DebugConsole";
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: "Janus",
   description: "Institutional-grade delta-neutral funding rate arbitrage on the Arc Network.",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -45,6 +47,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <DebugConsole />
         </Providers>
       </body>
     </html>
