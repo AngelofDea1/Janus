@@ -211,6 +211,6 @@
 4. Compare to explorer value
 
 ### Need Help?
-- Twitter: @JanusProtocol
-- Discord: discord.gg/janus
+- Twitter: [@janusprotocol_](https://x.com/janusprotocol_)
+- Discord: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
 - Email: support@janus.finance

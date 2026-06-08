@@ -500,9 +500,9 @@ export default function ArbitrageApp() {
                    )}
                    <button
                      onClick={handleDeposit}
-                     disabled={activePendingState || isSwitching}
+                     disabled={(chainId === ARC_TESTNET_CHAIN_ID && !depositAmount) || activePendingState || isSwitching}
                      className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                       (!depositAmount && chainId === ARC_TESTNET_CHAIN_ID)
+                       (chainId === ARC_TESTNET_CHAIN_ID && !depositAmount)
                          ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                          : (activePendingState || isSwitching)
                          ? "bg-foreground/50 text-background cursor-wait"

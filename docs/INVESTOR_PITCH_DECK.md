@@ -344,8 +344,8 @@ Year 2: Acquisition/IPO at $5B+ valuation
 **Interested?** Let's talk.
 
 - **Email**: team@janus.finance
-- **Twitter**: @JanusProtocol
-- **Discord**: discord.gg/janus
+- **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_)
+- **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
 - **Demo**: http://localhost:3000 (live testnet)
 
 ### Due Diligence Package

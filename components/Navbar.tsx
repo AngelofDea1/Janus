@@ -65,7 +65,7 @@ export default function Navbar() {
     { name: "Circle Faucet", path: "https://faucet.circle.com/", external: true },
     { name: "Documentation", path: "/docs", external: false },
     { name: "Twitter", path: "https://x.com/janusprotocol_", external: true },
-    { name: "Discord", path: "https://discord.gg/JVtMFnaq4A", external: true },
+    { name: "Discord", path: "https://discord.gg/23skEWUbbk", external: true },
     { divider: true },
     { name: "Terms of Service", path: "/terms", external: false },
     { name: "Privacy Policy", path: "/privacy", external: false },
@@ -245,7 +245,7 @@ export default function Navbar() {
               </svg>
             </a>
             <a
-              href="https://discord.gg/JVtMFnaq4A"
+              href="https://discord.gg/23skEWUbbk"
               target="_blank"
               rel="noreferrer"
               onClick={() => setMobileMenuOpen(false)}

@@ -235,7 +235,7 @@ export default async function DocPage({ params }: PageProps) {
                  Can't find what you are looking for?
                </p>
                <a 
-                 href="https://discord.gg/janus" 
+                 href="https://discord.gg/23skEWUbbk" 
                  target="_blank" 
                  rel="noreferrer" 
                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine text-sm font-semibold text-foreground hover:text-accent transition-all hover:border-accent/30"

@@ -310,8 +310,8 @@ We welcome contributions! Here's how:
 ## 🌐 Links
 
 - **Website:** [janus.finance](https://janus.finance) (coming soon)
-- **Twitter:** [@JanusProtocol](https://twitter.com/JanusProtocol) (TBD)
-- **Discord:** [discord.gg/janus](https://discord.gg/janus) (TBD)
+- **Twitter:** [@janusprotocol_](https://x.com/janusprotocol_)
+- **Discord:** [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
 - **Docs:** [docs.janus.finance](https://docs.janus.finance) (TBD)
 - **GitHub:** [github.com/yourusername/janus](https://github.com/yourusername/janus)
 
@@ -361,7 +361,7 @@ MIT License - see [LICENSE](LICENSE) for details
 
 **Builder:** [Your Name]  
 **Email:** team@janus.finance  
-**Twitter:** @JanusProtocol  
+**Twitter:** @janusprotocol_  
 
 For partnerships, press inquiries, or investment opportunities:  
 partnerships@janus.finance

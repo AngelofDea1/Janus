@@ -275,7 +275,7 @@ Do NOT post vulnerability publicly. We have a bug bounty program ($50K max rewar
 **Options:**
 1. Discord: #support (fastest, 24/7 community)
 2. Email: support@janus.finance (slower, 24-hour response)
-3. Twitter DM: @JanusProtocol (slower, business hours)
+3. Twitter DM: @janusprotocol_ (slower, business hours)
 
 ---
 
@@ -314,8 +314,8 @@ Do NOT post vulnerability publicly. We have a bug bounty program ($50K max rewar
 ## Still Have Questions?
 
 ### Community Support
-- **Discord**: discord.gg/janus (fastest)
-- **Twitter**: @JanusProtocol (business hours)
+- **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk) (fastest)
+- **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_) (business hours)
 - **Forum**: forum.janus.finance (async discussion)
 
 ### Official Documentation

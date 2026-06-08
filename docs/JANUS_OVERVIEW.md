@@ -170,8 +170,8 @@ User can withdraw anytime (2-day settlement)
 ## Contact & Support
 
 - **Website**: https://janus.finance
-- **Twitter**: @JanusProtocol
-- **Discord**: discord.gg/janus
+- **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_)
+- **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
 - **Email**: team@janus.finance
 - **Telegram**: t.me/janusprotocol
 - **GitHub**: github.com/janus-protocol
