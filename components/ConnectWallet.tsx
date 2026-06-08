@@ -3,12 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useConnect, useAccount, useDisconnect, useEnsName } from "wagmi";
 import { X, ChevronDown, LogOut, CheckCircle2, Copy } from "lucide-react";
-import JanusCoinLogo from "./JanusCoinLogo";
 
 // Renders the icon using the wallet's injected EIP-6963 icon, or falls back to standard CDN images.
 const WalletIcon = ({ connector }: { connector: any }) => {
   if (connector.icon) {
-    return <img src={connector.icon} alt={connector.name} className="w-6 h-6 rounded-md object-contain" />;
+    return <img src={connector.icon} alt={connector.name} className="w-8 h-8 rounded-xl object-contain shadow-sm" />;
   }
 
   const lowerName = connector.name.toLowerCase();
@@ -29,11 +28,11 @@ const WalletIcon = ({ connector }: { connector: any }) => {
   }
 
   if (fallbackIcon) {
-    return <img src={fallbackIcon} alt={connector.name} className="w-6 h-6 rounded-md object-contain bg-white p-0.5" />;
+    return <img src={fallbackIcon} alt={connector.name} className="w-8 h-8 rounded-xl object-contain shadow-sm bg-white p-1" />;
   }
 
   return (
-    <div className="w-6 h-6 rounded-md bg-slate-600 flex items-center justify-center text-white font-bold text-xs">
+    <div className="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
       {connector.name.charAt(0).toUpperCase()}
     </div>
   );
@@ -104,48 +103,65 @@ export default function ConnectWallet() {
       {!isConnected ? (
         <button
           onClick={toggleDropdown}
-          className="bg-foreground text-background hover:opacity-90 font-semibold px-4 py-2 text-sm rounded-full transition-all flex items-center gap-2"
+          className="bg-foreground text-background hover:opacity-90 font-semibold px-5 py-2.5 text-sm rounded-full transition-all flex items-center gap-2 shadow-sm"
         >
           Connect Wallet
         </button>
       ) : (
         <button
           onClick={toggleDropdown}
-          className="bg-white dark:bg-[#1a1a1a] border border-borderLine hover:bg-black/5 dark:hover:bg-white/5 text-foreground font-medium px-4 py-2 rounded-full transition-all flex items-center gap-2"
+          className="bg-white dark:bg-[#1a1a1a] border border-borderLine hover:bg-black/5 dark:hover:bg-white/5 text-foreground font-medium px-4 py-2 rounded-full transition-all flex items-center gap-2 shadow-sm"
         >
-          <div className="w-4 h-4 rounded-full border border-borderLine flex items-center justify-center overflow-hidden bg-black/5 dark:bg-white/5">
-            <JanusCoinLogo className="w-2.5 h-2.5" />
-          </div>
+          <img
+            src="/janus-bust-4k.png"
+            alt="Avatar"
+            className="w-5 h-5 rounded-full object-contain bg-white border border-borderLine"
+            draggable={false}
+          />
           {ensName || formatAddress(address)}
           <ChevronDown className="w-4 h-4 text-slate-400" />
         </button>
       )}
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 bg-panel dark:bg-[#121212] rounded-2xl shadow-xl border border-borderLine p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150 origin-top-right">
+        <div className="absolute right-0 mt-3 w-[360px] sm:w-[380px] bg-panel dark:bg-[#121212] rounded-[28px] shadow-2xl border border-borderLine p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-200 origin-top-right">
           {isConnected ? (
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* Minimal Account Details */}
-              <div className="flex items-center gap-3 pb-3 border-b border-borderLine">
-                <div className="w-10 h-10 rounded-full border border-borderLine flex items-center justify-center bg-black/5 dark:bg-white/5 overflow-hidden">
-                  <JanusCoinLogo className="w-6 h-6" />
+              <div className="flex flex-col items-center p-6 bg-black/5 dark:bg-white/5 rounded-3xl border border-borderLine">
+                <img
+                  src="/janus-bust-4k.png"
+                  alt="Janus Bust"
+                  className="w-20 h-20 rounded-full object-contain bg-white border border-borderLine shadow-sm mb-4"
+                  draggable={false}
+                />
+                
+                <div className="text-xl font-mono font-bold tracking-wider text-foreground mb-3">
+                  {ensName || formatAddress(address)}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <button
-                    onClick={handleCopy}
-                    className="flex items-center gap-1.5 hover:text-orange-500 transition-colors text-sm font-mono font-bold"
-                  >
-                    <span>{ensName || formatAddress(address)}</span>
-                    {copied ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5 text-slate-400" />
-                    )}
-                  </button>
-                  <p className="text-[11px] text-slate-500 truncate">
-                    Connected via {activeConnector?.name || "Wallet"}
+
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-borderLine hover:bg-black/5 dark:hover:bg-white/10 rounded-xl transition-all text-sm font-semibold shadow-sm"
+                >
+                  {copied ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 animate-bounce" />
+                      <span className="text-emerald-500">Address Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-slate-500" />
+                      <span>Copy Address</span>
+                    </>
+                  )}
+                </button>
+
+                {activeConnector && (
+                  <p className="text-xs text-slate-500 mt-4">
+                    Connected via {activeConnector.name}
                   </p>
-                </div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -158,18 +174,18 @@ export default function ConnectWallet() {
                   }
                   setIsOpen(false);
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold py-2.5 rounded-xl text-xs transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-3.5 rounded-2xl text-[14px] transition-colors"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-4 h-4" />
                 Disconnect
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="text-[11px] font-heading font-semibold text-slate-400 uppercase tracking-wider px-1">
+            <div className="space-y-4">
+              <div className="text-[12px] font-heading font-semibold text-slate-400 uppercase tracking-wider px-1">
                 Connect Wallet
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {mainListConnectors.map((connector) => {
                   const isMetaMaskDetected = typeof window !== 'undefined' && (
                     !!(window as any).ethereum?.isMetaMask ||
@@ -191,14 +207,14 @@ export default function ConnectWallet() {
                         connect({ connector });
                         setIsOpen(false);
                       }}
-                      className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                      className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-4">
                         <WalletIcon connector={connector} />
-                        <span className="font-medium text-sm text-foreground">{connector.name}</span>
+                        <span className="font-semibold text-[15px] text-foreground">{connector.name}</span>
                       </div>
                       {isDetected && (
-                        <span className="text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">
                           Detected
                         </span>
                       )}
