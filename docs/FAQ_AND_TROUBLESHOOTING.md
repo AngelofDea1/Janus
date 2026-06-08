@@ -1,6 +1,5 @@
 # Janus Protocol — Frequently Asked Questions
 
----
 
 ## General Questions
 
@@ -13,7 +12,6 @@
 ### Q: Who governs Janus?
 **A:** Janus is governed by a 5-of-9 multisig with Arc core team members, security experts, and community representatives. No single person can unilaterally move funds. Governance is transitioning toward community control as the protocol matures.
 
----
 
 ## How It Works
 
@@ -35,7 +33,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: Can I lose money?
 **A:** In normal conditions: No (market-neutral strategy). In extreme conditions: Possibly, if the smart contract is exploited. The insurance fund helps cover this. Only deposit what you can afford to lose.
 
----
 
 ## Depositing & Withdrawing
 
@@ -71,7 +68,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: What if the vault is paused?
 **A:** You can still withdraw, but processing may take longer. Emergency pauses only happen if an exploit is detected. Your funds remain in the smart contract at all times.
 
----
 
 ## Fees & Returns
 
@@ -83,7 +79,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: Is the APY guaranteed?
 **A:** No. Funding rates are market-dependent and change constantly. Historical range: 24–50%. Minimum possible: 0% if rates are flat. We show live APY on the dashboard, updated every 8 hours.
 
----
 
 ## Safety & Security
 
@@ -103,7 +98,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: What makes Janus safer than other vaults?
 **A:** (1) 5-of-9 multisig — no single point of failure, (2) 24-hour timelock on all parameter changes, (3) Insurance fund, (4) On-chain audit trail — full transparency, (5) Emergency pause functionality.
 
----
 
 ## Governance & Decentralization
 
@@ -113,7 +107,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: What if I disagree with a governance decision?
 **A:** You can propose alternatives in our Discord governance channel, or simply withdraw your funds (2-day settlement). You are never locked in.
 
----
 
 ## Technical Questions
 
@@ -132,7 +125,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: Can I use Janus with leverage?
 **A:** No. You deposit $10K and own $10K worth of vault shares. No borrowing, no leverage. Fully collateralized.
 
----
 
 ## Troubleshooting
 
@@ -174,7 +166,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Problem: APY looks wrong
 **Context:** APY updates every 8 hours with live funding rates. Fluctuations are normal. Check the Market Monitor tab for current funding rate data. If you believe there is a bug, report it in Discord.
 
----
 
 ## Advanced Questions
 
@@ -184,7 +175,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: What happens when funding rates are negative?
 **A:** The strategy pauses. The keeper bot waits for rates to flip positive. Your USDC stays safe in the vault — just not earning yield during that period.
 
----
 
 ## Tax & Legal
 
@@ -194,7 +184,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 ### Q: Does Janus comply with regulations?
 **A:** Janus is a non-custodial DeFi protocol. Your funds are always in a smart contract wallet, not held by any company. We actively monitor regulatory developments and build with compliance in mind.
 
----
 
 ## Support
 
@@ -203,7 +192,6 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02% → you earn +0.03% per 
 - **Email**: support@janushq.xyz
 - **Security reports**: security@janushq.xyz (do NOT post vulnerabilities publicly — we have a bug bounty program)
 
----
 
 *Last Updated: June 2026*
 

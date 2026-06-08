@@ -4,7 +4,6 @@
 
 Janus is an **institutional-grade, automated funding rate arbitrage vault** built on the **Arc L1 Network**. Deposit USDC or EURC and earn 24–50% APY through fully automated, market-neutral trading strategies — no active management required.
 
----
 
 ## The Problem
 
@@ -19,7 +18,6 @@ Janus is an **institutional-grade, automated funding rate arbitrage vault** buil
 3. **Fully automated** — Keeper bot monitors, executes, and rebalances 24/7
 4. **Institutional safety** — 5-of-9 multisig governance, insurance fund, on-chain audit trail
 
----
 
 ## How It Works
 
@@ -56,7 +54,6 @@ Yield automatically compounds
 User withdraws anytime (2-day settlement)
 ```
 
----
 
 ## Key Features
 
@@ -77,7 +74,6 @@ User withdraws anytime (2-day settlement)
 - Market Monitor showing all active opportunities
 - All governance proposals visible with vote counts
 
----
 
 ## Financial Model
 
@@ -90,7 +86,6 @@ User withdraws anytime (2-day settlement)
 | Minimum Deposit | None |
 | Withdrawal | Anytime (2-day settlement) |
 
----
 
 ## Smart Contracts (Testnet)
 
@@ -103,7 +98,6 @@ User withdraws anytime (2-day settlement)
 | 5-of-9 Multisig | `0x8ac5eE52F70AE01dB914bE459D8B3d50126fd6aE` |
 | Insurance Fund | `0x325c8Df4CFb5B068675AFF8f62aA668D1dEc3C4B` |
 
----
 
 ## Network & Access
 
@@ -114,7 +108,6 @@ User withdraws anytime (2-day settlement)
 | **Explorer** | `https://testnet.arcscan.app` |
 | **App** | `https://janushq.xyz` |
 
----
 
 ## Risk Disclosure
 
@@ -124,7 +117,6 @@ User withdraws anytime (2-day settlement)
 
 **Operational Risk** — Keeper bot redundancy and monitoring minimize downtime. All protocol parameter changes are subject to a 24-hour timelock during which users may exit.
 
----
 
 ## Contact & Support
 
@@ -133,6 +125,5 @@ User withdraws anytime (2-day settlement)
 - **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
 - **Email**: team@janushq.xyz
 
----
 
 *Janus Protocol is experimental software. Cryptocurrency and DeFi carry risk. Do your own research. Not financial advice.*

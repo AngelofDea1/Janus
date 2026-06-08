@@ -11,7 +11,6 @@ Janus operates under institutional-grade decentralized governance combining:
 
 This structure prevents single-point-of-failure and ensures no individual can unilaterally control vault funds.
 
----
 
 ## 1. The 5-of-9 Multisig
 
@@ -74,7 +73,6 @@ The multisig consists of 9 signers drawn from:
 - **Full transparency** — All proposals visible to the public
 - **Permanent record** — Decisions logged on-chain forever
 
----
 
 ## 2. The 24-Hour Timelock
 
@@ -116,7 +114,6 @@ In the event of a critical smart contract exploit, the multisig can:
 
 This override is strictly for active exploit situations.
 
----
 
 ## 3. Community Governance
 
@@ -130,7 +127,6 @@ When active, token governance will enable holders to vote on:
 
 All governance proposals will remain public and visible on the dashboard.
 
----
 
 ## 4. Transparency & Auditing
 
@@ -154,7 +150,6 @@ All events are viewable via:
 - **Audit results**: Published publicly when complete
 - **Protocol updates**: Announced via Discord and Twitter
 
----
 
 ## 5. Dispute Resolution
 
@@ -167,7 +162,6 @@ Community can propose multisig member removal for misconduct. Requires token hol
 **Step 3 — Exit**  
 If you fundamentally disagree with a governance decision, you can always withdraw your funds (2-day settlement). The 24-hour timelock guarantees you will have notice before any change takes effect.
 
----
 
 ## 6. Emergency Procedures
 
@@ -190,7 +184,6 @@ If you fundamentally disagree with a governance decision, you can always withdra
 4. 24-hour timelock
 5. Funds transferred to claimant
 
----
 
 ## 7. Security Design
 
@@ -207,7 +200,6 @@ If you fundamentally disagree with a governance decision, you can always withdra
 2. Regular signer performance reviews
 3. Replacement candidates are nominated by the community
 
----
 
 ## 8. Governance Dashboard
 
@@ -223,7 +215,6 @@ Users can monitor all governance activity in real-time:
 - Parameter change history (before/after)
 - Full audit trail of all vault actions
 
----
 
 ## Summary
 

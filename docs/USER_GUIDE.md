@@ -22,7 +22,6 @@
 4. Approve the network switch to Arc Testnet when prompted
 5. You're connected
 
----
 
 ## Depositing
 
@@ -49,7 +48,6 @@
 - You receive vault tokens (jUSDC or jEURC) representing your share
 - Yield begins compounding automatically
 
----
 
 ## Understanding Your Dashboard
 
@@ -68,7 +66,6 @@ The jUSDC or jEURC tokens you hold, representing your ownership percentage of th
 ### Est. Daily / Est. Monthly
 Projected earnings based on the current APY and your balance. These are estimates — actual returns depend on market conditions.
 
----
 
 ## Withdrawing
 
@@ -94,7 +91,6 @@ Projected earnings based on the current APY and your balance. These are estimate
 4. USDC/EURC is transferred back to your wallet
 5. Your jUSDC/jEURC vault tokens are burned
 
----
 
 ## Checking Your Earnings
 
@@ -110,7 +106,6 @@ Your balance updates in real-time. Profit = Current Balance − Initial Deposit.
 ### Method 3: Governance Tab → Audit Trail
 Search your address to see a full history of your deposits, withdrawals, and yield events.
 
----
 
 ## Governance & Safety
 
@@ -128,7 +123,6 @@ Search your address to see a full history of your deposits, withdrawals, and yie
 - Every vault action is logged on-chain permanently
 - Verifiable by anyone on [testnet.arcscan.app](https://testnet.arcscan.app)
 
----
 
 ## Troubleshooting
 
@@ -157,7 +151,6 @@ Search your address to see a full history of your deposits, withdrawals, and yie
 ### Numbers don't match after a deposit
 Block confirmations can take 1–2 minutes on Arc Testnet. Wait a moment and refresh.
 
----
 
 ## Need Help?
 
