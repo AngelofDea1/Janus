@@ -579,16 +579,22 @@ export default function ArbitrageApp() {
                  {/* Execute Button */}
                  <div className="mt-4">
                     {needsApproval && (
-                      <div className="mb-3 flex justify-between items-center text-xs text-slate-500 bg-black/5 dark:bg-[#0c0c0e] p-3 rounded-xl border border-borderLine animate-in fade-in duration-200">
-                        <span className="font-semibold text-slate-400">Transaction Workflow</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-0.5 rounded-md ${(!txHash && activeAllowance < parseUnits(depositAmount || "0", 6)) || (txType === "approve" && isTxWaiting) ? "bg-accent/20 text-accent font-bold" : "bg-emerald-500/10 text-emerald-500 font-semibold"}`}>
-                            1. Approve
-                          </span>
-                          <span className="text-slate-400">→</span>
-                          <span className={`px-2 py-0.5 rounded-md ${activeAllowance >= parseUnits(depositAmount || "0", 6) ? "bg-accent/20 text-accent font-bold" : "text-slate-500 font-semibold"}`}>
-                            2. Deposit
-                          </span>
+                      <div className="mb-4 px-4 py-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.01] border border-borderLine/50 flex items-center justify-between text-xs animate-in fade-in duration-200">
+                        <span className="font-medium text-slate-400 tracking-wider uppercase text-[10px]">Workflow</span>
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-1.5 h-1.5 rounded-full ${(!txHash && activeAllowance < parseUnits(depositAmount || "0", 6)) || (txType === "approve" && isTxWaiting) ? "bg-accent animate-pulse" : "bg-emerald-500"}`} />
+                            <span className={`font-medium ${(!txHash && activeAllowance < parseUnits(depositAmount || "0", 6)) || (txType === "approve" && isTxWaiting) ? "text-foreground" : "text-slate-400"}`}>
+                              1. Approve
+                            </span>
+                          </div>
+                          <span className="text-slate-300 dark:text-slate-700 text-[10px]">/</span>
+                          <div className="flex items-center gap-2">
+                            <span className={`w-1.5 h-1.5 rounded-full ${activeAllowance >= parseUnits(depositAmount || "0", 6) ? "bg-accent" : "bg-slate-300 dark:bg-slate-800"}`} />
+                            <span className={`font-medium ${activeAllowance >= parseUnits(depositAmount || "0", 6) ? "text-foreground" : "text-slate-400"}`}>
+                              2. Deposit
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
