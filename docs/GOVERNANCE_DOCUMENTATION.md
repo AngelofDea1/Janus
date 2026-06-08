@@ -1,13 +1,13 @@
-# Janus Protocol — Governance Documentation
+# Janus Protocol - Governance Documentation
 
 ## Overview
 
 Janus operates under institutional-grade decentralized governance combining:
 
-1. **5-of-9 Multisig** — Critical decisions require majority approval from multiple trusted parties
-2. **24-Hour Timelock** — Mandatory delay before any parameter changes take effect
-3. **On-Chain Transparency** — All proposals are publicly visible and verifiable
-4. **Community Participation** — Token holder voting is on the roadmap as the protocol decentralizes
+1. **5-of-9 Multisig**: Critical decisions require majority approval from multiple trusted parties
+2. **24-Hour Timelock**: Mandatory delay before any parameter changes take effect
+3. **On-Chain Transparency**: All proposals are publicly visible and verifiable
+4. **Community Participation**: Token holder voting is on the roadmap as the protocol decentralizes
 
 This structure prevents single-point-of-failure and ensures no individual can unilaterally control vault funds.
 
@@ -48,7 +48,7 @@ The multisig consists of 9 signers drawn from:
 2. REVIEW (7 days)
    Signers review the proposal.
    Public discussion in Discord.
-   Fully transparent — anyone can read it.
+   Fully transparent: anyone can read it.
 
 3. VOTE
    Signers sign the proposal electronically.
@@ -67,11 +67,11 @@ The multisig consists of 9 signers drawn from:
 
 ### Security Properties
 
-- **No single point of failure** — Requires 5 parties to agree
-- **Geographic diversity** — Signers across different regions
-- **Expertise diversity** — Technical, financial, and community voices
-- **Full transparency** — All proposals visible to the public
-- **Permanent record** — Decisions logged on-chain forever
+- **No single point of failure**: Requires 5 parties to agree
+- **Geographic diversity**: Signers across different regions
+- **Expertise diversity**: Technical, financial, and community voices
+- **Full transparency**: All proposals visible to the public
+- **Permanent record**: Decisions logged on-chain forever
 
 
 ## 2. The 24-Hour Timelock
@@ -86,7 +86,7 @@ Day 1: Multisig approves proposal (5-of-9 vote)
          ↓
        Timelock starts (24-hour countdown)
          ↓
-       Proposal is public — users can review and withdraw if desired
+       Proposal is public, allowing users to review and withdraw if desired
          ↓
 Day 2: 24 hours elapsed
          ↓
@@ -142,7 +142,7 @@ Every vault action is logged on-chain permanently:
 
 All events are viewable via:
 - [Arc Block Explorer](https://testnet.arcscan.app)
-- Janus Dashboard — Governance → Audit Trail tab
+- Janus Dashboard: Governance → Audit Trail tab
 
 ### Code & Reporting
 
@@ -153,13 +153,13 @@ All events are viewable via:
 
 ## 5. Dispute Resolution
 
-**Step 1 — Open Discussion**  
+**Step 1: Open Discussion**  
 Raise concerns in Discord. Multisig members respond within 48 hours. All discussion is public.
 
-**Step 2 — Formal Proposal**  
+**Step 2: Formal Proposal**  
 Community can propose multisig member removal for misconduct. Requires token holder approval.
 
-**Step 3 — Exit**  
+**Step 3: Exit**  
 If you fundamentally disagree with a governance decision, you can always withdraw your funds (2-day settlement). The 24-hour timelock guarantees you will have notice before any change takes effect.
 
 
@@ -190,7 +190,7 @@ If you fundamentally disagree with a governance decision, you can always withdra
 ### Preventing Majority Attack (5-of-9 collusion)
 
 1. 24-hour timelock gives users time to exit before any malicious action executes
-2. Proposals are fully public — the community can detect and respond
+2. Proposals are fully public: the community can detect and respond
 3. Community can vote to remove and replace any compromised signer
 4. Insurance fund provides a backstop
 

@@ -4,14 +4,14 @@
 
 ### Step 1: Set Up Your Wallet
 
-1. Install an EVM-compatible wallet — MetaMask, Rabby, or Phantom recommended
+1. Install an EVM-compatible wallet, with MetaMask, Rabby, or Phantom recommended
 2. Add the Arc Testnet network:
    - **Network Name:** Arc Testnet
    - **RPC URL:** `https://rpc.testnet.arc.network`
    - **Chain ID:** `5042002`
    - **Currency Symbol:** ETH
 3. Get testnet tokens:
-   - **USDC/EURC:** Claim free tokens from the [Circle Faucet](https://faucet.circle.com/) — select Arc Testnet and paste your wallet address
+   - **USDC/EURC:** Claim free tokens from the [Circle Faucet](https://faucet.circle.com/): select Arc Testnet and paste your wallet address
    - **ETH (for gas):** Visit the Arc Testnet faucet or ask in Discord
 
 ### Step 2: Connect to Janus
@@ -31,7 +31,7 @@
 2. Select your asset (USDC or EURC) from the dropdown
 3. Enter the amount you want to deposit
 4. Click **Approve USDC** (or EURC)
-5. Your wallet will open — click **Confirm**
+5. Your wallet will open: click **Confirm**
 6. Wait for the approval transaction to confirm (~30 seconds)
 
 *This step gives the vault permission to receive your tokens. It only needs to be done once per token.*
@@ -39,7 +39,7 @@
 ### Step 2: Deposit
 
 1. After approval confirms, click **Deposit**
-2. Your wallet will open — click **Confirm**
+2. Your wallet will open: click **Confirm**
 3. Wait for the transaction to confirm (~1–2 minutes)
 4. Your dashboard will update showing your vault balance (jUSDC or jEURC)
 
@@ -64,7 +64,7 @@ Your current USDC/EURC value in the vault. Equals your vault tokens × current s
 The jUSDC or jEURC tokens you hold, representing your ownership percentage of the vault. Used when withdrawing.
 
 ### Est. Daily / Est. Monthly
-Projected earnings based on the current APY and your balance. These are estimates — actual returns depend on market conditions.
+Project earnings based on the current APY and your balance. These are estimates — actual returns depend on market conditions.
 
 
 ## Withdrawing
@@ -154,6 +154,6 @@ Block confirmations can take 1–2 minutes on Arc Testnet. Wait a moment and ref
 
 ## Need Help?
 
-- **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk) — fastest support
+- **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk) (fastest support)
 - **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_)
 - **Email**: support@janushq.xyz

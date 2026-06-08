@@ -1,8 +1,8 @@
-# Janus Protocol — Overview
+# Janus Protocol - Overview
 
 ## What is Janus?
 
-Janus is an **institutional-grade, automated funding rate arbitrage vault** built on the **Arc L1 Network**. Deposit USDC or EURC and earn 24–50% APY through fully automated, market-neutral trading strategies — no active management required.
+Janus is an **institutional-grade, automated funding rate arbitrage vault** built on the **Arc L1 Network**. Deposit USDC or EURC and earn 24–50% APY through fully automated, market-neutral trading strategies with no active management required.
 
 
 ## The Problem
@@ -13,17 +13,17 @@ Janus is an **institutional-grade, automated funding rate arbitrage vault** buil
 
 ## The Solution
 
-1. **One-click deposits** — Connect wallet, deposit USDC or EURC, earn automatically
-2. **Market-neutral** — Zero directional risk (BTC price movement doesn't affect your yield)
-3. **Fully automated** — Keeper bot monitors, executes, and rebalances 24/7
-4. **Institutional safety** — 5-of-9 multisig governance, insurance fund, on-chain audit trail
+1. **One-click deposits**: Connect wallet, deposit USDC or EURC, and earn automatically
+2. **Market-neutral**: Zero directional risk (BTC price movement doesn't affect your yield)
+3. **Fully automated**: Keeper bot monitors, executes, and rebalances 24/7
+4. **Institutional safety**: 5-of-9 multisig governance, insurance fund, on-chain audit trail
 
 
 ## How It Works
 
 ### Funding Rate Arbitrage
 
-Perpetual futures have "funding rates" — periodic payments between long and short traders that keep perpetual prices anchored to spot.
+Perpetual futures have "funding rates", which are periodic payments between long and short traders that keep perpetual prices anchored to spot.
 
 **Example:**
 - Protocol A: +0.05% funding (longs pay shorts)
@@ -34,7 +34,7 @@ Perpetual futures have "funding rates" — periodic payments between long and sh
 1. Opens SHORT on Protocol A (collects 0.05%)
 2. Opens LONG on Protocol B (pays 0.02%)
 3. Net: +0.03% every 8 hours = **~32% APY**
-4. **Zero directional risk** — BTC price direction is irrelevant
+4. **Zero directional risk**: BTC price direction is irrelevant
 
 ### User Flow
 
@@ -62,7 +62,7 @@ User withdraws anytime (2-day settlement)
 | Feature | Details |
 |---------|---------|
 | 5-of-9 Multisig | Critical decisions require majority approval |
-| 24-Hour Timelock | All parameter changes delayed — users can exit |
+| 24-Hour Timelock | All parameter changes delayed to allow users to exit |
 | Insurance Fund | 5% of performance fees protect against exploits |
 | 2-Day Withdrawal Delay | Settlement period prevents bank runs |
 | On-Chain Audit Trail | Every action logged permanently and verifiable |
@@ -111,11 +111,11 @@ User withdraws anytime (2-day settlement)
 
 ## Risk Disclosure
 
-**Smart Contract Risk** — Contracts are audited but DeFi is experimental. Only deposit what you can afford to lose. Insurance fund covers known exploits but does not guarantee 100% coverage.
+**Smart Contract Risk**: Contracts are audited but DeFi is experimental. Only deposit what you can afford to lose. Insurance fund covers known exploits but does not guarantee 100% coverage.
 
-**Market Risk** — Funding rates can go to zero (strategy pauses) or negative (strategy reverses). Extreme volatility can cause liquidation; this is mitigated by safety parameters.
+**Market Risk**: Funding rates can go to zero (strategy pauses) or negative (strategy reverses). Extreme volatility can cause liquidation; this is mitigated by safety parameters.
 
-**Operational Risk** — Keeper bot redundancy and monitoring minimize downtime. All protocol parameter changes are subject to a 24-hour timelock during which users may exit.
+**Operational Risk**: Keeper bot redundancy and monitoring minimize downtime. All protocol parameter changes are subject to a 24-hour timelock during which users may exit.
 
 
 ## Contact & Support
