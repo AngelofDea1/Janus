@@ -5,7 +5,7 @@
 Janus is a non-custodial, ERC-4626 standard yield vault implementing automated cross-protocol funding rate arbitrage on Arc L1. The protocol uses a decentralized keeper bot to identify and execute market-neutral positions across perpetual derivative exchanges, generating consistent returns independent of directional price movements.
 
 **Version**: 1.0
-**Date**: April 2026
+**Date**: June 2026
 **Status**: Live on Arc Testnet
 
 ---
@@ -51,7 +51,7 @@ Janus automates funding rate arbitrage through:
 ```solidity
 contract JanusVault is ERC4626, Ownable {
  // ERC-20 USDC asset
- // User deposits  receive JANUS shares
+ // User deposits receive jUSDC/jEURC vault tokens
  // Shares represent proportional vault ownership
  // Yield compounds automatically
 }
@@ -148,7 +148,7 @@ User Deposit (USDC)
  
 JanusVault.deposit() 
  
-Mint JANUS shares 
+Mint jUSDC/jEURC vault tokens 
  
 Keeper Bot monitors funding rates
  
@@ -351,7 +351,7 @@ If funding rate = +0.05% per 8 hours:
 - **Chain**: Arc L1 (Testnet: Chain ID 5042002)
 - **RPC**: https://rpc.testnet.arc.network
 - **Explorer**: https://testnet.arcscan.app
-- **Frontend**: http://localhost:3000 (dev)
+- **Frontend**: https://janushq.xyz
 
 ---
 
@@ -377,7 +377,7 @@ If funding rate = +0.05% per 8 hours:
 
 ## 10. Roadmap
 
-### Q1 2026 (Current)
+### Q2 2026 (Current)
 - Smart contracts deployed
 - Keeper bot live
 - Frontend operational

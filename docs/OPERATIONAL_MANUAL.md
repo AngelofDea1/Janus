@@ -99,7 +99,7 @@ Keeper bot enters infinite loop
 ### Emergency Hotline
 
 **Discord**: #emergency-incidents
-**Email**: emergency@janus.finance
+**Email**: emergency@janushq.xyz
 **Response**: Within 30 minutes, 24/7
 
 ---
@@ -155,7 +155,7 @@ Risks: Larger capital at risk, needs keeper bot optimization
 
 **Bot Metrics:**
 ```bash
-curl http://localhost:3000/api/keeper/status
+curl https://janushq.xyz/api/keeper/status
 
 {
  "uptime": "99.9%",

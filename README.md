@@ -32,7 +32,7 @@ When Protocol A has 0.05% funding and Protocol B has 0.02% funding, there's a 0.
 ### For Users (Deposit & Earn)
 
 1. **Connect Wallet**
-   - Visit [janus.finance](https://janus.finance) (coming soon)
+   - Visit [janushq.xyz](https://janushq.xyz)
    - Connect MetaMask, WalletConnect, or Coinbase Wallet
    - Switch to Arc network
 
@@ -57,7 +57,7 @@ When Protocol A has 0.05% funding and Protocol B has 0.02% funding, there's a 0.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/yourusername/janus.git
+git clone https://github.com/janus-protocol/janus-app.git
 cd janus
 
 # 2. Install dependencies
@@ -309,11 +309,11 @@ We welcome contributions! Here's how:
 
 ## 🌐 Links
 
-- **Website:** [janus.finance](https://janus.finance) (coming soon)
+- **Website:** [janushq.xyz](https://janushq.xyz)
 - **Twitter:** [@janusprotocol_](https://x.com/janusprotocol_)
 - **Discord:** [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
-- **Docs:** [docs.janus.finance](https://docs.janus.finance) (TBD)
-- **GitHub:** [github.com/yourusername/janus](https://github.com/yourusername/janus)
+- **Docs:** [janushq.xyz/docs](https://janushq.xyz/docs)
+- **GitHub:** [github.com/janus-protocol/janus-app](https://github.com/janus-protocol/janus-app)
 
 ---
 
@@ -359,12 +359,12 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## 📧 Contact
 
-**Builder:** [Your Name]  
-**Email:** team@janus.finance  
+**Builder:** Janus Team  
+**Email:** team@janushq.xyz  
 **Twitter:** @janusprotocol_  
 
 For partnerships, press inquiries, or investment opportunities:  
-partnerships@janus.finance
+partnerships@janushq.xyz
 
 ---
 

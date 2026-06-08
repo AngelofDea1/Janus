@@ -42,8 +42,8 @@ export default function BlogPost() {
               <ul className="list-disc list-inside space-y-2 mb-6 ml-2 text-base text-slate-500">
                 <li><strong>Network Name:</strong> Arc Testnet</li>
                 <li><strong>RPC URL:</strong> https://rpc.testnet.arc.network</li>
-                <li><strong>Chain ID:</strong> 4242</li> {/* Adjust if Arc Testnet chain ID is different */}
-                <li><strong>Currency Symbol:</strong> ARC</li>
+                <li><strong>Chain ID:</strong> 5042002</li>
+                <li><strong>Currency Symbol:</strong> ETH</li>
               </ul>
               
               {/* Image Placeholder */}
@@ -99,7 +99,7 @@ export default function BlogPost() {
             <section>
               <h2 className="text-2xl font-bold font-heading text-foreground mb-4">Step 4: Watch Your Yield Grow</h2>
               <p className="mb-4">
-                That's it! Once your stablecoins are in the vault, you will receive "Janus Shares" (e.g., jUSDC) representing your stake in the pool. 
+                That's it! Once your stablecoins are in the vault, you will receive vault tokens (jUSDC/jEURC) representing your stake in the pool. 
               </p>
               <p className="mb-4 text-base text-slate-500">
                 Behind the scenes, our automated keeper bots continuously scan major perpetual exchanges (Hyperliquid, KuCoin, MEXC, Binance, Bybit) for funding rate spreads. When a profitable spread is found, the protocol automatically executes a delta-neutral hedge to harvest the yield and compounds it directly back into your vault.

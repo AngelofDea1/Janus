@@ -5,7 +5,7 @@
 ## General Questions
 
 ### Q: What is Janus?
-**A:** Janus is an automated funding rate arbitrage vault on Arc L1. You deposit USDC, and our keeper bot earns 24-50% APY by opening market-neutral positions across perpetual exchanges. You own shares (ERC-4626 standard) and can withdraw anytime after a 2-day settlement period.
+**A:** Janus is an automated funding rate arbitrage vault on Arc L1. You deposit USDC, and our keeper bot earns 24-50% APY by opening market-neutral positions across perpetual exchanges. You own vault tokens (jUSDC/jEURC, ERC-4626 standard) and can withdraw anytime after a 2-day settlement period.
 
 ### Q: How much can I make?
 **A:** Depends on market conditions. Historical average: 24-32% APY. We keep 15% as performance fee. You net: ~20-27% APY after fees. Example: $10K deposit  $2-2.7K annual earnings.
@@ -47,7 +47,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 
 ### Q: How do I deposit?
 **A:**
-1. Go to https://janus.finance
+1. Go to https://janushq.xyz
 2. Click "Connect Wallet"
 3. Go to Deposit tab
 4. Enter amount (any amount, no minimum)
@@ -55,7 +55,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 6. Approve spending limit in your Web3 Wallet
 7. Confirm deposit in your Web3 Wallet
 8. Wait 1-2 minutes for blockchain confirmation
-9. You now own JANUS shares earning yield
+9. You now own jUSDC/jEURC vault tokens earning yield
 
 ### Q: What's USDC and where do I get it?
 **A:** USDC is a stablecoin (1 USDC = $1 USD). Get it on Arc via: (1) Swap from ETH/other tokens, (2) Buy from crypto exchange and transfer, (3) Mint via Circle platform. On Arc testnet, request faucet USDC from our Discord.
@@ -63,7 +63,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 ### Q: How do I withdraw?
 **A:**
 1. Go to Withdraw tab
-2. Enter amount of JANUS shares (or click MAX)
+2. Enter amount of jUSDC/jEURC (or click MAX)
 3. Click "Request Withdrawal"
 4. Approve in your Web3 Wallet
 5. **Wait 2 days** (settlement period)
@@ -150,7 +150,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 **A:** Yes, but very cheap. Arc gas fees: ~$0.01-0.05 per transaction (vs $50-300 on Ethereum). You pay gas for: deposit, withdrawal request, withdrawal completion.
 
 ### Q: How do I check my balance on-chain?
-**A:** Go to https://testnet.arcscan.app, search for your wallet address, see your JANUS token balance. Orcall `balanceOf(your_address)` on the JanusVault contract to see shares, then call `convertToAssets(shares)` to see USDC value.
+**A:** Go to https://testnet.arcscan.app, search for your wallet address, see your jUSDC/jEURC token balance. Or call `balanceOf(your_address)` on the JanusVault contract to see shares, then call `convertToAssets(shares)` to see USDC value.
 
 ### Q: Can I use Janus with leverage?
 **A:** No. You deposit $10K, you own $10K worth of vault shares. No borrowing, no leverage. Your position is fully collateralized.
@@ -210,7 +210,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 1. Refresh page (Cmd+R or Ctrl+R)
 2. Clear browser cache
 3. Check on-chain: testnet.arcscan.app
-4. Compare: expected balance = (JANUS shares) × (share price)
+4. Compare: expected balance = (jUSDC/jEURC) × (share price)
 
 ### Problem: APY looks too low / too high
 
@@ -252,7 +252,7 @@ Example: Protocol A pays +0.05%, Protocol B pays +0.02%  you earn +0.03% per 8 h
 
 ### I think I found a security vulnerability
 
-**Email:** security@janus.finance
+**Email:** security@janushq.xyz
 **Discord**: @Security-Team in private message
 **Response**: Within 1 hour
 
@@ -261,7 +261,7 @@ Do NOT post vulnerability publicly. We have a bug bounty program ($50K max rewar
 ### I think I'm being scammed
 
 **Check:**
-1. Are you on official Janus site? (https://janus.finance)
+1. Are you on official Janus site? (https://janushq.xyz)
 2. Is wallet integration working? (check RainbowKit modal)
 3. Are contracts real? (check addresses on Arc explorer)
 
@@ -274,7 +274,7 @@ Do NOT post vulnerability publicly. We have a bug bounty program ($50K max rewar
 
 **Options:**
 1. Discord: #support (fastest, 24/7 community)
-2. Email: support@janus.finance (slower, 24-hour response)
+2. Email: support@janushq.xyz
 3. Twitter DM: @janusprotocol_ (slower, business hours)
 
 ---
@@ -282,13 +282,13 @@ Do NOT post vulnerability publicly. We have a bug bounty program ($50K max rewar
 ## Advanced Questions
 
 ### Q: Can I integrate Janus into my protocol?
-**A:** Yes! Janus is composable. You can: (1) Call deposit/withdraw functions, (2) Use JANUS shares as collateral in other protocols, (3) Build on top of Janus. Contact partnerships@janus.finance
+**A:** Yes! Janus is composable. You can: (1) Call deposit/withdraw functions, (2) Use jUSDC/jEURC as collateral in other protocols, (3) Build on top of Janus. Contact partnerships@janushq.xyz
 
 ### Q: Can I run my own keeper bot?
 **A:** Yes, in Month 9+ when governance activates. Currently: only official keeper is running. Later: community can run keeper bots and earn rewards.
 
 ### Q: How do I contribute to Janus?
-**A:** (1) Report bugs (security@janus.finance), (2) Contribute code (GitHub pull requests), (3) Moderate community (Discord), (4) Provide governance feedback. Rewards TBD after Series A.
+**A:** (1) Report bugs (security@janushq.xyz), (2) Contribute code (GitHub pull requests), (3) Moderate community (Discord), (4) Provide governance feedback. Rewards TBD after Series A.
 
 ### Q: What happens when funding rates are negative?
 **A:** Strategy stops working (not profitable). Keeper bot pauses, waits for rates to flip positive. Your USDC remains safe, just not earning. This is rare and temporary.
@@ -316,23 +316,23 @@ Do NOT post vulnerability publicly. We have a bug bounty program ($50K max rewar
 ### Community Support
 - **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk) (fastest)
 - **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_) (business hours)
-- **Forum**: forum.janus.finance (async discussion)
+- **Forum**: forum.janushq.xyz (async discussion)
 
 ### Official Documentation
-- **Whitepaper**: janus.finance/whitepaper
+- **Whitepaper**: janushq.xyz/docs
 - **GitHub**: github.com/janus-protocol
-- **Blog**: blog.janus.finance
+- **Blog**: janushq.xyz/blog
 
 ### Contact Us
-- **General**: team@janus.finance
-- **Partnerships**: partnerships@janus.finance
-- **Security**: security@janus.finance
-- **Media**: press@janus.finance
+- **General**: team@janushq.xyz
+- **Partnerships**: partnerships@janushq.xyz
+- **Security**: security@janushq.xyz
+- **Media**: press@janushq.xyz
 
 ---
 
 ## Last Updated
-January 2026
+June 2026
 
 ## Disclaimer
 This FAQ is for informational purposes only. Not financial advice. Do your own research. Crypto is experimental. Only deposit what you can afford to lose.

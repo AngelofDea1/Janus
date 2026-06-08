@@ -162,7 +162,7 @@ export default function AnalyticsDashboard() {
           </div>
           <div className="bg-panel border border-borderLine rounded-3xl p-6 shadow-sm backdrop-blur-md relative overflow-hidden">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
-              Vault Shares
+              jUSDC / jEURC Supply
             </div>
             <div className="text-3xl md:text-4xl font-heading font-bold text-foreground">
               {formatLargeFloat(combinedSharesVal)}

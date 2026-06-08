@@ -121,7 +121,7 @@ Arc + Regulatory Clarity + Capital Searching for Yield = **Winner takes all the 
 ### Live Products (Right Now)
 
 #### Frontend
-- Professional dashboard (localhost:3000)
+- Professional dashboard (janushq.xyz)
 - Real-time funding rate monitor
 - Governance & insurance portal
 - On-chain audit trail
@@ -343,10 +343,10 @@ Year 2: Acquisition/IPO at $5B+ valuation
 
 **Interested?** Let's talk.
 
-- **Email**: team@janus.finance
+- **Email**: team@janushq.xyz
 - **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_)
 - **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
-- **Demo**: http://localhost:3000 (live testnet)
+- **Demo**: https://janushq.xyz (live testnet)
 
 ### Due Diligence Package
 

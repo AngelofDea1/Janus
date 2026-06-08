@@ -16,7 +16,7 @@
 
 ### Step 2: Connect to Janus
 
-1. Go to `https://janus.finance`
+1. Go to `https://janushq.xyz`
 2. Click "Connect Wallet"
 3. Choose your wallet provider
 4. Approve network switch to Arc
@@ -43,11 +43,11 @@
 2. Web3 Wallet popup: "Confirm transaction"
 3. Click "Confirm"
 4. Wait for blockchain confirmation
-5. Dashboard updates with your JANUS shares
+5. Dashboard updates with your vault tokens (jUSDC/jEURC)
 
 **What you get:**
-- USDC is transferred to vault
-- You receive JANUS shares (ERC-4626 standard)
+- USDC/EURC is transferred to vault
+- You receive vault tokens (jUSDC or jEURC) (ERC-4626 standard)
 - Shares represent your vault ownership
 - Yield compounds automatically
 
@@ -68,11 +68,11 @@
 
 ### Your Balance
 - Your USDC value in the vault
-- = JANUS shares × share price
+- = jUSDC/jEURC × share price
 - Updates as yield compounds
 
 ### Your Shares
-- JANUS shares you own
+- jUSDC/jEURC you own
 - Represents your ownership %
 - Used for withdrawals
 
@@ -104,7 +104,7 @@
 3. Web3 Wallet popup
 4. Click "Confirm"
 5. USDC transferred back to your wallet
-6. JANUS shares burned
+6. jUSDC/jEURC burned
 
 **What you get back:**
 - Original USDC + all earned yield
@@ -128,7 +128,7 @@
 5. Verify on Arc explorer (testnet.arcscan.app)
 
 ### Method 3: On-Chain Verification
-1. Get your JANUS balance on-chain
+1. Get your vault token balance on-chain
 2. Call `balanceOf(your_address)`
 3. Call `convertToAssets(balance)`
 4. That's your USDC value
@@ -213,4 +213,4 @@
 ### Need Help?
 - Twitter: [@janusprotocol_](https://x.com/janusprotocol_)
 - Discord: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
-- Email: support@janus.finance
+- Email: support@janushq.xyz

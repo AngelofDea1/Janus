@@ -7,7 +7,7 @@ Self-hosting allows you to deploy to a server in a region of your choosing (like
 ## Prerequisites
 
 1. A Virtual Private Server (VPS) running Ubuntu (e.g., DigitalOcean, AWS EC2, or Hetzner).
-2. A custom domain name (e.g., `janus.finance`) pointing to your server's IP address.
+2. A custom domain name (e.g., `janushq.xyz`) pointing to your server's IP address.
 3. [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on the server.
 
 ## Deployment Steps
@@ -15,7 +15,7 @@ Self-hosting allows you to deploy to a server in a region of your choosing (like
 ### 1. Clone the Repository
 SSH into your server and clone this repository:
 ```bash
-git clone https://github.com/your-username/janus-app.git
+git clone https://github.com/janus-protocol/janus-app.git
 cd janus-app
 ```
 

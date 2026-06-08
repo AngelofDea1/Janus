@@ -43,7 +43,7 @@ Perpetual futures have "funding rates" - payments between long and short traders
 ```
 User deposits USDC
  
-Receives JANUS shares (ERC-4626)
+Receives jUSDC / jEURC vault tokens (ERC-4626)
  
 Keeper bot finds funding rate spreads
  
@@ -108,8 +108,8 @@ User can withdraw anytime (2-day settlement)
 - **Blockchain**: Arc L1 Testnet (Chain ID: `5042002`)
 - **RPC**: `https://rpc.testnet.arc.network`
 - **Explorer**: `https://testnet.arcscan.app`
-- **Frontend**: `https://janus.finance` (launching mainnet)
-- **Demo**: `http://localhost:3000` (development)
+- **Frontend**: `https://janushq.xyz` (launching mainnet)
+- **Demo**: `https://janus-app-virid.vercel.app` (production testnet preview)
 
 ---
 
@@ -169,10 +169,10 @@ User can withdraw anytime (2-day settlement)
 
 ## Contact & Support
 
-- **Website**: https://janus.finance
+- **Website**: https://janushq.xyz
 - **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_)
 - **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
-- **Email**: team@janus.finance
+- **Email**: team@janushq.xyz
 - **Telegram**: t.me/janusprotocol
 - **GitHub**: github.com/janus-protocol
 

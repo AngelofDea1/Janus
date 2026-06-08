@@ -93,7 +93,7 @@ export default function WithdrawalQueue() {
  <span>Requested {new Date(Number(request.requestTime) * 1000).toLocaleDateString()}</span>
  </div>
  <h4 className="text-xl font-heading font-medium text-foreground">
- {formatUnits(request.shares, 18)} <span className="text-sm text-slate-500">JANUS Shares</span>
+ {formatUnits(request.shares, 18)} <span className="text-sm text-slate-500">jUSDC / jEURC</span>
  </h4>
  </div>
 
