@@ -1,216 +1,166 @@
-# Janus User Guide - Step-by-Step
+# Janus User Guide
 
 ## Getting Started
 
-### Step 1: Prepare Your Wallet
+### Step 1: Set Up Your Wallet
 
-1. Install a Web3 Wallet (e.g. Rabby, Rainbow, MetaMask)
-2. Add Arc Testnet network:
- - Network Name: `Arc Testnet`
- - RPC URL: `https://rpc.testnet.arc.network`
- - Chain ID: `5042002`
- - Currency: `ETH`
-3. Get testnet funds:
- - ETH (gas): Visit Arc faucet
- - USDC: Request from Janus team or swap ETH
+1. Install an EVM-compatible wallet — MetaMask, Rabby, or Phantom recommended
+2. Add the Arc Testnet network:
+   - **Network Name:** Arc Testnet
+   - **RPC URL:** `https://rpc.testnet.arc.network`
+   - **Chain ID:** `5042002`
+   - **Currency Symbol:** ETH
+3. Get testnet tokens:
+   - **USDC/EURC:** Claim free tokens from the [Circle Faucet](https://faucet.circle.com/) — select Arc Testnet and paste your wallet address
+   - **ETH (for gas):** Visit the Arc Testnet faucet or ask in Discord
 
 ### Step 2: Connect to Janus
 
-1. Go to `https://janushq.xyz`
-2. Click "Connect Wallet"
-3. Choose your wallet provider
-4. Approve network switch to Arc
-5. You're connected!
+1. Go to [janushq.xyz](https://janushq.xyz)
+2. Click **Connect** in the top navigation
+3. Select your wallet from the list
+4. Approve the network switch to Arc Testnet when prompted
+5. You're connected
 
 ---
 
-## Depositing USDC
+## Depositing
 
-### Step 1: Approve USDC Spending
+### Step 1: Approve Token Spending
 
-1. On the dashboard, find "Deposit Amount"
-2. Enter amount (e.g., 1000 USDC)
-3. Click "Deposit USDC"
-4. Web3 Wallet popup: "Approve spending limit"
-5. Click "Approve"
-6. Wait for transaction (30-60 seconds)
+1. Navigate to the **Trade** page
+2. Select your asset (USDC or EURC) from the dropdown
+3. Enter the amount you want to deposit
+4. Click **Approve USDC** (or EURC)
+5. Your wallet will open — click **Confirm**
+6. Wait for the approval transaction to confirm (~30 seconds)
 
-**What's happening:** You're giving the vault permission to transfer your USDC.
+*This step gives the vault permission to receive your tokens. It only needs to be done once per token.*
 
-### Step 2: Execute Deposit
+### Step 2: Deposit
 
-1. After approval, click "Deposit USDC" again
-2. Web3 Wallet popup: "Confirm transaction"
-3. Click "Confirm"
-4. Wait for blockchain confirmation
-5. Dashboard updates with your vault tokens (jUSDC/jEURC)
+1. After approval confirms, click **Deposit**
+2. Your wallet will open — click **Confirm**
+3. Wait for the transaction to confirm (~1–2 minutes)
+4. Your dashboard will update showing your vault balance (jUSDC or jEURC)
 
-**What you get:**
-- USDC/EURC is transferred to vault
-- You receive vault tokens (jUSDC or jEURC) (ERC-4626 standard)
-- Shares represent your vault ownership
-- Yield compounds automatically
+**What happens:**
+- Your USDC/EURC is transferred to the vault
+- You receive vault tokens (jUSDC or jEURC) representing your share
+- Yield begins compounding automatically
 
 ---
 
 ## Understanding Your Dashboard
 
 ### TVL (Total Value Locked)
-- Total USDC in vault
-- Shows vault health
-- Larger TVL = more capital for arbitrage = better spread capture
+Total assets deposited across the vault. Higher TVL means more capital available for arbitrage and better spread capture.
 
-### Current APY
-- Annual percentage yield
-- Updated every 8 hours (funding rate changes)
-- **Net of all fees** (you get this after the 15% performance fee)
-- Varies with market conditions
+### Live APY
+Current annualised yield estimate, updated every 8 hours when funding rates change. This reflects real market conditions — it fluctuates.
 
 ### Your Balance
-- Your USDC value in the vault
-- = jUSDC/jEURC × share price
-- Updates as yield compounds
+Your current USDC/EURC value in the vault. Equals your vault tokens × current share price. Grows as yield compounds.
 
 ### Your Shares
-- jUSDC/jEURC you own
-- Represents your ownership %
-- Used for withdrawals
+The jUSDC or jEURC tokens you hold, representing your ownership percentage of the vault. Used when withdrawing.
+
+### Est. Daily / Est. Monthly
+Projected earnings based on the current APY and your balance. These are estimates — actual returns depend on market conditions.
 
 ---
 
-## Withdrawing USDC
+## Withdrawing
 
 ### Step 1: Request Withdrawal
 
-1. Go to "Withdraw" section
-2. Enter shares amount (or click "MAX")
-3. Click "Request Withdrawal"
-4. Web3 Wallet popup
-5. Click "Confirm"
-
-**Why the delay?** Prevents bank runs, protects other users.
+1. Switch to the **Withdraw** tab on the Trade page
+2. Enter the number of shares to redeem (or click **Max**)
+3. Click **Withdraw**
+4. Confirm in your wallet
+5. Your withdrawal is now queued
 
 ### Step 2: Wait 2 Days
 
-- Withdrawal is queued
-- You'll see countdown timer
-- Can't withdraw during this period (for vault stability)
-- This is intentional safety feature
+- A countdown timer shows when your withdrawal will be ready
+- You cannot complete the withdrawal during this period
+- This delay protects all vault users by giving the keeper bot time to safely unwind positions
 
 ### Step 3: Complete Withdrawal
 
-1. After 2 days, withdrawal is "ready"
-2. Click "Complete Withdrawal"
-3. Web3 Wallet popup
-4. Click "Confirm"
-5. USDC transferred back to your wallet
-6. jUSDC/jEURC burned
-
-**What you get back:**
-- Original USDC + all earned yield
-- Less 1% management fee
-- Transaction complete
+1. After the 2-day timer, return to the Withdraw tab
+2. Click **Complete Withdrawal**
+3. Confirm in your wallet
+4. USDC/EURC is transferred back to your wallet
+5. Your jUSDC/jEURC vault tokens are burned
 
 ---
 
 ## Checking Your Earnings
 
 ### Method 1: Dashboard
-- Shows "Your Balance" in real-time
-- Compares to your initial deposit
-- Profit = Current Balance - Initial Deposit
+Your balance updates in real-time. Profit = Current Balance − Initial Deposit.
 
-### Method 2: Audit Trail
-1. Go to "Governance" tab
-2. Click "Audit Trail"
-3. Search for your address
-4. See all transactions
-5. Verify on Arc explorer (testnet.arcscan.app)
+### Method 2: On-Chain
+1. Go to [testnet.arcscan.app](https://testnet.arcscan.app)
+2. Search your wallet address
+3. Find your jUSDC or jEURC token balance
+4. Call `convertToAssets(balance)` on the vault contract to see the USDC equivalent
 
-### Method 3: On-Chain Verification
-1. Get your vault token balance on-chain
-2. Call `balanceOf(your_address)`
-3. Call `convertToAssets(balance)`
-4. That's your USDC value
+### Method 3: Governance Tab → Audit Trail
+Search your address to see a full history of your deposits, withdrawals, and yield events.
 
 ---
 
-## Governance & Safety Features
+## Governance & Safety
 
-### View Governance Status
-1. Go to "Governance" tab
-2. See multi-sig status (5-of-9 required)
-3. See timelock status (24-hour delays)
-4. See insurance fund balance
+### Governance Tab
+- View multisig status (5-of-9 required for any critical change)
+- View timelock status and countdown (24-hour delay before changes take effect)
+- View insurance fund balance
 
-### Monitor Insurance Fund
-- **Total Insured**: How much protection exists
-- **Available**: How much can cover claims
-- **How it works**: 5% of all performance fees go here
-- **Your coverage**: Your deposit is insured up to available balance
+### Insurance Fund
+- Funded by 5% of all performance fees
+- Covers smart contract exploits up to the available fund balance
+- Balance is shown on the Governance tab
 
-### Check Audit Trail
-- Every vault action is logged
-- Permanent, on-chain record
-- Verifiable by anyone
-- Proves no unauthorized actions
-
----
-
-## Common Questions
-
-### Q: Is my money safe?
-**A:** Yes, for reasonable amounts. Insurance fund + multisig governance + audit trail + smart contract audit protect you. Not 100% risk-free (DeFi is experimental), but best-in-class safety.
-
-### Q: Why the 2-day withdrawal delay?
-**A:** Prevents bank runs that hurt other users. If 100 people withdraw simultaneously, liquidity problems occur. 2-day delay gives keeper time to unwind positions safely.
-
-### Q: What if funding rates go negative?
-**A:** Strategy stops working temporarily. Bot pauses, waits for positive rates. Your USDC is safe, just not earning yield.
-
-### Q: Can I lose money?
-**A:** In normal conditions: No (market-neutral). In extreme conditions: Possibly (liquidations, smart contract exploits). Insurance fund covers known exploits. Only deposit what you can afford to lose.
-
-### Q: How often do I earn?
-**A:** Continuously. Funding rates paid every 8 hours. Yield auto-compounds. You earn even while sleeping.
-
-### Q: Can I withdraw anytime?
-**A:** Yes, but with 2-day settlement. Request withdrawal, wait 2 days, complete withdrawal. Emergency: If vault is paused by multisig, longer delays possible.
-
-### Q: What's the tax situation?
-**A:** Consult a tax professional. Depends on your jurisdiction. Generally: Yield is taxable income. Gains on exit are taxable events.
-
-### Q: How do I know the APY is real?
-**A:** It's live on-chain. Check market monitor for funding rates. Calculate: spread × 3/day × 365 = APY. Verify on Arc explorer.
+### Audit Trail
+- Every vault action is logged on-chain permanently
+- Verifiable by anyone on [testnet.arcscan.app](https://testnet.arcscan.app)
 
 ---
 
 ## Troubleshooting
 
-### Wallet Won't Connect
-1. Check Arc network is added correctly
-2. Switch network dropdown to Arc
-3. Refresh page
-4. Try different wallet (WalletConnect)
+### Wallet won't connect
+1. Confirm Arc Testnet is added with the correct RPC and Chain ID
+2. Switch your wallet's active network to Arc Testnet manually
+3. Hard-refresh the page (`Cmd+Shift+R`)
+4. Try a different browser or incognito mode
 
-### Deposit Fails
-1. Check you have ETH for gas
-2. Check you approved USDC first
-3. Check USDC balance is sufficient
-4. Try again (could be RPC issue)
+### Deposit fails
+1. Make sure you have ETH in your wallet for gas (~$0.05 worth)
+2. Confirm the approval transaction completed before attempting the deposit
+3. Check your USDC/EURC balance is sufficient
+4. Try again — occasional RPC timeouts can cause transient failures
 
-### Withdrawal Blocked
-1. Check 2-day timer hasn't passed
-2. Check you requested withdrawal (not just set amount)
-3. Check vault isn't paused (governance tab)
+### Withdrawal button is greyed out
+1. The 2-day timer has not elapsed yet — check the countdown
+2. Confirm you submitted a withdrawal request (not just entered an amount)
+3. Check the Governance tab to see if the vault is paused
 
-### Numbers Don't Match
-1. Refresh dashboard
-2. Check on-chain balance: `balanceOf(address)`
-3. Convert shares to assets: `convertToAssets(shares)`
-4. Compare to explorer value
+### Balance shows incorrectly
+1. Hard-refresh the page
+2. Verify on-chain at [testnet.arcscan.app](https://testnet.arcscan.app)
+3. Expected value = shares × current share price (call `convertToAssets` on the contract)
 
-### Need Help?
-- Twitter: [@janusprotocol_](https://x.com/janusprotocol_)
-- Discord: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk)
-- Email: support@janushq.xyz
+### Numbers don't match after a deposit
+Block confirmations can take 1–2 minutes on Arc Testnet. Wait a moment and refresh.
+
+---
+
+## Need Help?
+
+- **Discord**: [discord.gg/23skEWUbbk](https://discord.gg/23skEWUbbk) — fastest support
+- **Twitter**: [@janusprotocol_](https://x.com/janusprotocol_)
+- **Email**: support@janushq.xyz
