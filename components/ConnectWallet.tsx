@@ -179,15 +179,15 @@ export default function ConnectWallet() {
                   <div className="space-y-1">
                     {mainListConnectors.map((connector) => {
                       const isMetaMaskDetected = typeof window !== 'undefined' && (
-                        !!(window as any).ethereum?.isMetaMask || 
+                        !!(window as any).ethereum?.isMetaMask ||
                         !!(window as any).ethereum?.providers?.some((p: any) => p.isMetaMask)
                       );
                       const isCoinbaseDetected = typeof window !== 'undefined' && (
-                        !!(window as any).ethereum?.isCoinbaseWallet || 
+                        !!(window as any).ethereum?.isCoinbaseWallet ||
                         !!(window as any).ethereum?.providers?.some((p: any) => p.isCoinbaseWallet)
                       );
-                      
-                      const isDetected = !!connector.icon || 
+
+                      const isDetected = !!connector.icon ||
                         (connector.name.toLowerCase().includes('metamask') && isMetaMaskDetected) ||
                         (connector.name.toLowerCase().includes('coinbase') && isCoinbaseDetected);
 
