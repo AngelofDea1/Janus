@@ -274,7 +274,7 @@ export default function PortfolioDashboard() {
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Your Balance</div>
               <div className="text-3xl font-bold font-mono text-foreground">${formatNumber(userValueUsdc)}</div>
               <div className="text-xs text-slate-500 font-medium mt-1">
-                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesUsdc)}</span> Janus USDC Shares
+                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesUsdc)}</span> jUSDC
               </div>
             </div>
 
@@ -310,7 +310,7 @@ export default function PortfolioDashboard() {
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Your Balance</div>
               <div className="text-3xl font-bold font-mono text-foreground">€{formatNumber(userValueEurc)}</div>
               <div className="text-xs text-slate-500 font-medium mt-1">
-                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesEurc)}</span> Janus EURC Shares
+                Shares: <span className="font-semibold font-mono">{formatNumber(userSharesEurc)}</span> jEURC
               </div>
             </div>
 
