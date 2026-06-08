@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useConnect, useAccount, useDisconnect, useEnsName } from "wagmi";
-import { X, ChevronDown, LogOut, CheckCircle2, Copy } from "lucide-react";
+import { ChevronDown, LogOut, CheckCircle2, Copy, ChevronRight } from "lucide-react";
 
 // Renders the icon using the wallet's injected EIP-6963 icon, or falls back to standard CDN images.
 const WalletIcon = ({ connector }: { connector: any }) => {
@@ -40,6 +40,7 @@ const WalletIcon = ({ connector }: { connector: any }) => {
 
 export default function ConnectWallet() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showOtherWallets, setShowOtherWallets] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const { connectors, connect } = useConnect();
@@ -71,6 +72,7 @@ export default function ConnectWallet() {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setShowOtherWallets(false);
       }
     }
     if (isOpen) {
@@ -83,6 +85,7 @@ export default function ConnectWallet() {
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+    setShowOtherWallets(false);
   };
 
   if (!mounted) return <div className="w-32 h-10 bg-black/5 dark:bg-white/5 animate-pulse rounded-full"></div>;
@@ -96,7 +99,8 @@ export default function ConnectWallet() {
   })).values());
 
   const prominentNames = ['metamask', 'okx wallet', 'rabby wallet', 'phantom', 'coinbase wallet', 'walletconnect'];
-  const mainListConnectors = uniqueConnectors.filter(c => prominentNames.some(name => c.name.toLowerCase().includes(name)));
+  const prominentConnectors = uniqueConnectors.filter(c => prominentNames.some(name => c.name.toLowerCase().includes(name)));
+  const otherConnectors = uniqueConnectors.filter(c => !prominentNames.some(name => c.name.toLowerCase().includes(name)) && c.id !== 'injected');
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -112,12 +116,7 @@ export default function ConnectWallet() {
           onClick={toggleDropdown}
           className="bg-white dark:bg-[#1a1a1a] border border-borderLine hover:bg-black/5 dark:hover:bg-white/5 text-foreground font-medium px-4 py-2 rounded-full transition-all flex items-center gap-2 shadow-sm"
         >
-          <img
-            src="/janus-bust-4k.png"
-            alt="Avatar"
-            className="w-5 h-5 rounded-full object-contain bg-white border border-borderLine"
-            draggable={false}
-          />
+          <div className="w-5 h-5 rounded-full bg-accent"></div>
           {ensName || formatAddress(address)}
           <ChevronDown className="w-4 h-4 text-slate-400" />
         </button>
@@ -127,27 +126,28 @@ export default function ConnectWallet() {
         <div className="absolute right-0 mt-3 w-[360px] sm:w-[380px] bg-panel dark:bg-[#121212] rounded-[28px] shadow-2xl border border-borderLine p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-200 origin-top-right">
           {isConnected ? (
             <div className="space-y-5">
-              {/* Minimal Account Details */}
+              {/* Account Card */}
               <div className="flex flex-col items-center p-6 bg-black/5 dark:bg-white/5 rounded-3xl border border-borderLine">
-                <img
-                  src="/janus-bust-4k.png"
-                  alt="Janus Bust"
-                  className="w-20 h-20 rounded-full object-contain bg-white border border-borderLine shadow-sm mb-4"
-                  draggable={false}
-                />
-                
-                <div className="text-xl font-mono font-bold tracking-wider text-foreground mb-3">
+                <div className="w-16 h-16 rounded-full bg-accent mb-4"></div>
+
+                <div className="text-xl font-mono font-bold tracking-wider text-foreground mb-1">
                   {ensName || formatAddress(address)}
                 </div>
 
+                {activeConnector && (
+                  <p className="text-xs text-slate-500 mb-4">
+                    Connected via {activeConnector.name}
+                  </p>
+                )}
+
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-borderLine hover:bg-black/5 dark:hover:bg-white/10 rounded-xl transition-all text-sm font-semibold shadow-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-borderLine hover:bg-black/5 dark:hover:bg-white/10 rounded-xl transition-all text-sm font-semibold"
                 >
                   {copied ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 animate-bounce" />
-                      <span className="text-emerald-500">Address Copied</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      <span className="text-emerald-500">Copied</span>
                     </>
                   ) : (
                     <>
@@ -156,15 +156,9 @@ export default function ConnectWallet() {
                     </>
                   )}
                 </button>
-
-                {activeConnector && (
-                  <p className="text-xs text-slate-500 mt-4">
-                    Connected via {activeConnector.name}
-                  </p>
-                )}
               </div>
 
-              {/* Action Buttons */}
+              {/* Disconnect */}
               <button
                 onClick={() => {
                   disconnect();
@@ -185,8 +179,10 @@ export default function ConnectWallet() {
               <div className="text-[12px] font-heading font-semibold text-slate-400 uppercase tracking-wider px-1">
                 Connect Wallet
               </div>
+
+              {/* Main Wallet List */}
               <div className="space-y-1.5">
-                {mainListConnectors.map((connector) => {
+                {prominentConnectors.map((connector) => {
                   const isMetaMaskDetected = typeof window !== 'undefined' && (
                     !!(window as any).ethereum?.isMetaMask ||
                     !!(window as any).ethereum?.providers?.some((p: any) => p.isMetaMask)
@@ -207,7 +203,7 @@ export default function ConnectWallet() {
                         connect({ connector });
                         setIsOpen(false);
                       }}
-                      className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
+                      className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all"
                     >
                       <div className="flex items-center gap-4">
                         <WalletIcon connector={connector} />
@@ -221,6 +217,61 @@ export default function ConnectWallet() {
                     </button>
                   );
                 })}
+              </div>
+
+              {/* Other Wallets Accordion */}
+              {otherConnectors.length > 0 && (
+                <div className="pt-1">
+                  <button
+                    onClick={() => setShowOtherWallets(!showOtherWallets)}
+                    className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                  >
+                    <span className="font-semibold text-[15px] text-slate-600 dark:text-slate-400">
+                      Other wallets
+                    </span>
+                    {showOtherWallets ? (
+                      <ChevronDown className="w-5 h-5 text-slate-400" />
+                    ) : (
+                      <ChevronRight className="w-5 h-5 text-slate-400" />
+                    )}
+                  </button>
+
+                  {showOtherWallets && (
+                    <div className="space-y-1 mt-1 pl-3 border-l-2 border-borderLine ml-3">
+                      {otherConnectors.map((connector) => {
+                        const isDetected = !!connector.icon;
+                        return (
+                          <button
+                            key={connector.uid}
+                            onClick={() => {
+                              connect({ connector });
+                              setIsOpen(false);
+                            }}
+                            className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                          >
+                            <div className="flex items-center gap-3">
+                              <WalletIcon connector={connector} />
+                              <span className="font-medium text-sm text-foreground">{connector.name}</span>
+                            </div>
+                            {isDetected && (
+                              <span className="text-[10px] font-medium text-slate-500">Detected</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Terms Disclaimer */}
+              <div className="pt-4 px-1">
+                <p className="text-[11px] leading-relaxed text-slate-500 text-center">
+                  By connecting a wallet, you agree to Janus{" "}
+                  <span className="text-foreground font-medium">Terms of Service</span>{" "}
+                  and consent to its{" "}
+                  <span className="text-foreground font-medium">Privacy Policy</span>.
+                </p>
               </div>
             </div>
           )}
