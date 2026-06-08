@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, ExternalLink, ArrowRight } from "lucide-react";
 
 export default function BlogPost() {
   return (
@@ -46,10 +47,14 @@ export default function BlogPost() {
                 <li><strong>Currency Symbol:</strong> ETH</li>
               </ul>
               
-              {/* Image Placeholder */}
-              <div className="w-full h-64 bg-black/5 dark:bg-white/5 border border-borderLine border-dashed rounded-2xl flex flex-col items-center justify-center text-slate-400 mb-2">
-                <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
-                <span className="text-sm font-medium">Insert Screenshot: Adding custom network to MetaMask</span>
+              <div className="w-full rounded-2xl overflow-hidden border border-borderLine mb-2 shadow-sm">
+                <Image
+                  src="/blog/step1-add-network.png"
+                  alt="MetaMask Add Arc Testnet prompt"
+                  width={1280}
+                  height={720}
+                  className="w-full h-auto"
+                />
               </div>
             </section>
 
@@ -71,10 +76,14 @@ export default function BlogPost() {
                 Simply paste your wallet address, select the network, and hit "Send Me Tokens". Wait a few seconds for the transaction to confirm.
               </p>
 
-              {/* Image Placeholder */}
-              <div className="w-full h-64 bg-black/5 dark:bg-white/5 border border-borderLine border-dashed rounded-2xl flex flex-col items-center justify-center text-slate-400 mb-2">
-                <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
-                <span className="text-sm font-medium">Insert Screenshot: Circle Faucet interface</span>
+              <div className="w-full rounded-2xl overflow-hidden border border-borderLine mb-2 shadow-sm">
+                <Image
+                  src="/blog/step2-faucet.png"
+                  alt="Circle Testnet Faucet showing USDC on Arc Testnet"
+                  width={1280}
+                  height={720}
+                  className="w-full h-auto"
+                />
               </div>
             </section>
 
@@ -88,10 +97,14 @@ export default function BlogPost() {
                 Once connected, navigate to the vault of your choice (e.g., USDC Delta-Neutral Vault). Enter the amount you wish to deposit, and click the Deposit button. You will be prompted to approve the spending cap in your wallet, followed by the actual deposit transaction.
               </p>
 
-              {/* Image Placeholder */}
-              <div className="w-full h-64 bg-black/5 dark:bg-white/5 border border-borderLine border-dashed rounded-2xl flex flex-col items-center justify-center text-slate-400 mb-2">
-                <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
-                <span className="text-sm font-medium">Insert Screenshot: The Janus Trade UI showing a deposit being made</span>
+              <div className="w-full rounded-2xl overflow-hidden border border-borderLine mb-2 shadow-sm">
+                <Image
+                  src="/blog/step3-deposit.png"
+                  alt="MetaMask transaction request confirming a Janus deposit"
+                  width={1280}
+                  height={720}
+                  className="w-full h-auto"
+                />
               </div>
             </section>
 
@@ -112,8 +125,9 @@ export default function BlogPost() {
             <div className="mt-12 pt-8 border-t border-borderLine text-center">
               <h3 className="text-xl font-bold text-foreground mb-4">Ready to start?</h3>
               <Link href="/app">
-                <button className="px-8 py-4 bg-foreground text-background rounded-full font-bold shadow-lg hover:scale-105 transition-transform">
+                <button className="group inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-[0_4px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_0_rgba(255,255,255,0.2)] active:translate-y-[4px] active:shadow-none hover:opacity-90">
                   Launch App
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </button>
               </Link>
             </div>
