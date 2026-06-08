@@ -54,7 +54,8 @@ export default function ArbitrageApp() {
   const address = wagmiAddress || (localAddress ? (localAddress as `0x${string}`) : undefined);
 
   const [simulationPending, setSimulationPending] = useState(false);
-  const { writeContract, data: hash, isPending } = useWriteContract();
+  const { writeContract, writeContractAsync, data: hash, isPending } = useWriteContract();
+  const [isApproving, setIsApproving] = useState(false);
   const publicClient = usePublicClient({ chainId: 5042002 });
   const { switchChainAsync } = useSwitchChain();
   const [switchError, setSwitchError] = useState<string | null>(null);
@@ -224,7 +225,7 @@ export default function ArbitrageApp() {
 
   const activeVaultAddress = isUSDC ? VAULT_ADDRESS : EURC_VAULT_ADDRESS;
   const activeAssetAddress = isUSDC ? USDC_ADDRESS : EURC_ADDRESS;
-  const activePendingState = useSim ? simulationPending : isPending;
+  const activePendingState = useSim ? simulationPending : (isPending || isApproving);
 
   const needsApproval = depositAmount && (activeAllowance < parseUnits(depositAmount, 6));
 
@@ -245,6 +246,36 @@ export default function ArbitrageApp() {
     
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
+
+    // Use direct eth_sendTransaction to bypass MetaMask Blockaid "Review alert" UI
+    // which can render its button inaccessible on custom/testnet networks.
+    const provider = typeof window !== "undefined" && (window as any).ethereum;
+    if (provider && address) {
+      try {
+        setIsApproving(true);
+        setSwitchError(null);
+        const { encodeFunctionData } = await import("viem");
+        const data = encodeFunctionData({
+          abi: USDC_ABI,
+          functionName: "approve",
+          args: [activeVaultAddress, amount],
+        });
+        await provider.request({
+          method: "eth_sendTransaction",
+          params: [{ from: address, to: activeAssetAddress, data }],
+        });
+      } catch (err: any) {
+        const msg = err?.message || err?.shortMessage || "Approval cancelled or failed.";
+        if (!msg.toLowerCase().includes("user denied") && !msg.toLowerCase().includes("user rejected")) {
+          setSwitchError(msg);
+        }
+      } finally {
+        setIsApproving(false);
+      }
+      return;
+    }
+
+    // Fallback: wagmi writeContract (for wallets without window.ethereum)
     writeContract({
       address: activeAssetAddress,
       abi: USDC_ABI,
