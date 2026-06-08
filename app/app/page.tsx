@@ -68,7 +68,13 @@ export default function ArbitrageApp() {
       } catch (err: any) {
         setIsSwitching(false);
         const msg = err?.shortMessage || err?.message || "Failed to switch network";
-        setSwitchError(msg);
+        if (msg.includes("rejected") || msg.includes("denied")) {
+          setSwitchError("You rejected the network switch. Please try again.");
+        } else if (msg.includes("Unrecognized chain") || msg.includes("unknown chain")) {
+          setSwitchError("Arc Testnet not found in wallet. It will be added automatically — please confirm the prompts.");
+        } else {
+          setSwitchError(msg);
+        }
         console.error("Failed to switch network:", err);
       }
       return false;
@@ -493,10 +499,10 @@ export default function ArbitrageApp() {
                      </div>
                    )}
                    <button
-                     onClick={chainId !== ARC_TESTNET_CHAIN_ID ? checkAndSwitchNetwork : handleDeposit}
-                     disabled={(chainId === ARC_TESTNET_CHAIN_ID && !depositAmount) || activePendingState || isSwitching}
+                     onClick={handleDeposit}
+                     disabled={activePendingState || isSwitching}
                      className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                       (chainId === ARC_TESTNET_CHAIN_ID && !depositAmount)
+                       (!depositAmount && chainId === ARC_TESTNET_CHAIN_ID)
                          ? "bg-black/5 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                          : (activePendingState || isSwitching)
                          ? "bg-foreground/50 text-background cursor-wait"
@@ -565,7 +571,7 @@ export default function ArbitrageApp() {
                      </div>
                    )}
                   <button
-                    onClick={chainId !== ARC_TESTNET_CHAIN_ID ? checkAndSwitchNetwork : handleWithdraw}
+                    onClick={handleWithdraw}
                     disabled={(!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID) || activePendingState || isSwitching}
                     className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                       (!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID)
