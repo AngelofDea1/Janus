@@ -535,7 +535,7 @@ export default function ArbitrageApp() {
                      </div>
                    )}
                    <button
-                     onClick={handleDeposit}
+                     onClick={chainId !== ARC_TESTNET_CHAIN_ID ? checkAndSwitchNetwork : handleDeposit}
                      disabled={(chainId === ARC_TESTNET_CHAIN_ID && !depositAmount) || activePendingState || isSwitching}
                      className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                        (chainId === ARC_TESTNET_CHAIN_ID && !depositAmount)
@@ -607,7 +607,7 @@ export default function ArbitrageApp() {
                      </div>
                    )}
                   <button
-                    onClick={handleWithdraw}
+                    onClick={chainId !== ARC_TESTNET_CHAIN_ID ? checkAndSwitchNetwork : handleWithdraw}
                     disabled={(!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID) || activePendingState || isSwitching}
                     className={`group relative overflow-hidden w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                       (!withdrawShares && chainId === ARC_TESTNET_CHAIN_ID)
