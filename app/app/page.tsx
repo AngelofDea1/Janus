@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAccount, useReadContract, useWriteContract, useBalance, usePublicClient, useSwitchChain } from "wagmi";
+import { useAccount, useReadContract, useWriteContract, useBalance, usePublicClient, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
 import { parseUnits, formatUnits, parseAbiItem } from "viem";
 import { 
  Shield, 
@@ -60,6 +60,27 @@ export default function ArbitrageApp() {
   const { switchChainAsync } = useSwitchChain();
   const [switchError, setSwitchError] = useState<string | null>(null);
   const [isSwitching, setIsSwitching] = useState(false);
+
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [txType, setTxType] = useState<"approve" | "deposit" | "withdraw" | null>(null);
+  const { isLoading: isTxWaiting, isSuccess: isTxSuccess } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+
+  useEffect(() => {
+    if (isTxSuccess && txHash) {
+      if (txType === "deposit") {
+        setDepositAmount("");
+      } else if (txType === "withdraw") {
+        setWithdrawShares("");
+      }
+      const timer = setTimeout(() => {
+        setTxHash(undefined);
+        setTxType(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isTxSuccess, txHash, txType]);
 
   const ARC_TESTNET_CHAIN_ID = 5042002;
 
@@ -225,7 +246,7 @@ export default function ArbitrageApp() {
 
   const activeVaultAddress = isUSDC ? VAULT_ADDRESS : EURC_VAULT_ADDRESS;
   const activeAssetAddress = isUSDC ? USDC_ADDRESS : EURC_ADDRESS;
-  const activePendingState = useSim ? simulationPending : (isPending || isApproving);
+  const activePendingState = useSim ? simulationPending : (isPending || isApproving || (!!txHash && isTxWaiting));
 
   const needsApproval = depositAmount && (activeAllowance < parseUnits(depositAmount, 6));
 
@@ -247,41 +268,28 @@ export default function ArbitrageApp() {
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
 
-    // Use direct eth_sendTransaction to bypass MetaMask Blockaid "Review alert" UI
-    // which can render its button inaccessible on custom/testnet networks.
-    const provider = typeof window !== "undefined" && (window as any).ethereum;
-    if (provider && address) {
-      try {
-        setIsApproving(true);
-        setSwitchError(null);
-        const { encodeFunctionData } = await import("viem");
-        const data = encodeFunctionData({
-          abi: USDC_ABI,
-          functionName: "approve",
-          args: [activeVaultAddress, amount],
-        });
-        await provider.request({
-          method: "eth_sendTransaction",
-          params: [{ from: address, to: activeAssetAddress, data }],
-        });
-      } catch (err: any) {
-        const msg = err?.message || err?.shortMessage || "Approval cancelled or failed.";
-        if (!msg.toLowerCase().includes("user denied") && !msg.toLowerCase().includes("user rejected")) {
-          setSwitchError(msg);
-        }
-      } finally {
-        setIsApproving(false);
+    try {
+      setIsApproving(true);
+      setSwitchError(null);
+      setTxHash(undefined);
+      setTxType("approve");
+      
+      const resHash = await writeContractAsync({
+        address: activeAssetAddress,
+        abi: USDC_ABI,
+        functionName: "approve",
+        args: [activeVaultAddress, amount],
+      });
+      setTxHash(resHash);
+    } catch (err: any) {
+      setTxType(null);
+      const msg = err?.message || err?.shortMessage || "Approval cancelled or failed.";
+      if (!msg.toLowerCase().includes("user denied") && !msg.toLowerCase().includes("user rejected")) {
+        setSwitchError(msg);
       }
-      return;
+    } finally {
+      setIsApproving(false);
     }
-
-    // Fallback: wagmi writeContract (for wallets without window.ethereum)
-    writeContract({
-      address: activeAssetAddress,
-      abi: USDC_ABI,
-      functionName: "approve",
-      args: [activeVaultAddress, amount],
-    });
   };
 
   const handleDeposit = async () => {
@@ -314,16 +322,29 @@ export default function ArbitrageApp() {
     if (!ready) return;
 
     if (!activeAllowance || activeAllowance < amount) {
-      approveAsset();
+      await approveAsset();
       return;
     }
 
-    writeContract({
-      address: activeVaultAddress,
-      abi: VAULT_ABI,
-      functionName: "deposit",
-      args: [amount, address!],
-    });
+    try {
+      setSwitchError(null);
+      setTxHash(undefined);
+      setTxType("deposit");
+
+      const resHash = await writeContractAsync({
+        address: activeVaultAddress,
+        abi: VAULT_ABI,
+        functionName: "deposit",
+        args: [amount, address!],
+      });
+      setTxHash(resHash);
+    } catch (err: any) {
+      setTxType(null);
+      const msg = err?.message || err?.shortMessage || "Deposit cancelled or failed.";
+      if (!msg.toLowerCase().includes("user denied") && !msg.toLowerCase().includes("user rejected")) {
+        setSwitchError(msg);
+      }
+    }
   };
 
   const handleWithdraw = async () => {
@@ -349,12 +370,25 @@ export default function ArbitrageApp() {
     const ready = await checkAndSwitchNetwork();
     if (!ready) return;
 
-    writeContract({
-      address: activeVaultAddress,
-      abi: VAULT_ABI,
-      functionName: "withdraw",
-      args: [sharesAmount, address!, address!],
-    });
+    try {
+      setSwitchError(null);
+      setTxHash(undefined);
+      setTxType("withdraw");
+
+      const resHash = await writeContractAsync({
+        address: activeVaultAddress,
+        abi: VAULT_ABI,
+        functionName: "withdraw",
+        args: [sharesAmount, address!, address!],
+      });
+      setTxHash(resHash);
+    } catch (err: any) {
+      setTxType(null);
+      const msg = err?.message || err?.shortMessage || "Withdrawal cancelled or failed.";
+      if (!msg.toLowerCase().includes("user denied") && !msg.toLowerCase().includes("user rejected")) {
+        setSwitchError(msg);
+      }
+    }
   };
 
   const formatNumber = (value: bigint | undefined, decimals: number = 6) => {
@@ -564,11 +598,17 @@ export default function ArbitrageApp() {
                      {(!activePendingState && !isSwitching && (depositAmount || chainId !== ARC_TESTNET_CHAIN_ID)) && (
                        <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                      )}
-                     <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
+                     <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2 font-semibold">
                        {isSwitching
                          ? "Switching Network..."
-                         : activePendingState 
-                         ? "Processing..." 
+                         : isPending
+                         ? "Confirm in Wallet..."
+                         : (txHash && isTxWaiting)
+                         ? "Processing on Blockchain..."
+                         : (isTxSuccess && txHash && txType === "deposit")
+                         ? "Deposit Success!"
+                         : (isTxSuccess && txHash && txType === "approve")
+                         ? "Approval Success!"
                          : (chainId !== ARC_TESTNET_CHAIN_ID)
                          ? "Switch to Arc Testnet"
                          : (!depositAmount) 
@@ -636,11 +676,15 @@ export default function ArbitrageApp() {
                     {(withdrawShares || chainId !== ARC_TESTNET_CHAIN_ID) && !activePendingState && !isSwitching && (
                       <div className="absolute inset-0 bg-foreground translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                     )}
-                    <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2">
+                    <span className="relative z-10 group-hover:text-background transition-colors duration-300 flex items-center justify-center gap-2 font-semibold">
                       {isSwitching
                         ? "Switching Network..."
-                        : activePendingState
-                        ? "Processing..."
+                        : isPending
+                        ? "Confirm in Wallet..."
+                        : (txHash && isTxWaiting)
+                        ? "Processing on Blockchain..."
+                        : (isTxSuccess && txHash && txType === "withdraw")
+                        ? "Withdrawal Success!"
                         : (chainId !== ARC_TESTNET_CHAIN_ID)
                         ? "Switch to Arc Testnet"
                         : !withdrawShares
