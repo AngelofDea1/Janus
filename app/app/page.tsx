@@ -578,6 +578,20 @@ export default function ArbitrageApp() {
 
                  {/* Execute Button */}
                  <div className="mt-4">
+                    {needsApproval && (
+                      <div className="mb-3 flex justify-between items-center text-xs text-slate-500 bg-black/5 dark:bg-[#0c0c0e] p-3 rounded-xl border border-borderLine animate-in fade-in duration-200">
+                        <span className="font-semibold text-slate-400">Transaction Workflow</span>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded-md ${(!txHash && activeAllowance < parseUnits(depositAmount || "0", 6)) || (txType === "approve" && isTxWaiting) ? "bg-accent/20 text-accent font-bold" : "bg-emerald-500/10 text-emerald-500 font-semibold"}`}>
+                            1. Approve
+                          </span>
+                          <span className="text-slate-400">→</span>
+                          <span className={`px-2 py-0.5 rounded-md ${activeAllowance >= parseUnits(depositAmount || "0", 6) ? "bg-accent/20 text-accent font-bold" : "text-slate-500 font-semibold"}`}>
+                            2. Deposit
+                          </span>
+                        </div>
+                      </div>
+                    )}
                    {switchError && (
                      <div className="mb-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
                        <Info className="w-4 h-4 mt-0.5 shrink-0" />
