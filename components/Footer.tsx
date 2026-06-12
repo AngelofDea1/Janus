@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 
-
 export default function Footer() {
   return (
     <footer className="w-full border-t border-borderLine bg-background py-6 mt-auto">
@@ -21,12 +20,12 @@ export default function Footer() {
         </div>
 
         {/* Right Socials/App */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center justify-center gap-2">
           <a 
             href="https://x.com/janusprotocol_" 
             target="_blank" 
             rel="noreferrer"
-            className="text-slate-500 hover:text-foreground transition-colors"
+            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all rounded-full min-w-0 min-h-0"
             aria-label="Twitter"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -37,7 +36,7 @@ export default function Footer() {
             href="https://discord.gg/23skEWUbbk" 
             target="_blank" 
             rel="noreferrer"
-            className="text-slate-500 hover:text-foreground transition-colors flex items-center justify-center w-4 h-4"
+            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all rounded-full min-w-0 min-h-0"
             aria-label="Discord"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">

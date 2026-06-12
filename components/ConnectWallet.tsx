@@ -123,7 +123,7 @@ export default function ConnectWallet() {
       )}
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-[360px] sm:w-[380px] bg-panel dark:bg-[#121212] rounded-[28px] shadow-2xl border border-borderLine p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-200 origin-top-right">
+        <div className="absolute right-1/2 translate-x-1/2 md:right-0 md:translate-x-0 mt-3 w-[calc(100vw-32px)] sm:w-[380px] max-h-[calc(100vh-160px)] overflow-y-auto bg-panel dark:bg-[#121212] rounded-[28px] shadow-2xl border border-borderLine p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-200 origin-top md:origin-top-right">
           {isConnected ? (
             <div className="space-y-5">
               {/* Account Card */}

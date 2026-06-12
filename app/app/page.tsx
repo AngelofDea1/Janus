@@ -484,15 +484,15 @@ export default function ArbitrageApp() {
               <div className="p-2">
                 {/* Input Section */}
                 <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
-                  <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                  <div className="flex justify-between items-center text-xs sm:text-sm text-slate-500 mb-2 font-medium">
                      <span>You pay</span>
-                     <span className="flex items-center gap-2">
+                     <span className="flex items-center gap-1.5">
                        Balance: {formatNumber(activeBalance)}
                        <button 
                          onClick={() => {
                             if (activeBalance) setDepositAmount(formatUnits(activeBalance, 6));
                          }}
-                         className="text-accent hover:text-accentHover font-semibold"
+                         className="text-accent hover:text-accentHover font-semibold min-h-0 min-w-0 h-auto w-auto px-1.5 py-0.5 rounded hover:bg-accent/10 transition-colors"
                        >
                          Max
                        </button>
@@ -644,15 +644,15 @@ export default function ArbitrageApp() {
               <div className="p-2">
                 {/* Withdraw Section */}
                 <div className="bg-black/5 dark:bg-[#09090b] rounded-2xl p-4 border border-transparent focus-within:border-accent/30 transition-colors">
-                  <div className="flex justify-between text-sm text-slate-500 mb-2 font-medium">
+                  <div className="flex justify-between items-center text-xs sm:text-sm text-slate-500 mb-2 font-medium">
                      <span>Withdraw Shares</span>
-                     <span className="flex items-center gap-2">
+                     <span className="flex items-center gap-1.5">
                        Available: {formatNumber(activeUserShares)}
                        <button 
                          onClick={() => {
                             if (activeUserShares) setWithdrawShares(formatUnits(activeUserShares, 6));
                          }}
-                         className="text-accent hover:text-accentHover font-semibold"
+                         className="text-accent hover:text-accentHover font-semibold min-h-0 min-w-0 h-auto w-auto px-1.5 py-0.5 rounded hover:bg-accent/10 transition-colors"
                        >
                          Max
                        </button>

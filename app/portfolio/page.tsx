@@ -278,18 +278,18 @@ export default function PortfolioDashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 pt-6 border-t border-borderLine/50">
+            <div className="grid grid-cols-3 gap-1 sm:gap-2 pt-6 border-t border-borderLine/50">
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">APY</div>
-                <div className="text-lg font-bold text-emerald-500">{apyUsdc.toFixed(2)}%</div>
+                <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">APY</div>
+                <div className="text-sm sm:text-lg font-bold text-emerald-500">{apyUsdc.toFixed(2)}%</div>
               </div>
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Daily</div>
-                <div className="text-lg font-bold text-foreground">+${dailyYieldUsdc.toFixed(2)}</div>
+                <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Daily</div>
+                <div className="text-sm sm:text-lg font-bold text-foreground whitespace-nowrap">+${dailyYieldUsdc.toFixed(2)}</div>
               </div>
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Monthly</div>
-                <div className="text-lg font-bold text-foreground">+${monthlyYieldUsdc.toFixed(2)}</div>
+                <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Monthly</div>
+                <div className="text-sm sm:text-lg font-bold text-foreground whitespace-nowrap">+${monthlyYieldUsdc.toFixed(2)}</div>
               </div>
             </div>
           </div>
@@ -314,18 +314,18 @@ export default function PortfolioDashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 pt-6 border-t border-borderLine/50">
+            <div className="grid grid-cols-3 gap-1 sm:gap-2 pt-6 border-t border-borderLine/50">
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">APY</div>
-                <div className="text-lg font-bold text-emerald-500">{apyEurc.toFixed(2)}%</div>
+                <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">APY</div>
+                <div className="text-sm sm:text-lg font-bold text-emerald-500">{apyEurc.toFixed(2)}%</div>
               </div>
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Daily</div>
-                <div className="text-lg font-bold text-foreground">+€{dailyYieldEurc.toFixed(4)}</div>
+                <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Daily</div>
+                <div className="text-sm sm:text-lg font-bold text-foreground whitespace-nowrap">+€{dailyYieldEurc.toFixed(4)}</div>
               </div>
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Monthly</div>
-                <div className="text-lg font-bold text-foreground">+€{monthlyYieldEurc.toFixed(2)}</div>
+                <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Est. Monthly</div>
+                <div className="text-sm sm:text-lg font-bold text-foreground whitespace-nowrap">+€{monthlyYieldEurc.toFixed(2)}</div>
               </div>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function PortfolioDashboard() {
             </div>
           ) : history.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-sm min-w-[550px] md:min-w-0">
                 <thead>
                   <tr className="border-b border-borderLine text-slate-500">
                     <th className="pb-3 font-semibold">Action</th>
