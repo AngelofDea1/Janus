@@ -10,7 +10,9 @@ import {
  Info,
  Wallet,
  ChevronDown,
- Activity
+ Activity,
+ Check,
+ Loader2
 } from "lucide-react";
 import AssetLogo from "@/components/AssetLogo";
 import JanusLogo from "@/components/JanusLogo";
@@ -578,22 +580,76 @@ export default function ArbitrageApp() {
 
                  {/* Execute Button */}
                  <div className="mt-4">
-                    {needsApproval && (
-                      <div className="mb-4 px-4 py-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.01] border border-borderLine/50 flex items-center justify-between text-xs animate-in fade-in duration-200">
-                        <span className="font-medium text-slate-400 tracking-wider uppercase text-[10px]">Workflow</span>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2">
-                            <span className={`w-1.5 h-1.5 rounded-full ${(!txHash && activeAllowance < parseUnits(depositAmount || "0", 6)) || (txType === "approve" && isTxWaiting) ? "bg-accent animate-pulse" : "bg-emerald-500"}`} />
-                            <span className={`font-medium ${(!txHash && activeAllowance < parseUnits(depositAmount || "0", 6)) || (txType === "approve" && isTxWaiting) ? "text-foreground" : "text-slate-400"}`}>
-                              1. Approve
-                            </span>
+                     {needsApproval && (
+                      <div className="mb-4 p-3.5 rounded-2xl bg-black/[0.01] dark:bg-white/[0.02] border border-borderLine/50 text-xs animate-in fade-in duration-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="font-semibold text-slate-400 dark:text-slate-500 tracking-wider uppercase text-[9px]">Deposit Sequence</span>
+                          <span className="text-[10px] text-slate-400 font-medium">
+                            {activeAllowance >= parseUnits(depositAmount || "0", 6) ? "Step 2 of 2" : "Step 1 of 2"}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 relative px-1">
+                          {/* Step 1: Approve */}
+                          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold border transition-all duration-300 ${
+                              activeAllowance >= parseUnits(depositAmount || "0", 6)
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500"
+                                : (txType === "approve" && isTxWaiting)
+                                ? "bg-accent/15 border-accent text-accent shadow-[0_0_8px_rgba(var(--accent-rgb),0.3)] animate-pulse"
+                                : "bg-panel border-borderLine text-slate-400"
+                            }`}>
+                              {activeAllowance >= parseUnits(depositAmount || "0", 6) ? (
+                                <Check className="w-3 h-3 stroke-[3]" />
+                              ) : (txType === "approve" && isTxWaiting) ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : "1"}
+                            </div>
+                            <div className="min-w-0 flex flex-col">
+                              <span className={`text-[11px] font-bold transition-colors ${
+                                activeAllowance >= parseUnits(depositAmount || "0", 6)
+                                  ? "text-emerald-500"
+                                  : "text-foreground"
+                              }`}>
+                                Approve {selectedAsset}
+                              </span>
+                              <span className="text-[9px] text-slate-500 truncate">
+                                Allow vault routing
+                              </span>
+                            </div>
                           </div>
-                          <span className="text-slate-300 dark:text-slate-700 text-[10px]">/</span>
-                          <div className="flex items-center gap-2">
-                            <span className={`w-1.5 h-1.5 rounded-full ${activeAllowance >= parseUnits(depositAmount || "0", 6) ? "bg-accent" : "bg-slate-300 dark:bg-slate-800"}`} />
-                            <span className={`font-medium ${activeAllowance >= parseUnits(depositAmount || "0", 6) ? "text-foreground" : "text-slate-400"}`}>
-                              2. Deposit
-                            </span>
+
+                          <span className="text-slate-300 dark:text-slate-800 font-light px-1 select-none">&rarr;</span>
+
+                          {/* Step 2: Deposit */}
+                          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold border transition-all duration-300 ${
+                              isTxSuccess && txHash && txType === "deposit"
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500"
+                                : activeAllowance >= parseUnits(depositAmount || "0", 6)
+                                ? "bg-accent/15 border-accent text-accent shadow-[0_0_8px_rgba(var(--accent-rgb),0.3)]"
+                                : "bg-panel border-borderLine text-slate-400"
+                            }`}>
+                              {isTxSuccess && txHash && txType === "deposit" ? (
+                                <Check className="w-3 h-3 stroke-[3]" />
+                              ) : (txType === "deposit" && isTxWaiting) ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : "2"}
+                            </div>
+                            <div className="min-w-0 flex flex-col">
+                              <span className={`text-[11px] font-bold transition-colors ${
+                                isTxSuccess && txHash && txType === "deposit"
+                                  ? "text-emerald-500"
+                                  : activeAllowance >= parseUnits(depositAmount || "0", 6)
+                                  ? "text-foreground"
+                                  : "text-slate-500"
+                              }`}>
+                                Deposit
+                              </span>
+                              <span className="text-[9px] text-slate-500 truncate">
+                                Lock in yield vault
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>

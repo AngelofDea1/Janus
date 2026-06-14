@@ -182,15 +182,7 @@ export default function Home() {
 
       <section className="relative z-10 flex flex-col h-svh justify-center items-center pt-16">
         <div className="text-center px-6 max-w-3xl mx-auto">
-          {/* Pill Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mb-6 flex justify-center"
-          >
-            <Pill>Live on Arc Testnet</Pill>
-          </motion.div>
+
 
           {/* Hero Heading */}
           <motion.h1
