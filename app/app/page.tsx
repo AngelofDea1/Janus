@@ -723,7 +723,7 @@ export default function ArbitrageApp() {
             <span className="text-slate-500 flex items-center gap-1">
               Live APY
             </span>
-            <span className="font-semibold text-emerald-500">
+            <span className="font-semibold text-[#4F46E5]">
               {isUSDC 
                 ? (usdcEstimatedAPY ? (Number(usdcEstimatedAPY) / 100).toFixed(2) : "32.40")
                 : (eurcEstimatedAPY ? (Number(eurcEstimatedAPY) / 100).toFixed(2) : "28.60")}%

@@ -1,7 +1,7 @@
 'use client';
 
 import { WagmiProvider, createConfig, http } from 'wagmi';
-import { injected, walletConnect } from 'wagmi/connectors';
+import { injected } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import React from 'react';
@@ -13,8 +13,8 @@ const arcTestnet = {
   network: 'arc-testnet',
   nativeCurrency: {
     decimals: 18,
-    name: 'Ethereum',
-    symbol: 'ETH',
+    name: 'USD Coin', // Arc: USDC is the native gas token
+    symbol: 'USDC',
   },
   rpcUrls: {
     default: { http: ['https://rpc.testnet.arc.network'] },
@@ -30,10 +30,6 @@ const config = createConfig({
   chains: [arcTestnet],
   connectors: [
     injected(), // MetaMask, Rabby, Phantom, OKX — any browser-injected wallet
-    walletConnect({
-      projectId: 'a8c85ce0eab10e6a14faf1b1a1e1a1a1',
-      showQrModal: true,
-    }),
   ],
   transports: {
     [arcTestnet.id]: http('https://rpc.testnet.arc.network'),
