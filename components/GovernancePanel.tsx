@@ -52,7 +52,7 @@ const DEMO_PROPOSALS: Proposal[] = [
 const STATUS_STYLES: Record<string, string> = {
   "pending-approvals": "text-amber-500 bg-amber-500/10 border-amber-500/20",
   queued: "text-blue-500 bg-blue-500/10 border-blue-500/20",
-  executed: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+  executed: "text-[#4F46E5] bg-[#4F46E5]/10 border-[#4F46E5]/20",
   cancelled: "text-red-500 bg-red-500/10 border-red-500/20",
 };
 
@@ -149,7 +149,7 @@ export default function GovernancePanel() {
                   <div className="h-[2px] w-full bg-borderLine overflow-hidden rounded-full">
                     <div
                       className={`h-full transition-all duration-500 rounded-full ${
-                        proposal.confirmations >= proposal.required ? "bg-emerald-500" : "bg-foreground"
+                        proposal.confirmations >= proposal.required ? "bg-[#4F46E5]" : "bg-foreground"
                       }`}
                       style={{ width: `${(proposal.confirmations / proposal.required) * 100}%` }}
                     />
@@ -166,7 +166,7 @@ export default function GovernancePanel() {
                   </button>
                 )}
                 {proposal.status === "executed" && (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-[#4F46E5] shrink-0" />
                 )}
               </div>
             </div>

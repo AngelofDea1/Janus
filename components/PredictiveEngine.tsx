@@ -84,7 +84,7 @@ export default function PredictiveEngine() {
 
  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
  <div className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-borderLine text-xs font-medium text-slate-500 flex items-center gap-2">
- <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+ <span className="w-2 h-2 rounded-full bg-[#4F46E5] animate-pulse" />
  {activeModel}
  </div>
  <button
@@ -155,7 +155,7 @@ export default function PredictiveEngine() {
  
  <div className="px-4 py-3 bg-white dark:bg-[#1a1a1a] border border-borderLine rounded-xl shadow-sm text-center min-w-[100px]">
  <div className="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-1">Confidence</div>
- <div className="text-xl font-heading font-bold text-emerald-500">
+ <div className="text-xl font-heading font-bold text-[#4F46E5]">
  {route.confidence}%
  </div>
  </div>

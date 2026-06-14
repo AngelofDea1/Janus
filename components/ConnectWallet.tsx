@@ -116,7 +116,7 @@ export default function ConnectWallet() {
           onClick={toggleDropdown}
           className="bg-white dark:bg-[#1a1a1a] border border-borderLine hover:bg-black/5 dark:hover:bg-white/5 text-foreground font-medium px-4 py-2 rounded-full transition-all flex items-center gap-2 shadow-sm"
         >
-          <div className="w-5 h-5 rounded-full bg-accent"></div>
+          <div className="w-5 h-5 rounded-full bg-[#4F46E5]"></div>
           {ensName || formatAddress(address)}
           <ChevronDown className="w-4 h-4 text-slate-400" />
         </button>
@@ -128,7 +128,7 @@ export default function ConnectWallet() {
             <div className="space-y-5">
               {/* Account Card */}
               <div className="flex flex-col items-center p-6 bg-black/5 dark:bg-white/5 rounded-3xl border border-borderLine">
-                <div className="w-16 h-16 rounded-full bg-accent mb-4"></div>
+                <div className="w-16 h-16 rounded-full bg-[#4F46E5] mb-4"></div>
 
                 <div className="text-xl font-mono font-bold tracking-wider text-foreground mb-1">
                   {ensName || formatAddress(address)}
@@ -146,8 +146,8 @@ export default function ConnectWallet() {
                 >
                   {copied ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      <span className="text-emerald-500">Copied</span>
+                      <CheckCircle2 className="w-4 h-4 text-[#4F46E5]" />
+                      <span className="text-[#4F46E5]">Copied</span>
                     </>
                   ) : (
                     <>
@@ -210,7 +210,7 @@ export default function ConnectWallet() {
                         <span className="font-semibold text-[15px] text-foreground">{connector.name}</span>
                       </div>
                       {isDetected && (
-                        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">
+                        <span className="text-[10px] font-semibold text-[#4F46E5] bg-[#4F46E5]/10 px-2.5 py-1 rounded-md">
                           Detected
                         </span>
                       )}

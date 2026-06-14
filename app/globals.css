@@ -6,15 +6,15 @@
 
 @theme {
   --color-hightlight-light: #DADBF8;
-  --color-accent-light: #D9EAE3;
+  --color-accent-light: #DADBF8;
   --color-primary-light: #FFCFE1;
   --color-secondary-light: #FFFCE5;
   --color-primary: #FF0F67;
   --color-primary-content: #fff;
   --color-secondary: #FFF07C;
   --color-secondary-content: #0A0A0A;
-  --color-accent: #439775;
-  --color-accent-content: #0A0A0A;
+  --color-accent: #4F46E5;
+  --color-accent-content: #fff;
   --color-neutral: #222222;
   --color-neutral-content: #FFFFFF;
   --color-base-100: #f0f0f0;

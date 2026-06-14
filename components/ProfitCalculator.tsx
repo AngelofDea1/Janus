@@ -114,8 +114,8 @@ export default function ProfitCalculator() {
                     setInputValue(preset.toString());
                   }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${positionSize === preset
-                    ? "bg-accent text-white border-accent shadow-[0_0_15px_rgba(52,211,153,0.3)]"
-                    : "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-borderLine hover:border-accent/50"
+                    ? "bg-[#4F46E5] text-white border-[#4F46E5] shadow-[0_0_15px_rgba(79,70,229,0.3)]"
+                    : "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-borderLine hover:border-[#4F46E5]/50"
                     }`}
                 >
                   ${preset >= 1000 ? `${preset / 1000}K` : preset}
@@ -131,7 +131,7 @@ export default function ProfitCalculator() {
                 Select Arbitrage Pair
               </label>
             </div>
-            
+
             <div className="mb-3">
               <input
                 type="text"
@@ -153,36 +153,36 @@ export default function ProfitCalculator() {
                 {opportunities
                   .filter(opp => opp.asset.toLowerCase().includes(searchQuery.toLowerCase()))
                   .map((opp) => (
-                  <button
-                    key={opp.asset}
-                    onClick={() => setSelectedOpp(opp)}
-                    className={`w-full flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 rounded-xl border transition-all text-left gap-2 sm:gap-0 ${selectedOpp?.asset === opp.asset
-                      ? "bg-accent text-white shadow-[0_4px_0_rgb(4,120,87)] border-transparent hover:brightness-110 active:translate-y-[4px] active:shadow-none"
-                      : "bg-white dark:bg-[#111] border-borderLine hover:border-slate-300 dark:hover:border-slate-700"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <AssetLogo asset={opp.asset} size={20} className="border border-borderLine/50 bg-slate-100 dark:bg-slate-800" />
-                      <span className={`font-bold text-sm ${selectedOpp?.asset === opp.asset ? "text-white" : "text-foreground"}`}>{opp.asset}</span>
-                      <span className={`text-[10px] uppercase font-medium px-1.5 py-0.5 rounded ${selectedOpp?.asset === opp.asset ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>{opp.exB} → {opp.exA}</span>
-                    </div>
-                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
-                      <div className="flex flex-col sm:text-right">
-                        <span className={`text-[10px] uppercase font-semibold ${selectedOpp?.asset === opp.asset ? "text-white/70" : "text-slate-400"}`}>Spread</span>
-                        <span className={`text-xs font-mono font-bold ${selectedOpp?.asset === opp.asset ? "text-white" : "text-slate-500"}`}>{opp.spread}%</span>
+                    <button
+                      key={opp.asset}
+                      onClick={() => setSelectedOpp(opp)}
+                      className={`w-full flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 rounded-xl border transition-all text-left gap-2 sm:gap-0 ${selectedOpp?.asset === opp.asset
+                        ? "bg-[#4F46E5] text-white shadow-[0_4px_0_rgb(55,48,163)] border-transparent hover:brightness-110 active:translate-y-[4px] active:shadow-none"
+                        : "bg-white dark:bg-[#111] border-borderLine hover:border-slate-300 dark:hover:border-slate-700"
+                        }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <AssetLogo asset={opp.asset} size={20} className="border border-borderLine/50 bg-slate-100 dark:bg-slate-800" />
+                        <span className={`font-bold text-sm ${selectedOpp?.asset === opp.asset ? "text-white" : "text-foreground"}`}>{opp.asset}</span>
+                        <span className={`text-[10px] uppercase font-medium px-1.5 py-0.5 rounded ${selectedOpp?.asset === opp.asset ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"}`}>{opp.exB} → {opp.exA}</span>
                       </div>
-                      <div className="flex flex-col text-right">
-                        <span className={`text-[10px] uppercase font-semibold ${selectedOpp?.asset === opp.asset ? "text-white/70" : "text-slate-400"}`}>APY</span>
-                        <span className={`text-xs font-bold font-mono ${selectedOpp?.asset === opp.asset
-                          ? "text-white"
-                          : "text-accent"
-                          }`}>
-                          {opp.projectedAPY}%
-                        </span>
+                      <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                        <div className="flex flex-col sm:text-right">
+                          <span className={`text-[10px] uppercase font-semibold ${selectedOpp?.asset === opp.asset ? "text-white/70" : "text-slate-400"}`}>Spread</span>
+                          <span className={`text-xs font-mono font-bold ${selectedOpp?.asset === opp.asset ? "text-white" : "text-slate-500"}`}>{opp.spread}%</span>
+                        </div>
+                        <div className="flex flex-col text-right">
+                          <span className={`text-[10px] uppercase font-semibold ${selectedOpp?.asset === opp.asset ? "text-white/70" : "text-slate-400"}`}>APY</span>
+                          <span className={`text-xs font-bold font-mono ${selectedOpp?.asset === opp.asset
+                            ? "text-white"
+                            : "text-accent"
+                            }`}>
+                            {opp.projectedAPY}%
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
                 {opportunities.filter(opp => opp.asset.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                   <div className="text-center py-6 text-sm text-slate-500 border border-dashed border-borderLine rounded-xl">
                     No matching pairs found.
