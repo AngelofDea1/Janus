@@ -1,17 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import {
   Wallet,
-  Activity,
-  TrendingUp,
-  PieChart,
-  History,
-  ShieldAlert,
   ArrowUpRight,
-  ExternalLink
+  ExternalLink,
+  Loader2
 } from "lucide-react";
 import { VAULT_ADDRESS, EURC_VAULT_ADDRESS, VAULT_ABI } from "@/lib/constants";
 import Link from "next/link";
@@ -28,6 +24,7 @@ interface TransactionActivity {
   vault: string;
 }
 
+
 export default function PortfolioDashboard() {
   const { address: wagmiAddress, isConnected: wagmiIsConnected } = useAccount();
   const [localConnected, setLocalConnected] = useState(false);
@@ -36,6 +33,7 @@ export default function PortfolioDashboard() {
 
   const [history, setHistory] = useState<TransactionActivity[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
+
 
   useEffect(() => {
     setMounted(true);
@@ -84,6 +82,7 @@ export default function PortfolioDashboard() {
 
     loadHistory();
   }, [isConnected, address]);
+
 
   // Real USDC Contract Data
   const { data: userSharesUsdc } = useReadContract({
@@ -137,6 +136,24 @@ export default function PortfolioDashboard() {
     functionName: "estimatedAPY",
     chainId: 5042002,
     query: { refetchInterval: 10000 },
+  });
+
+  // Read agent balance on ERC-8004 IdentityRegistry
+  const { data: agentBalance } = useReadContract({
+    address: '0x8004A818BFB912233c491871b3d84c89A494BD9e',
+    abi: [
+      {
+        inputs: [{ name: "owner", type: "address" }],
+        name: "balanceOf",
+        outputs: [{ name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function"
+      }
+    ],
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    chainId: 5042002,
+    query: { refetchInterval: 5000 },
   });
 
   if (!mounted) {

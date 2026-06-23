@@ -23,6 +23,29 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Janus",
   description: "Institutional-grade delta-neutral funding rate arbitrage on the Arc Network.",
+  metadataBase: new URL("https://janushq.xyz"),
+  openGraph: {
+    title: "Janus",
+    description: "Institutional-grade delta-neutral funding rate arbitrage on the Arc Network.",
+    url: "https://janushq.xyz",
+    siteName: "Janus",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Janus Protocol - Delta-Neutral Arbitrage",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Janus",
+    description: "Institutional-grade delta-neutral funding rate arbitrage on the Arc Network.",
+    images: ["/twitter-image.jpg"],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

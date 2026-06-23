@@ -31,6 +31,17 @@ export const VAULT_ABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {"type": "uint256", "name": "shares"},
+      {"type": "address", "name": "receiver"},
+      {"type": "address", "name": "owner"}
+    ],
+    "name": "redeem",
+    "outputs": [{"type": "uint256", "name": "assets"}],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "totalAssets",
     "outputs": [{"type": "uint256"}],
