@@ -1,0 +1,22 @@
+{
+  "name": "janus-keeper",
+  "version": "1.0.0",
+  "description": "Automated Node.js Keeper Bot for Janus Protocol",
+  "main": "keeper.js",
+  "scripts": {
+    "start": "node --env-file=.env keeper.js",
+    "import-contract": "node --env-file=.env import-contract.js",
+    "create-monitor": "node --env-file=.env create-monitor.js",
+    "get-event-logs": "node --env-file=.env get-event-logs.js",
+    "send-tokens": "node --env-file=.env send-tokens.js",
+    "register-agent": "node --env-file=.env register-agent.js"
+  },
+  "dependencies": {
+    "@circle-fin/adapter-circle-wallets": "^1.3.0",
+    "@circle-fin/app-kit": "^1.5.1",
+    "@circle-fin/developer-controlled-wallets": "^1.0.0",
+    "@circle-fin/smart-contract-platform": "^10.3.1",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.17.0"
+  }
+}

@@ -1,0 +1,49 @@
+type ArbitrageExecution @entity(immutable: true) {
+  id: ID!
+  asset: String!
+  route: String!
+  volume: BigInt!
+  spread: String!
+  yieldHarvested: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+  vault: Bytes!
+}
+
+type YieldHarvest @entity(immutable: true) {
+  id: ID!
+  amount: BigInt!
+  totalAssetsAfter: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Deposit @entity(immutable: true) {
+  id: ID!
+  sender: Bytes!
+  owner: Bytes!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+  vault: Bytes!
+}
+
+type Withdraw @entity(immutable: true) {
+  id: ID!
+  sender: Bytes!
+  receiver: Bytes!
+  owner: Bytes!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+  vault: Bytes!
+}
+
+type VaultMetric @entity(immutable: false) {
+  id: ID!
+  totalAssets: BigInt!
+  totalYield: BigInt!
+  lastUpdated: BigInt!
+}

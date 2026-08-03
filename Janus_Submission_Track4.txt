@@ -1,0 +1,79 @@
+Project Title: Janus Protocol
+
+Short Description: Janus is an institutional-grade, automated funding rate arbitrage vault built natively on the Arc L1 Network. It utilizes an autonomous agent (the Janus Keeper Bot) to independently research, negotiate, and execute market-neutral arbitrage strategies on behalf of users, settling entirely on-chain via smart contracts.
+
+Track Submitted For:
+4) Best Agentic Economy Experience on Arc
+
+Why Janus fits this track: The core engine of Janus is a fully autonomous financial agent (built with Node.js) that acts on behalf of retail users. Every 15 minutes, this agent independently scans 5 major exchanges, researches the funding rate gaps, negotiates the optimal routing using Circle Gateway, and executes complex delta-neutral arbitrage transactions automatically. It requires zero human intervention, seamlessly bridging off-chain data analysis with on-chain execution on the Arc network. 
+
+Email associated with your Circle Developer Account: biafgiabraham17@gmail.com
+
+Select Circle products used on Arc:
+- USDC (Primary settlement and vault asset for agent-executed payments)
+- Wallets (Secure key management for user-initiated deposits)
+- Gateway (Backend liquidity and routing for agent-orchestrated treasury operations)
+
+---
+
+1. Functional MVP and Architecture Diagram
+Overview: An Autonomous Financial Engine
+There is a strategy that has been running quietly in the background of crypto for years: capturing funding rate spreads across perpetual exchanges. 
+
+If Binance is paying 0.05% and Hyperliquid is paying 0.02%, institutional traders open opposing positions to capture the 0.03% difference with strictly zero directional risk. The problem? Executing this manually requires constant 24/7 API monitoring, instant execution, and massive capital. 
+
+What the Janus Agent Does:
+Janus automates the entire process, acting as a personal quantitative trading desk for everyday users. 
+1. Scan: Every 15 minutes, the Janus agent pulls live funding rates from Binance, Bybit, KuCoin, MEXC, and Hyperliquid. Every asset listed on two or more exchanges gets evaluated autonomously.
+2. Filter: Not every gap is worth acting on. The agent mathematically filters opportunities, ensuring transaction costs never eat into returns.
+3. Execute: The agent identifies the best opportunity and acts on it, verifying vault balances via Circle Gateway and triggering the execution via our Arc smart contract.
+4. Settle: The agent records the earnings directly on-chain, automatically compounding the yield back into the user's vault shares (jUSDC).
+
+Example Real Execution by the Agent (Arc Testnet):
+- Route: MEXC → KuCoin
+- Capital deployed: $14,123.14 (testnet USDC)
+- Spread captured: +0.5708%
+- Earnings generated: $80.61 (testnet USDC)
+- Transaction: 0xd16ddb…0277
+The agent identified that two exchanges were pricing funding differently, took both positions, captured the spread, and recorded everything on-chain, entirely autonomously. 
+
+Architecture Diagram:
+User -> Deposits USDC/EURC -> Janus Frontend App (Next.js)
+App -> Connect Wallet & Transact -> JanusVault Smart Contract (Arc L1)
+Agentic Keeper Bot -> Scans 5 Exchanges -> Filters Profitable Spreads
+Agentic Keeper -> Executes Arbitrage -> Compounds Yield Back into Vault
+Sub-Graph Indexer -> Logs Agent's Executions -> Frontend Ledger
+Vault -> 5% Performance Fee -> Insurance Fund Contract
+
+---
+
+2. Video Demonstration & Presentation
+Primary Demo Video (YouTube): https://youtu.be/rHOzHAGWefY
+Backup Demo Video (Tella): https://www.tella.tv/video/introduction-to-janus-automated-funding-rate-arbitrage-1-6sqt
+
+---
+
+3. GitHub / Code Repository
+Repository Link: https://github.com/AngelofDea1/Janus
+Note: The repository includes the Next.js frontend, Solidity smart contracts, the Node.js autonomous agent (Keeper bot), and a custom Subgraph.
+
+---
+
+4. Demo Application URL
+Live Demo URL: https://janushq.xyz
+(Currently live on Arc Testnet)
+
+---
+
+5. Circle Product Feedback
+Why you chose these products for your use case:
+We exclusively chose USDC and EURC on Arc as our settlement assets because executing market-neutral arbitrage requires a strictly fiat-denominated foundation. Otherwise, currency fluctuations would wipe out the yield margins. Circle Wallets provided a frictionless onboarding experience for retail users, and Gateway was critical in allowing our autonomous agent to efficiently route treasury funds for its arbitrage executions.
+
+What worked well during development:
+The predictability of USDC transactions on Arc made developing the logic for our autonomous agent incredibly straightforward. Settling in USDC ensures that when the agent completes a transaction, users see their APY in a stable, recognizable format. 
+
+What could be improved:
+Further integrations for bridging (CCTP) directly within the smart contract layer would allow our agent to autonomously onboard liquidity from other chains directly into the vault.
+
+Recommendations to make the product or developer experience more seamless or scalable:
+Providing more built-in, on-chain oracle feeds for standard institutional yields on Arc could further empower autonomous agents like the Janus Keeper to benchmark and route funds with even less reliance on off-chain calculation.

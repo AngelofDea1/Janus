@@ -1,0 +1,76 @@
+Project Title: Janus Protocol
+
+Short Description: Janus is an institutional-grade, automated funding rate arbitrage vault built natively on the Arc L1 Network. It democratizes access to market-neutral yield strategies traditionally locked behind quantitative hedge funds by tokenizing the strategy into a fully compliant, yield-bearing vault (jUSDC).
+
+Track Submitted For:
+3) Best Real World Asset Tokenization on Arc with Embedded Compliance
+
+Why Janus fits this track: Janus tokenizes a complex, real-world institutional financial strategy (funding rate arbitrage) into accessible receipt tokens (jUSDC/jEURC). It embeds strict compliance and safety controls directly into the smart contract level, including a 48-hour withdrawal timelock, a 5-of-9 multisig governance structure, and an automated 5% performance fee routed to an Insurance Fund to protect depositors against black swan events.
+
+Email associated with your Circle Developer Account: biafgiabraham17@gmail.com
+
+Select Circle products used on Arc:
+- USDC (Primary settlement and vault asset for risk-free yield)
+- Wallets (For seamless, gas-abstracted user connection and interactions)
+- Gateway (For off-chain treasury operations and intelligent routing)
+
+---
+
+1. Functional MVP and Architecture Diagram
+Overview: The Strategy and The Gap
+There is a strategy that has been running quietly in the background of crypto for years. It doesn't care if the market is going up or down. Janus runs a continuous scan on it, capturing a funding gap most traders never think about.
+
+In crypto, perpetual futures use a "funding rate" to anchor the perp price to the spot price. Every 8 hours, one side of the market pays the other (longs pay shorts, or vice versa). Because every exchange has its own group of traders, the same asset can have completely different funding rates across different platforms.
+
+Institutional traders figured this out years ago: Bet up on the exchange that pays you for betting up. Bet down on the exchange that pays you for betting down. Hold both at the same time. The price movement becomes irrelevant, and you collect the difference between the two rates every 8 hours. 
+
+What Janus Does & How it is Protected:
+Janus automates the entire process and puts it on-chain via Arc. Everything flows into two on-chain vaults (USDC and EURC). Users deposit stablecoins and receive vault shares (jUSDC). Every time the protocol executes an arbitrage, the total value in the vault increases. Your shares become worth more.
+
+Because we are handling institutional capital, Janus is built with extreme protections:
+1. Multiple Signers: Secured by a 5-of-9 multisig. No single person can change critical protocol settings.
+2. Mandatory Timelocks: A cryptographically enforced 48-hour withdrawal queue. This prevents sudden mass exits and eliminates the risk of flash-loan sandwich manipulation on compounding yield.
+3. Reserve Fund: The contract automatically takes a 5% performance fee on profitable trades and sends it directly to a transparent Insurance Fund to cover unexpected losses.
+4. Full On-Chain Record: Every execution is permanently logged on-chain.
+
+Architecture Diagram:
+User -> Deposits USDC/EURC -> Janus Frontend App (Next.js)
+App -> Connect Wallet & Transact -> JanusVault Smart Contract (Arc L1)
+Vault -> Mints Yield-Bearing jUSDC/jEURC -> User
+Keeper Bot -> Scans 5 Exchanges -> Filters Profitable Spreads
+Keeper -> Executes Arbitrage -> Compounds Yield Back into Vault
+Governance -> 5-of-9 Multisig -> 48-Hour Timelock -> Secures Vault
+Vault -> 5% Performance Fee -> Insurance Fund Contract
+
+---
+
+2. Video Demonstration & Presentation
+Primary Demo Video (YouTube): https://youtu.be/rHOzHAGWefY
+Backup Demo Video (Tella): https://www.tella.tv/video/introduction-to-janus-automated-funding-rate-arbitrage-1-6sqt
+
+---
+
+3. GitHub / Code Repository
+Repository Link: https://github.com/AngelofDea1/Janus
+Note: The repository includes the Next.js frontend, Solidity smart contracts, the Node.js Keeper bot agent, and a custom Subgraph for indexing executions.
+
+---
+
+4. Demo Application URL
+Live Demo URL: https://janushq.xyz
+(Currently live on Arc Testnet)
+
+---
+
+5. Circle Product Feedback
+Why you chose these products for your use case:
+We exclusively chose USDC and EURC on Arc as our settlement assets because executing market-neutral arbitrage requires a strictly fiat-denominated foundation. Otherwise, currency fluctuations would wipe out the yield margins. Circle Wallets provided a frictionless onboarding experience for retail users, and Gateway was instrumental in efficiently routing treasury funds for the arbitrage executions.
+
+What worked well during development:
+The predictability of USDC transactions on Arc made developing the vault logic and calculating exact basis points for the spreads incredibly straightforward. Settling in USDC ensures our users see their APY in a stable, recognizable format. 
+
+What could be improved:
+Further integrations for bridging (CCTP) directly within the smart contract layer would make onboarding liquidity from other chains into the vault even more seamless.
+
+Recommendations to make the product or developer experience more seamless or scalable:
+Providing more built-in, on-chain oracle feeds for standard institutional yields on Arc could further empower automated protocols like Janus to benchmark and route funds more efficiently.

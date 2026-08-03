@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap');
+
+@config "../tailwind.config.ts";
+
+@import "tailwindcss";
+
+@theme {
+  --color-hightlight-light: #DADBF8;
+  --color-accent-light: #DADBF8;
+  --color-primary-light: #FFCFE1;
+  --color-secondary-light: #FFFCE5;
+  --color-primary: #FF0F67;
+  --color-primary-content: #fff;
+  --color-secondary: #FFF07C;
+  --color-secondary-content: #0A0A0A;
+  --color-accent: #4F46E5;
+  --color-accent-content: #fff;
+  --color-neutral: #222222;
+  --color-neutral-content: #FFFFFF;
+  --color-base-100: #f0f0f0;
+  --color-base-200: #ffffff;
+  --color-base-300: #F2F2F2;
+  --color-base-content: #0A0A0A;
+  --color-info: #3ABFF8;
+  --color-success: #36D399;
+  --color-warning: #FBBD23;
+  --color-error: #F87272;
+  --color-highlight: #454ADE;
+  --color-muted: #777777;
+  --font-display: 'Outfit', sans-serif;
+  --font-sans: 'Inter Tight', sans-serif;
+}
+
+@layer base {
+  :root {
+    --theme-bg: 255, 255, 255; /* Pure white — matches WebGL canvas bg */
+    --theme-foreground: 15, 23, 42; /* Slate 900 */
+    --theme-panel: 255, 255, 255; /* Pure white */
+    --theme-accent: 79, 70, 229; /* Indigo 600 */
+    --theme-accent-hover: 67, 56, 202; /* Indigo 700 */
+    --theme-border: 226, 232, 240; /* Slate 200 */
+  }
+
+  .dark {
+    --theme-bg: 0, 0, 0; /* Pure black */
+    --theme-foreground: 248, 250, 252; /* Slate 50 */
+    --theme-panel: 14, 14, 14; /* Slightly elevated dark */
+    --theme-accent: 99, 102, 241; /* Indigo 500 */
+    --theme-accent-hover: 129, 140, 248; /* Indigo 400 */
+    --theme-border: 38, 38, 38; /* Neutral 800 */
+  }
+}
+
+body {
+  /* font-family removed to let Tailwind fonts apply */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(var(--theme-bg));
+  color: rgb(var(--theme-foreground));
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  /* Use normal zeros (no diagonal slash) across the site */
+  font-feature-settings: 'zero' off;
+  font-variant-numeric: normal;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Safe area padding for notched devices (iPhone X+) */
+@supports (padding: env(safe-area-inset-bottom)) {
+  footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  /* font-family removed to let Tailwind fonts apply */
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-feature-settings: "zero" 0, "tnum" 1 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* Hide input number arrows/spinners */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Smooth focus rings */
+*:focus-visible {
+  outline: none;
+}
+
+.markdown-content {
+  /* font-family removed */
+  line-height: 1.75;
+  font-size: 1rem;
+  color: rgb(var(--theme-foreground));
+}
+
+.markdown-content h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: rgb(var(--theme-foreground));
+  border-bottom: 1px solid rgba(var(--theme-border), 1);
+  padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: rgb(var(--theme-foreground));
+  border-bottom: 1px solid rgba(var(--theme-border), 1);
+  padding-bottom: 0.25rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: rgb(var(--theme-foreground));
+}
+
+.markdown-content p {
+  margin-bottom: 1.25rem;
+  color: #334155; /* Slate 700 */
+}
+.dark .markdown-content p {
+  color: #94a3b8; /* Slate 400 */
+}
+
+.markdown-content strong {
+  font-weight: 700;
+  color: rgb(var(--theme-foreground));
+}
+
+.markdown-content em {
+  font-style: italic;
+}
+
+.markdown-content a {
+  color: rgb(var(--theme-accent));
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.markdown-content a:hover {
+  opacity: 0.8;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+  color: #475569;
+}
+.dark .markdown-content li {
+  color: #94a3b8;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid rgb(var(--theme-accent));
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background-color: rgba(var(--theme-accent), 0.05);
+  border-radius: 0.5rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+.dark .markdown-content blockquote {
+  color: #cbd5e1;
+}
+
+.markdown-content blockquote p {
+  margin-bottom: 0;
+  color: inherit;
+}
+
+.markdown-content code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85em;
+  padding: 0.2rem 0.4rem;
+  background-color: rgba(var(--theme-border), 0.5);
+  border-radius: 0.375rem;
+  color: #0f172a;
+}
+.dark .markdown-content code {
+  color: #f8fafc;
+}
+
+.markdown-content pre {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background-color: rgb(var(--theme-panel));
+  border: 1px solid rgba(var(--theme-border), 1);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+
+.markdown-content pre code {
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: 0.9em;
+}
+
+.markdown-content hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid rgba(var(--theme-border), 1);
+}
+
+/* Recharts Focus Fix */
+.recharts-wrapper *:focus {
+  outline: none !important;
+}
+.recharts-surface:focus {
+  outline: none !important;
+}
+*:focus {
+  outline: none !important;
+}
+
+/* Hide scrollbar for mobile horizontal scrolling */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile touch-friendly buttons */
+@media (max-width: 640px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* WebGL Canvas — fixed behind everything */
+#webgl {
+  top: 0;
+  left: 0;
+  position: fixed;
+  height: 100svh;
+  width: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#webgl canvas {
+  width: 100%;
+  height: 100%;
+}

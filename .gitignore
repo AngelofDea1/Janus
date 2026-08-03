@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.local
+.env.production.local
+.next/
+build/
+artifacts/
+cache/
+typechain-types/
+coverage/
+coverage.json
+*.log
+.DS_Store
+
+video_demo_script.md
+hackathon_submission.md
